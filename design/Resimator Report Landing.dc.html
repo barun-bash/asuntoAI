@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-tokens.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/styles.css">
+<script src="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:#F6F3EE;font-family:"Satoshi Variable","Satoshi",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#427AA1;text-decoration:none}
+a:hover{color:#14222D;text-decoration:underline}
+@keyframes lpS1{0%,26%{opacity:1}32%,94%{opacity:0}100%{opacity:1}}
+@keyframes lpS2{0%,26%{opacity:0}32%,60%{opacity:1}66%,100%{opacity:0}}
+@keyframes lpS3{0%,60%{opacity:0}66%,94%{opacity:1}100%{opacity:0}}
+@keyframes lpBar{0%,32%{width:6%}60%,100%{width:94%}}
+@keyframes lpT1{0%,34%{opacity:.3}38%,100%{opacity:1}}
+@keyframes lpT2{0%,42%{opacity:.3}46%,100%{opacity:1}}
+@keyframes lpT3{0%,50%{opacity:.3}54%,100%{opacity:1}}
+@keyframes lpPop{0%,68%{opacity:0;transform:translateY(6px)}73%,94%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes lpLoop{0%{width:0}100%{width:100%}}
+@media (prefers-reduced-motion:reduce){#lp-s1,#lp-s2,#lp-m1,#lp-m2{animation:none !important;opacity:0 !important}#lp-s3,#lp-m3{animation:none !important;opacity:1 !important}[data-lp]{animation:none !important;opacity:1 !important;transform:none !important}}
+</style>
+</helmet>
+
+<div style="display:flex;align-items:center;gap:9px;padding:18px 64px 0;font:500 12px/1.5 'Satoshi Variable',system-ui;color:#6D859F;flex-wrap:wrap"><span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">RESIMATOR REPORT · MARKETING</span><span>Landing page for the €79 product — the product surfaces live on <a href="Resimator%20R1%20Paste%20and%20Verdict.dc.html">R1</a>–<a href="Resimator%20R5%20Components%20and%20Handoff.dc.html">R5</a></span><span style="margin-left:auto;color:#A2A8AE">route: resimator.fi/raportti · 1440 shown</span></div>
+
+<div data-screen-label="Landing · resimator.fi/raportti" style="width:1440px;margin:16px 64px 56px;background:#F6F3EE;border:1px solid #DFE1E7;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+
+<div style="height:68px;display:flex;align-items:center;gap:26px;padding:0 80px;border-bottom:1px solid rgba(20,34,45,.08);background:rgba(246,243,238,.92)">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n24 }}" asset-base="assets/logo" hint-size="128px,24px"></x-import>
+<span style="display:flex;gap:22px;font:500 14px/1.4 'Satoshi Variable';margin-left:22px">
+<a href="#how" style="color:#14222D">How it works</a>
+<a href="#evidence" style="color:#14222D">Why trust it</a>
+<a href="#pricing" style="color:#14222D">Pricing</a>
+<a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8" style="color:#14222D">Example report</a>
+</span>
+<span style="margin-left:auto;display:flex;align-items:center;gap:16px;font:500 14px/1.4 'Satoshi Variable'">
+<span style="display:inline-flex;border:1px solid #DFE1E7;border-radius:1000px;overflow:hidden;font:700 11.5px/1 'Satoshi Variable'"><span style="padding:7px 12px;background:#14222D;color:#F6F3EE">FI</span><span style="padding:7px 12px;color:#46525E">EN</span></span>
+<a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r10" style="font-weight:700">Sign in</a>
+</span>
+</div>
+
+<div style="display:grid;grid-template-columns:1.05fr 1fr;gap:56px;padding:88px 80px 72px;align-items:center">
+<div>
+<div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.1em;text-transform:uppercase;color:#427AA1;margin-bottom:18px">For apartment buyers &amp; investors — Finland</div>
+<h1 style="margin:0 0 16px;font:500 54px/1.08 'Space Grotesk';letter-spacing:-.01em;color:#14222D;text-wrap:balance">The listing won’t mention the <span style="white-space:nowrap">58 000 €</span> pipe renovation.</h1>
+<p style="margin:0 0 20px;font:500 17px/1.65 'Satoshi Variable';color:#46525E;max-width:540px;text-wrap:pretty">Listings are written to sell, not to warn. Before you bid: paste the link and get the yield you’d actually own, the renovation bill waiting in the walls, and the questions the agent hopes you won’t ask.</p>
+<div style="display:flex;gap:8px;margin:0 0 28px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;gap:7px;font:500 12px/1 'Satoshi Variable';color:#46525E;padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:6px;height:6px;border-radius:50%;background:#FF6F61"></span>Hidden renovation bills</span>
+<span style="display:inline-flex;align-items:center;gap:7px;font:500 12px/1 'Satoshi Variable';color:#46525E;padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:6px;height:6px;border-radius:50%;background:#FFB300"></span>Peak-anchored “bargains”</span>
+<span style="display:inline-flex;align-items:center;gap:7px;font:500 12px/1 'Satoshi Variable';color:#46525E;padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:6px;height:6px;border-radius:50%;background:#FFB300"></span>Rents that won’t hold</span>
+</div>
+<div style="width:540px;display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:8px 8px 8px 18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04)">
+<span style="display:flex;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Copy01" size="17" hint-size="17px,17px"></x-import></span>
+<span style="flex:1;text-align:left;font:500 15px/1.4 'Satoshi Variable';color:#A2A8AE">https://asunnot.oikotie.fi/…</span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="md" hint-size="170px,44px">Analyse — free</x-import>
+</div>
+<div style="margin-top:13px;font:500 13px/1.5 'Satoshi Variable';color:#6D859F">The summary is free for every listing. No account. Full report 79 € — first one free.</div>
+<div style="display:flex;gap:26px;margin-top:40px;font-variant-numeric:tabular-nums">
+<span><span style="display:block;font:500 26px/1.1 'Space Grotesk';color:#14222D">~60 s</span><span style="display:block;margin-top:2px;font:500 12px/1.4 'Satoshi Variable';color:#6D859F">median read time</span></span>
+<span style="width:1px;background:#DFE1E7"></span>
+<span><span style="display:block;font:500 26px/1.1 'Space Grotesk';color:#14222D">14</span><span style="display:block;margin-top:2px;font:500 12px/1.4 'Satoshi Variable';color:#6D859F">tests against your policy</span></span>
+<span style="width:1px;background:#DFE1E7"></span>
+<span><span style="display:block;font:500 26px/1.1 'Space Grotesk';color:#14222D">3.1 %</span><span style="display:block;margin-top:2px;font:500 12px/1.4 'Satoshi Variable';color:#6D859F">of analyses refused — we don’t guess</span></span>
+</div>
+</div>
+<div style="position:relative">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:26px 30px">
+<div style="display:flex;align-items:baseline;gap:10px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase"><span style="color:#427AA1">Risk analysis · free summary</span><span style="margin-left:auto;color:#A2A8AE">№ 2026-1187</span></div>
+<div style="margin-top:10px;font:500 19px/1.25 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, Tampere</div>
+<div style="margin-top:3px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 1962 · debt-free 118 000 €</div>
+<div style="display:flex;gap:10px;margin-top:16px;align-items:flex-end">
+<div><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">GROSS</div><div style="margin-top:3px;font:500 34px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div></div>
+<span style="display:flex;color:#A2A8AE;padding-bottom:6px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowRight" size="18" hint-size="18px,18px"></x-import></span>
+<div><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">REAL</div><div style="margin-top:3px;font:500 34px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</div></div>
+<span style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:2px 9px;border-radius:1000px;background:#FFECBF;color:#B98900;align-self:center">−2.8 pp</span>
+</div>
+<div style="margin-top:16px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:10px;padding:11px 14px">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:#FF6F61"></span><span style="font:500 13px/1.3 'Space Grotesk';color:#14222D;flex:1">Pipe renovation surveyed, not done</span><span style="font:700 9px/12px 'Satoshi Variable';padding:2px 7px;border-radius:1000px;background:#FFDBD7;color:#BE4437">58 200 €</span></div>
+<div style="margin:8px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 7px 7px 0;padding:6px 10px"><span style="font:500 11px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024…”</span><span style="display:block;margin-top:1px;font:500 9px/1.4 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412</span></div>
+</div>
+</div>
+<div style="position:absolute;right:-18px;bottom:-24px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;box-shadow:0 1px 3px rgba(13,13,18,.08),0 1px 2px rgba(13,13,18,.05);padding:12px 16px;display:flex;align-items:center;gap:10px">
+<span style="font:500 16px/1.2 'Space Grotesk';color:#BE4437">Does not pass</span><span style="font:500 11px/1.4 'Satoshi Variable';color:#46525E">your Balanced policy · 3 of 14</span>
+</div>
+</div>
+</div>
+
+<div id="how" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="max-width:560px"><h2 style="margin:0;font:500 36px/1.2 'Space Grotesk';color:#14222D">What happens in the <span style="color:#427AA1">sixty seconds</span>?</h2></div>
+<div style="display:grid;grid-template-columns:640px minmax(0,1fr);gap:48px;margin-top:40px;align-items:center">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);overflow:hidden">
+<div style="display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid #F0EDE7">
+<span style="display:flex;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span></span>
+<span style="margin-left:10px;flex:1;max-width:300px;background:#F6F3EE;border-radius:1000px;padding:5px 14px;font:500 11px/1.4 'Satoshi Variable';color:#6D859F;text-align:center">resimator.fi</span>
+</div>
+<div style="position:relative;height:340px;background:#F6F3EE">
+<div id="lp-s1" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 44px;animation:lpS1 12s linear infinite">
+<div style="font:700 10px/13px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase;color:#427AA1;margin-bottom:12px">1 · Paste the link</div>
+<div style="width:100%;display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:8px 8px 8px 16px;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<span style="display:flex;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Copy01" size="16" hint-size="16px,16px"></x-import></span>
+<span style="flex:1;font:500 13.5px/1.4 'Satoshi Variable';color:#14222D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">https://asunnot.oikotie.fi/…/21966412</span>
+<span style="display:inline-flex;background:#E7FE4D;border-radius:1000px;padding:12px 20px;font:700 13px/1 'Satoshi Variable';color:#14222D;white-space:nowrap;flex:none">Run analysis</span>
+</div>
+<div style="margin-top:12px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">No account · the summary is free</div>
+</div>
+<div id="lp-s2" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 44px;opacity:0;animation:lpS2 12s linear infinite">
+<div style="font:700 10px/13px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase;color:#427AA1;margin-bottom:10px">2 · It reads and prices — live</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:16px 20px">
+<div style="font:500 15px/1.3 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, Tampere</div>
+<div style="height:4px;border-radius:1000px;background:#EBF2FA;margin:12px 0 12px;overflow:hidden"><div id="lp-bar" style="width:6%;height:100%;border-radius:1000px;background:#427AA1;animation:lpBar 12s linear infinite"></div></div>
+<div data-lp style="display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #F0EDE7;font:500 12.5px/1.45 'Satoshi Variable';color:#14222D;animation:lpT1 12s linear infinite"><span style="width:18px;height:18px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="10" hint-size="10px,10px"></x-import></span>Fetched — 54 m² · 1962 · debt-free 118 000 €</div>
+<div data-lp style="display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #F0EDE7;font:500 12.5px/1.45 'Satoshi Variable';color:#14222D;animation:lpT2 12s linear infinite"><span style="width:18px;height:18px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="10" hint-size="10px,10px"></x-import></span>Renovation history read <span style="font:700 8.5px/11px 'Satoshi Variable';letter-spacing:.05em;padding:2px 6px;border-radius:1000px;background:#FFECBF;color:#B98900">FLAGGED</span></div>
+<div data-lp style="display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid #F0EDE7;font:500 12.5px/1.45 'Satoshi Variable';color:#14222D;animation:lpT3 12s linear infinite"><span style="width:18px;height:18px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="10" hint-size="10px,10px"></x-import></span>Risk priced — 27 comparable contracts, Pirkanmaa</div>
+</div>
+</div>
+<div id="lp-s3" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 44px;opacity:0;animation:lpS3 12s linear infinite">
+<div style="font:700 10px/13px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase;color:#427AA1;margin-bottom:10px">3 · The verdict — sourced</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:18px 22px">
+<div style="display:flex;align-items:flex-end;gap:16px">
+<span><span style="display:block;font:700 8.5px/11px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">LISTING SAYS</span><span style="display:block;margin-top:3px;font:500 30px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</span></span>
+<span style="display:flex;color:#A2A8AE;padding-bottom:5px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowRight" size="17" hint-size="17px,17px"></x-import></span>
+<span><span style="display:block;font:700 8.5px/11px 'Satoshi Variable';letter-spacing:.06em;color:#427AA1">YOU’D OWN</span><span style="display:block;margin-top:3px;font:500 30px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</span></span>
+<span data-lp style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:3px 10px;border-radius:1000px;background:#FFDBD7;color:#BE4437;animation:lpPop 12s linear infinite">HIGH · 58 200 €</span>
+</div>
+<div data-lp style="margin-top:12px;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:8px 12px;animation:lpPop 12s linear infinite">
+<span style="font:500 11.5px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024…”</span>
+<span style="display:block;margin-top:1px;font:500 9.5px/1.4 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 — the claim, then its sentence</span>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:0;bottom:0;height:2px;width:100%;background:#EBF2FA"><div id="lp-loop" style="height:100%;width:0;background:#427AA1;animation:lpLoop 12s linear infinite"></div></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:11px 18px;border-top:1px solid #F0EDE7;font:500 11.5px/1.4 'Satoshi Variable';color:#6D859F"><span style="width:7px;height:7px;border-radius:50%;background:#FF6F61"></span>A real analysis, start to finish — 60 seconds compressed to 12 · loops</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;gap:16px"><span style="flex:none;font:500 15px/1.4 'Space Grotesk';color:#A2A8AE">01</span><div><div style="font:500 20px/1.3 'Space Grotesk';color:#14222D">Paste the link</div><div style="margin-top:5px;font:500 13.5px/1.6 'Satoshi Variable';color:#46525E">Oikotie or Etuovi. No sign-up, no card — the summary is free for every listing.</div></div></div>
+<div style="display:flex;gap:16px"><span style="flex:none;font:500 15px/1.4 'Space Grotesk';color:#A2A8AE">02</span><div><div style="font:500 20px/1.3 'Space Grotesk';color:#14222D">Watch it read and price</div><div style="margin-top:5px;font:500 13.5px/1.6 'Satoshi Variable';color:#46525E">Every sentence, not the summary box. Flags earn their amber chips live; the renovation bill is priced from completed contracts in the same region.</div></div></div>
+<div style="display:flex;gap:16px"><span style="flex:none;font:500 15px/1.4 'Space Grotesk';color:#A2A8AE">03</span><div><div style="font:500 20px/1.3 'Space Grotesk';color:#14222D">Interrogate the verdict</div><div style="margin-top:5px;font:500 13.5px/1.6 'Satoshi Variable';color:#46525E">Fourteen tests against rules you control, every figure sourced to the listing’s own text — then ask the report anything.</div></div></div>
+<div style="font:500 13px/1.5 'Satoshi Variable'"><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8">Read a real sample report →</a></div>
+</div>
+</div>
+</div>
+
+<div id="evidence" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08);background:#EBF2FA">
+<div style="display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center">
+<div>
+<h2 style="margin:0 0 16px;font:500 36px/1.2 'Space Grotesk';color:#14222D">Every number tells you <span style="color:#427AA1">where it came from</span></h2>
+<p style="margin:0 0 22px;font:500 15px/1.65 'Satoshi Variable';color:#46525E;text-wrap:pretty">No black box. Observed figures cite the sentence they were read from — in the listing’s own Finnish. Modelled figures name their basis. And when the listing contradicts itself, we refuse to guess and tell you which document would settle it.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:3px 8px;border-radius:5px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">OBSERVED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:3px 8px;border-radius:5px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">MAPPED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:3px 8px;border-radius:5px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:3px 8px;border-radius:5px;background:#FFFFFF;border:1px dashed #B6C2CF;color:#6D859F">ESTIMATED</span>
+</div>
+<div style="margin-top:22px;font:500 13px/1.6 'Satoshi Variable';color:#46525E">The engine computes every figure; the language model only writes prose. Ask the report anything — answers cite their sections.</div>
+</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:26px 30px">
+<div style="font:500 15px/1.35 'Space Grotesk';color:#14222D">The plot is leased from the city — the lease ends 31.12.2031</div>
+<p style="margin:8px 0 0;font:500 13px/1.6 'Satoshi Variable';color:#2B2A28">Ground rent resets on renewal. Recent resets in this district: <b>+32–59 €/mo</b> for 54 m², from 2032.</p>
+<div style="margin:12px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 10px 10px 0;padding:9px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#14222D;font-style:italic">”Tontti on vuokrattu Tampereen kaupungilta, maanvuokrasopimus voimassa 31.12.2031 saakka.”</div>
+<div style="margin-top:2px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 · read 28.07.2026</div>
+</div>
+<div style="margin-top:10px;font:500 11.5px/1.55 'Satoshi Variable';color:#6D859F">Reset range from 11 Tampere ground-lease renewals 2023–2026 <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span></div>
+</div>
+</div>
+</div>
+
+<div id="cost" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="display:flex;align-items:baseline;gap:16px"><h2 style="margin:0;font:500 36px/1.2 'Space Grotesk';color:#14222D">The maths on <span style="color:#427AA1">one bad buy</span></h2><span style="font:500 14px/1.5 'Satoshi Variable';color:#6D859F">What missing a flag costs, against what knowing costs.</span></div>
+<div style="display:grid;grid-template-columns:1fr 1.05fr;gap:24px;margin-top:36px;align-items:stretch">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;padding:28px 32px;display:flex;flex-direction:column">
+<div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1">Your search</div>
+<div style="margin-top:14px;display:flex;align-items:baseline;gap:10px"><span style="font:500 30px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">150 000 €</span><span style="font:500 12.5px/1.4 'Satoshi Variable';color:#6D859F">your target debt-free price</span></div>
+<div style="margin-top:12px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Slider" min="80000" max="300000" value="{{ n150000 }}" show-label="{{ false }}" hint-size="100%,40px"></x-import></div>
+<div style="display:flex;justify-content:space-between;font:500 10.5px/1.4 'Satoshi Variable';color:#A2A8AE;font-variant-numeric:tabular-nums"><span>80 000 €</span><span>300 000 €</span></div>
+<div style="margin-top:20px;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="display:flex;align-items:baseline;gap:10px;padding:11px 0;border-top:1px solid #F0EDE7"><span style="min-width:0;flex:1;font:500 13.5px/1.5 'Satoshi Variable';color:#2B2A28">Median undisclosed liability, when we flag one</span><span style="font:500 17px/1.2 'Space Grotesk';color:#14222D;white-space:nowrap">11 850 €</span></div>
+<div style="padding:0 0 9px;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">7.9 % of the debt-free price, median of flagged analyses <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span></div>
+<div style="display:flex;align-items:baseline;gap:10px;padding:11px 0;border-top:1px solid #F0EDE7"><span style="min-width:0;flex:1;font:500 13.5px/1.5 'Satoshi Variable';color:#2B2A28">Analyses that find at least one high flag</span><span style="font:500 17px/1.2 'Space Grotesk';color:#14222D;white-space:nowrap">1 in 2.6</span></div>
+<div style="display:flex;align-items:baseline;gap:10px;padding:11px 0;border-top:1px solid #F0EDE7"><span style="min-width:0;flex:1;font:500 13.5px/1.5 'Satoshi Variable';color:#2B2A28">Knowing, for this search</span><span style="font:500 17px/1.2 'Space Grotesk';color:#14222D;white-space:nowrap">79 € · pack 39.80 €</span></div>
+</div>
+<div style="margin-top:auto;padding-top:14px;font:500 12px/1.6 'Satoshi Variable';color:#6D859F">Most listings pass clean. You’re not paying for bad news — you’re paying to know which is which.</div>
+</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;padding:28px 32px;display:flex;flex-direction:column">
+<div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1">The miss on this very page</div>
+<div style="margin-top:12px;font:500 14px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">Bid on Tuomiokirkonkatu 23 B 14 trusting the listing, and you’d have underwritten <b>8.6 %</b>. The pipe renovation the listing only hints at is a <b>58 200 €</b> bill — the yield you’d actually own is 5.8 %.</div>
+<div style="margin-top:20px;border:1px solid #DFE1E7;border-radius:14px;background:#FBFAF7;padding:20px 24px;text-align:center">
+<div style="font:500 15px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums"><span style="white-space:nowrap">58 200 €</span> missed &nbsp;÷&nbsp; <span style="white-space:nowrap">79 €</span> known</div>
+<div style="margin-top:8px;font:500 44px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">= 736 reports</div>
+<div style="margin-top:8px;font:500 12px/1.5 'Satoshi Variable';color:#6D859F">one missed renovation buys a lifetime of knowing · or 292 five-packs</div>
+</div>
+<div style="margin-top:auto;padding-top:16px;display:flex;align-items:center;gap:12px;font:500 12px/1.6 'Satoshi Variable';color:#6D859F"><span style="min-width:0;flex:1">And when we can’t verify enough to protect you, we refuse — and it costs nothing.</span><a href="#pricing" style="flex:none;font:700 12.5px/1 'Satoshi Variable';padding:10px 16px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">See pricing ↓</a></div>
+</div>
+</div>
+</div>
+
+<div id="diy" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="display:flex;align-items:baseline;gap:16px"><h2 style="margin:0;font:500 36px/1.2 'Space Grotesk';color:#14222D">Do it yourself — or <span style="color:#427AA1">sixty seconds</span></h2><span style="font:500 14px/1.5 'Satoshi Variable';color:#6D859F">You could do all of this by hand. Here’s what that trade looks like.</span></div>
+<div style="margin-top:36px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;padding:8px 32px 26px">
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:18px 0 12px;border-bottom:2px solid #14222D">
+<span></span>
+<span style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F">Doing it yourself</span>
+<span style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#427AA1">Resimator Report</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable'">
+<span style="color:#6D859F">Time per listing</span><span style="color:#46525E">2–4 hours — the listing, the isännöitsijäntodistus, district data</span><span style="color:#14222D">~60 seconds, documents read for you</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable'">
+<span style="color:#6D859F">Pricing the renovation risk</span><span style="color:#46525E">Forum anecdotes and gut feel</span><span style="color:#14222D">27 completed contracts in the region — median and P80, per component</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable'">
+<span style="color:#6D859F">Evidence trail</span><span style="color:#46525E">Your notes, from memory</span><span style="color:#14222D">Every claim quoted from the listing’s own Finnish</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable'">
+<span style="color:#6D859F">Listing #12, Tuesday night</span><span style="color:#46525E">Fatigue misses things</span><span style="color:#14222D">The same fourteen tests, every time</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable'">
+<span style="color:#6D859F">Rent assumption</span><span style="color:#46525E">The listing’s number</span><span style="color:#14222D">P10 / P50 / P90 from comparable lettings — underwritten at P10</span>
+</div>
+<div style="display:grid;grid-template-columns:220px 1fr 1fr;gap:0 28px;padding:14px 0;border-bottom:1px solid #F0EDE7;font:500 13.5px/1.55 'Satoshi Variable';font-variant-numeric:tabular-nums">
+<span style="color:#6D859F">What it costs</span><span style="color:#46525E">Your evenings</span><span style="color:#14222D">79 € · 39.80 € in the 5-pack</span>
+</div>
+<div style="padding:16px 0 4px;font:500 13px/1.6 'Satoshi Variable';color:#46525E"><b style="color:#14222D">What DIY still wins: the viewing.</b> Go. We read documents, not moods — mould, noise and the neighbours are yours to smell, hear and meet.</div>
+</div>
+</div>
+
+<div id="sample" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:56px;align-items:center">
+<div>
+<h2 style="margin:0 0 16px;font:500 36px/1.2 'Space Grotesk';color:#14222D">Don’t take our word for it — <span style="color:#427AA1">read one</span></h2>
+<p style="margin:0 0 18px;font:500 15px/1.65 'Satoshi Variable';color:#46525E;text-wrap:pretty">This is a real, public analysis — not a polished mock. Scroll it right here: the provenance chips on every number, the Finnish sentence behind every claim, and the honest seam where the free summary ends.</p>
+<div style="display:flex;flex-direction:column;gap:8px;font:500 13px/1.55 'Satoshi Variable';color:#46525E">
+<span style="display:flex;gap:9px"><span style="color:#427AA1;flex:none">—</span>Every analysis gets a page like this; sharing it is how most people find us.</span>
+<span style="display:flex;gap:9px"><span style="color:#427AA1;flex:none">—</span>What’s locked stays visibly locked — severity and cost ranges shown, titles behind the report.</span>
+</div>
+<div style="margin-top:20px;font:500 13.5px/1.4 'Satoshi Variable'"><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8">Open the sample full-page ↗</a></div>
+</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);overflow:hidden">
+<div style="display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid #F0EDE7">
+<span style="display:flex;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span><span style="width:9px;height:9px;border-radius:50%;background:#E8E4DC"></span></span>
+<span style="margin-left:8px;flex:1;max-width:340px;background:#F6F3EE;border-radius:1000px;padding:5px 14px;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">resimator.fi/r/tuomiokirkonkatu-23-b-14-tampere</span>
+</div>
+<div style="position:relative;height:440px;overflow:hidden">
+<div style="padding:24px 28px 0">
+<div style="display:flex;align-items:baseline;gap:10px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase"><span style="color:#427AA1">Risk analysis · free summary</span><span style="margin-left:auto;color:#A2A8AE">№ 2026-1187</span></div>
+<div style="margin-top:8px;font:500 20px/1.25 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, Tampere</div>
+<div style="margin-top:3px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 1962 · debt-free 118 000 € · listing still live ✓</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+<div style="border:1px solid #DFE1E7;border-radius:11px;padding:11px 13px"><div style="display:flex;align-items:center;gap:6px;font:700 8.5px/11px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Gross yield <span style="font:700 8px/10px 'Satoshi Variable';letter-spacing:.05em;padding:1px 4px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">MAPPED</span></div><div style="margin-top:3px;font:500 23px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:11px;padding:11px 13px;background:#FBFAF7"><div style="display:flex;align-items:center;gap:6px;font:700 8.5px/11px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Real yield <span style="font:700 8px/10px 'Satoshi Variable';letter-spacing:.05em;padding:1px 4px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span></div><div style="margin-top:3px;display:flex;align-items:baseline;gap:6px"><span style="font:500 23px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</span><span style="font:700 9px/12px 'Satoshi Variable';padding:1px 6px;border-radius:1000px;background:#FFECBF;color:#B98900">−2.8 pp</span></div></div>
+</div>
+<div style="margin-top:12px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:11px;padding:12px 15px">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:#FF6F61"></span><span style="font:500 13.5px/1.3 'Space Grotesk';color:#14222D;flex:1;min-width:0">Pipe renovation surveyed but not carried out</span><span style="font:700 9px/12px 'Satoshi Variable';padding:2px 7px;border-radius:1000px;background:#FFDBD7;color:#BE4437;white-space:nowrap">HIGH · 58 200 €</span></div>
+<div style="margin:9px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:7px 11px"><span style="font:500 11px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024 ja LVIS-hankesuunnittelu on käynnistetty.”</span><span style="display:block;margin-top:1px;font:500 9px/1.4 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412</span></div>
+</div>
+<div style="margin-top:12px;border:1px solid #DFE1E7;border-radius:11px;overflow:hidden;padding:4px 15px 0">
+<div style="display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #F0EDE7"><span style="width:6px;height:6px;border-radius:50%;background:#FFB300"></span><span style="display:flex;gap:4px;flex:1"><span style="height:10px;border-radius:3px;background:#DAE1E7;width:46%"></span><span style="height:10px;border-radius:3px;background:#E8E4DC;width:20%"></span></span><span style="font:700 8.5px/11px 'Satoshi Variable';padding:2px 6px;border-radius:1000px;background:#FFECBF;color:#B98900;white-space:nowrap">CAUTION</span></div>
+<div style="display:flex;align-items:center;gap:9px;padding:10px 0"><span style="width:6px;height:6px;border-radius:50%;background:#FFB300"></span><span style="display:flex;gap:4px;flex:1"><span style="height:10px;border-radius:3px;background:#DAE1E7;width:34%"></span><span style="height:10px;border-radius:3px;background:#E8E4DC;width:26%"></span></span><span style="font:700 8.5px/11px 'Satoshi Variable';padding:2px 6px;border-radius:1000px;background:#FFECBF;color:#B98900;white-space:nowrap">CAUTION · 5–9 K€</span></div>
+</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,rgba(255,255,255,0),#FFFFFF 78%)"></div>
+<div style="position:absolute;top:14px;right:6px;bottom:14px;width:4px;border-radius:2px;background:#F0EDE7"><span style="position:absolute;top:8px;left:0;width:4px;height:64px;border-radius:2px;background:#C4C8CA"></span></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid #F0EDE7;font:500 12px/1.4 'Satoshi Variable';color:#46525E"><span>This is a real analysis — scroll inside</span><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8" style="margin-left:auto;font-weight:700">Open it full ↗</a></div>
+</div>
+</div>
+</div>
+
+<div id="pricing" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="display:flex;align-items:baseline;gap:16px"><h2 style="margin:0;font:500 36px/1.2 'Space Grotesk';color:#14222D">Price the search, not the report</h2><span style="font:500 14px/1.5 'Satoshi Variable';color:#6D859F">Most people analyse 5–15 apartments before buying one.</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:36px;align-items:stretch">
+<div style="border:1px solid #DFE1E7;border-radius:20px;background:#FFFFFF;padding:28px 30px;display:flex;flex-direction:column">
+<div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F">Single</div>
+<div style="margin-top:10px;display:flex;align-items:baseline;gap:8px"><span style="font:500 40px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">79 €</span><span style="font:500 13px/1.4 'Satoshi Variable';color:#6D859F">1 report</span></div>
+<div style="margin-top:12px;font:500 13.5px/1.6 'Satoshi Variable';color:#46525E">For the one apartment you’re already serious about.</div>
+<div style="margin-top:auto;padding-top:20px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="md" full-width="{{ true }}" style="width:100%" hint-size="100%,44px">Buy single</x-import></div>
+</div>
+<div style="border:2px solid #14222D;border-radius:20px;background:#14222D;padding:28px 30px;display:flex;flex-direction:column;position:relative">
+<span style="position:absolute;top:-12px;left:28px;font:700 10px/1 'Satoshi Variable';letter-spacing:.06em;padding:6px 11px;border-radius:1000px;background:#E7FE4D;color:#14222D">MOST USEFUL</span>
+<div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#91A3B7">5-pack</div>
+<div style="margin-top:10px;display:flex;align-items:baseline;gap:8px"><span style="font:500 40px/1 'Space Grotesk';color:#F6F3EE;font-variant-numeric:tabular-nums">199 €</span><span style="font:500 13px/1.4 'Satoshi Variable';color:#91A3B7;font-variant-numeric:tabular-nums">39.80 € / report</span></div>
+<div style="margin-top:12px;font:500 13.5px/1.6 'Satoshi Variable';color:#DAE1E7">A realistic search: shortlist five, view two, bid on one.</div>
+<div style="margin-top:auto;padding-top:20px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="md" full-width="{{ true }}" style="width:100%" hint-size="100%,44px">Buy 5-pack</x-import></div>
+</div>
+<div style="border:1px solid #DFE1E7;border-radius:20px;background:#FFFFFF;padding:28px 30px;display:flex;flex-direction:column">
+<div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F">20-pack</div>
+<div style="margin-top:10px;display:flex;align-items:baseline;gap:8px"><span style="font:500 40px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">349 €</span><span style="font:500 13px/1.4 'Satoshi Variable';color:#6D859F;font-variant-numeric:tabular-nums">17.45 € / report</span></div>
+<div style="margin-top:12px;font:500 13.5px/1.6 'Satoshi Variable';color:#46525E">For watching three cities and buying yearly.</div>
+<div style="margin-top:auto;padding-top:20px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="md" full-width="{{ true }}" style="width:100%" hint-size="100%,44px">Buy 20-pack</x-import></div>
+</div>
+</div>
+<div style="margin-top:16px;text-align:center;font:500 13px/1.5 'Satoshi Variable';color:#6D859F">Every listing’s summary is free · your first full report is free · VAT 25.5 % included · credits never expire</div>
+</div>
+
+<div id="faq" style="padding:72px 80px;border-top:1px solid rgba(20,34,45,.08)">
+<div style="display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:56px;align-items:start">
+<div>
+<h2 style="margin:0 0 12px;font:500 36px/1.2 'Space Grotesk';color:#14222D">Fair questions</h2>
+<p style="margin:0;font:500 14px/1.65 'Satoshi Variable';color:#46525E;text-wrap:pretty">The ones people actually ask before pasting their first link. Anything else — <a href="#faq">hello@resimator.fi</a>, a human reads it.</p>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="padding:20px 0;border-top:1px solid #DFE1E7">
+<div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">Is the free summary really free?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Minus" size="16" hint-size="16px,16px"></x-import></span></div>
+<p style="margin:10px 0 0;font:500 13.5px/1.65 'Satoshi Variable';color:#46525E;max-width:640px;text-wrap:pretty">Yes — for every listing, every time, no account. The yields, the grades, the flag count and the most severe flag in full. The other flags, the liability math and the fourteen tests open with the full report: 79 €, and your first one is free.</p>
+</div>
+<div style="padding:20px 0;border-top:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">Where do the numbers come from?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="16" hint-size="16px,16px"></x-import></span></div></div>
+<div style="padding:20px 0;border-top:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">What if you get it wrong?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="16" hint-size="16px,16px"></x-import></span></div></div>
+<div style="padding:20px 0;border-top:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">Do you work for agents or sellers?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="16" hint-size="16px,16px"></x-import></span></div></div>
+<div style="padding:20px 0;border-top:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">Which listings can you read?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="16" hint-size="16px,16px"></x-import></span></div></div>
+<div style="padding:20px 0;border-top:1px solid #DFE1E7;border-bottom:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:14px"><span style="min-width:0;flex:1;font:500 17px/1.35 'Space Grotesk';color:#14222D">Is this investment advice?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="16" hint-size="16px,16px"></x-import></span></div></div>
+</div>
+</div>
+</div>
+
+<div style="margin:0 80px 80px;background:#14222D;border-radius:24px;padding:64px 72px;position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;background:radial-gradient(110% 130% at 100% 0%,rgba(66,122,161,.28),transparent 55%)"></div>
+<div style="position:relative;display:flex;align-items:center;gap:40px;flex-wrap:wrap">
+<div style="min-width:0;flex:1">
+<h2 style="margin:0 0 12px;font:500 40px/1.15 'Space Grotesk';color:#F6F3EE;text-wrap:balance">From listing to verdict — and beyond.</h2>
+<p style="margin:0;font:500 15px/1.65 'Satoshi Variable';color:#DAE1E7;max-width:560px">We read listings the way an analyst does, and we have no stake in whether you buy. When we can’t verify, we say so — and it costs you nothing.</p>
+</div>
+<span style="flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="lg" hint-size="230px,52px">Analyse a listing — free</x-import></span>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:18px;padding:22px 80px 26px;border-top:1px solid rgba(20,34,45,.08);font:500 12.5px/1.5 'Satoshi Variable';color:#6D859F">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n18 }}" asset-base="assets/logo" hint-size="96px,18px"></x-import>
+<span>Resimator OY · Turku, Finland</span>
+<a href="#how">hello@resimator.fi</a>
+<a href="#how">Tietosuoja / Privacy</a>
+<span style="margin-left:auto">Analysis of public listing data — not investment advice.</span>
+</div>
+
+</div>
+
+<div style="margin:0 64px 44px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">M</span>Landing · Mobile 390</div>
+<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+<div data-screen-label="Landing mobile 390" style="width:390px;background:#F6F3EE;border:1px solid #DFE1E7;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<div style="height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid rgba(20,34,45,.08);background:rgba(246,243,238,.92)">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n18 }}" asset-base="assets/logo" hint-size="96px,18px"></x-import>
+<span style="margin-left:auto;display:flex;align-items:center;gap:12px"><span style="display:inline-flex;border:1px solid #DFE1E7;border-radius:1000px;overflow:hidden;font:700 10.5px/1 'Satoshi Variable'"><span style="padding:6px 10px;background:#14222D;color:#F6F3EE">FI</span><span style="padding:6px 10px;color:#46525E">EN</span></span><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r10" style="font:700 13px/1 'Satoshi Variable'">Sign in</a></span>
+</div>
+<div style="padding:36px 20px 0">
+<div style="font:700 10px/13px 'Satoshi Variable';letter-spacing:.1em;text-transform:uppercase;color:#427AA1;margin-bottom:12px">For apartment buyers — Finland</div>
+<h1 style="margin:0 0 12px;font:500 30px/1.12 'Space Grotesk';letter-spacing:-.01em;color:#14222D;text-wrap:balance">The listing won’t mention the <span style="white-space:nowrap">58 000 €</span> pipe renovation.</h1>
+<p style="margin:0 0 14px;font:500 14px/1.6 'Satoshi Variable';color:#46525E;text-wrap:pretty">Listings are written to sell, not to warn. Paste the link before you bid — get the yield you’d actually own and the bill waiting in the walls.</p>
+<div style="display:flex;gap:6px;margin:0 0 20px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;gap:6px;font:500 11px/1 'Satoshi Variable';color:#46525E;padding:7px 11px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:5px;height:5px;border-radius:50%;background:#FF6F61"></span>Hidden renovation bills</span>
+<span style="display:inline-flex;align-items:center;gap:6px;font:500 11px/1 'Satoshi Variable';color:#46525E;padding:7px 11px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:5px;height:5px;border-radius:50%;background:#FFB300"></span>Peak-anchored “bargains”</span>
+<span style="display:inline-flex;align-items:center;gap:6px;font:500 11px/1 'Satoshi Variable';color:#46525E;padding:7px 11px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;background:#FFFFFF"><span style="width:5px;height:5px;border-radius:50%;background:#FFB300"></span>Rents that won’t hold</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;padding:14px 16px"><span style="display:flex;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Copy01" size="16" hint-size="16px,16px"></x-import></span><span style="font:500 14px/1.4 'Satoshi Variable';color:#A2A8AE">Paste the listing link…</span></div>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="lg" full-width="{{ true }}" style="width:100%" hint-size="100%,48px">Analyse — free</x-import>
+</div>
+<div style="margin-top:10px;font:500 12px/1.5 'Satoshi Variable';color:#6D859F;text-align:center">Free summary for every listing · full report 79 € — first one free</div>
+</div>
+<div style="padding:36px 20px 0">
+<h2 style="margin:0 0 14px;font:500 24px/1.2 'Space Grotesk';color:#14222D">What happens in the <span style="color:#427AA1">sixty seconds</span>?</h2>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;box-shadow:0 1px 3px rgba(13,13,18,.05);overflow:hidden">
+<div style="display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid #F0EDE7">
+<span style="display:flex;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#E8E4DC"></span><span style="width:7px;height:7px;border-radius:50%;background:#E8E4DC"></span><span style="width:7px;height:7px;border-radius:50%;background:#E8E4DC"></span></span>
+<span style="margin-left:6px;flex:1;background:#F6F3EE;border-radius:1000px;padding:4px 12px;font:500 10px/1.4 'Satoshi Variable';color:#6D859F;text-align:center">resimator.fi</span>
+</div>
+<div style="position:relative;height:280px;background:#F6F3EE">
+<div id="lp-m1" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px;animation:lpS1 12s linear infinite">
+<div style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1;margin-bottom:10px">1 · Paste the link</div>
+<div style="width:100%;display:flex;align-items:center;gap:8px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;padding:7px 7px 7px 13px;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<span style="flex:1;font:500 11.5px/1.4 'Satoshi Variable';color:#14222D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">asunnot.oikotie.fi/…/21996482</span>
+<span style="display:inline-flex;background:#E7FE4D;border-radius:1000px;padding:10px 16px;font:700 11.5px/1 'Satoshi Variable';color:#14222D;white-space:nowrap;flex:none">Run analysis</span>
+</div>
+</div>
+<div id="lp-m2" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 20px;opacity:0;animation:lpS2 12s linear infinite">
+<div style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1;margin-bottom:8px">2 · It reads and prices — live</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;padding:12px 15px">
+<div style="font:500 13px/1.3 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14</div>
+<div style="height:3px;border-radius:1000px;background:#EBF2FA;margin:9px 0;overflow:hidden"><div data-lp style="width:6%;height:100%;border-radius:1000px;background:#427AA1;animation:lpBar 12s linear infinite"></div></div>
+<div data-lp style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #F0EDE7;font:500 11px/1.4 'Satoshi Variable';color:#14222D;animation:lpT1 12s linear infinite"><span style="width:15px;height:15px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="9" hint-size="9px,9px"></x-import></span>Fetched — 54 m² · 1962</div>
+<div data-lp style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #F0EDE7;font:500 11px/1.4 'Satoshi Variable';color:#14222D;animation:lpT2 12s linear infinite"><span style="width:15px;height:15px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="9" hint-size="9px,9px"></x-import></span>Renovation history <span style="font:700 8px/10px 'Satoshi Variable';letter-spacing:.04em;padding:2px 5px;border-radius:1000px;background:#FFECBF;color:#B98900">FLAGGED</span></div>
+</div>
+</div>
+<div id="lp-m3" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 20px;opacity:0;animation:lpS3 12s linear infinite">
+<div style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1;margin-bottom:8px">3 · The verdict — sourced</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;padding:14px 16px">
+<div style="display:flex;align-items:flex-end;gap:12px">
+<span><span style="display:block;font:700 8px/10px 'Satoshi Variable';letter-spacing:.05em;color:#6D859F">LISTING SAYS</span><span style="display:block;margin-top:2px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</span></span>
+<span style="display:flex;color:#A2A8AE;padding-bottom:4px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowRight" size="14" hint-size="14px,14px"></x-import></span>
+<span><span style="display:block;font:700 8px/10px 'Satoshi Variable';letter-spacing:.05em;color:#427AA1">YOU’D OWN</span><span style="display:block;margin-top:2px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</span></span>
+<span data-lp style="margin-left:auto;font:700 9px/13px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFDBD7;color:#BE4437;animation:lpPop 12s linear infinite;white-space:nowrap">58 200 €</span>
+</div>
+<div data-lp style="margin-top:10px;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 7px 7px 0;padding:7px 10px;animation:lpPop 12s linear infinite">
+<span style="font:500 10.5px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024…”</span>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:0;bottom:0;height:2px;width:100%;background:#EBF2FA"><div data-lp style="height:100%;width:0;background:#427AA1;animation:lpLoop 12s linear infinite"></div></div>
+</div>
+<div style="padding:9px 14px;border-top:1px solid #F0EDE7;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">A real analysis — 60 s compressed to 12 · loops</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;margin-top:18px">
+<div style="display:flex;gap:12px"><span style="flex:none;font:500 13px/1.4 'Space Grotesk';color:#A2A8AE">01</span><span style="font:500 13px/1.55 'Satoshi Variable';color:#46525E"><b style="color:#14222D">Paste the link</b> — no sign-up, the summary is free.</span></div>
+<div style="display:flex;gap:12px"><span style="flex:none;font:500 13px/1.4 'Space Grotesk';color:#A2A8AE">02</span><span style="font:500 13px/1.55 'Satoshi Variable';color:#46525E"><b style="color:#14222D">Watch it read and price</b> — flags earn their chips live.</span></div>
+<div style="display:flex;gap:12px"><span style="flex:none;font:500 13px/1.4 'Space Grotesk';color:#A2A8AE">03</span><span style="font:500 13px/1.55 'Satoshi Variable';color:#46525E"><b style="color:#14222D">Interrogate the verdict</b> — 14 tests, every figure sourced.</span></div>
+</div>
+</div>
+<div style="padding:36px 20px 0">
+<h2 style="margin:0 0 14px;font:500 24px/1.2 'Space Grotesk';color:#14222D">The maths on <span style="color:#427AA1">one bad buy</span></h2>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:18px 20px;text-align:center">
+<div style="font:500 12.5px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums"><span style="white-space:nowrap">58 200 €</span> missed ÷ <span style="white-space:nowrap">79 €</span> known</div>
+<div style="margin-top:6px;font:500 32px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">= 736 reports</div>
+<div style="margin-top:6px;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">1 in 2.6 analyses finds a high flag · median undisclosed liability 7.9 % of price</div>
+</div>
+<div style="margin:10px 0 0;font:500 11.5px/1.55 'Satoshi Variable';color:#6D859F;text-align:center">Most listings pass clean — you’re paying to know which is which.</div>
+</div>
+<div style="padding:36px 20px 0">
+<h2 style="margin:0 0 14px;font:500 24px/1.2 'Space Grotesk';color:#14222D">DIY — or <span style="color:#427AA1">sixty seconds</span></h2>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:6px 18px 14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;padding:12px 0 8px;border-bottom:2px solid #14222D;font:700 10px/13px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase"><span style="color:#6D859F">Yourself</span><span style="color:#427AA1">Resimator</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;padding:10px 0;border-bottom:1px solid #F0EDE7;font:500 12px/1.5 'Satoshi Variable'"><span style="color:#46525E">2–4 hours per listing</span><span style="color:#14222D">~60 seconds</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;padding:10px 0;border-bottom:1px solid #F0EDE7;font:500 12px/1.5 'Satoshi Variable'"><span style="color:#46525E">Renovation risk by gut feel</span><span style="color:#14222D">27 completed contracts, priced</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;padding:10px 0;font:500 12px/1.5 'Satoshi Variable'"><span style="color:#46525E">Notes from memory</span><span style="color:#14222D">Every claim quoted</span></div>
+</div>
+<div style="margin:8px 0 0;font:500 11.5px/1.55 'Satoshi Variable';color:#6D859F"><b style="color:#14222D">DIY still wins the viewing.</b> Go — we read documents, not moods.</div>
+</div>
+<div style="padding:24px 20px 0">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.3 'Space Grotesk';color:#14222D">Read a real analysis</span><span style="display:block;margin-top:2px;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">the public sample, chips and quotes included</span></span>
+<a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8" style="flex:none;font:700 12.5px/1 'Satoshi Variable';padding:10px 15px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">Open ↗</a>
+</div>
+</div>
+<div style="padding:36px 20px 0">
+<h2 style="margin:0 0 14px;font:500 24px/1.2 'Space Grotesk';color:#14222D">Price the search, not the report</h2>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="border:2px solid #14222D;border-radius:14px;background:#14222D;padding:15px 18px;display:flex;align-items:center;gap:12px;position:relative">
+<span style="position:absolute;top:-9px;left:16px;font:700 9px/1 'Satoshi Variable';letter-spacing:.05em;padding:4px 8px;border-radius:1000px;background:#E7FE4D;color:#14222D">MOST USEFUL</span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 19px/1.1 'Space Grotesk';color:#F6F3EE;font-variant-numeric:tabular-nums">199 € <span style="font:500 11.5px/1 'Satoshi Variable';color:#91A3B7">5-pack · 39.80 €/report</span></span></span>
+</div>
+<div style="border:1px solid #DFE1E7;border-radius:14px;background:#FFFFFF;padding:15px 18px"><span style="font:500 19px/1.1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">79 € <span style="font:500 11.5px/1 'Satoshi Variable';color:#6D859F">single</span></span></div>
+<div style="border:1px solid #DFE1E7;border-radius:14px;background:#FFFFFF;padding:15px 18px"><span style="font:500 19px/1.1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">349 € <span style="font:500 11.5px/1 'Satoshi Variable';color:#6D859F">20-pack · 17.45 €/report</span></span></div>
+</div>
+<div style="margin-top:10px;text-align:center;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">First full report free · VAT included · credits never expire</div>
+</div>
+<div style="padding:36px 20px 0">
+<h2 style="margin:0 0 6px;font:500 24px/1.2 'Space Grotesk';color:#14222D">Fair questions</h2>
+<div style="display:flex;flex-direction:column">
+<div style="padding:14px 0;border-top:1px solid #DFE1E7">
+<div style="display:flex;align-items:center;gap:12px"><span style="min-width:0;flex:1;font:500 15px/1.35 'Space Grotesk';color:#14222D">Is the free summary really free?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Minus" size="15" hint-size="15px,15px"></x-import></span></div>
+<p style="margin:8px 0 0;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E">Yes — every listing, no account. The full report is 79 €, and your first one is free.</p>
+</div>
+<div style="padding:14px 0;border-top:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:12px;min-height:24px"><span style="min-width:0;flex:1;font:500 15px/1.35 'Space Grotesk';color:#14222D">What if you get it wrong?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="15" hint-size="15px,15px"></x-import></span></div></div>
+<div style="padding:14px 0;border-top:1px solid #DFE1E7;border-bottom:1px solid #DFE1E7"><div style="display:flex;align-items:center;gap:12px;min-height:24px"><span style="min-width:0;flex:1;font:500 15px/1.35 'Space Grotesk';color:#14222D">Is this investment advice?</span><span style="display:flex;color:#6D859F;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Plus" size="15" hint-size="15px,15px"></x-import></span></div></div>
+</div>
+</div>
+<div style="margin:32px 20px 0;background:#14222D;border-radius:18px;padding:28px 24px;position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;background:radial-gradient(110% 130% at 100% 0%,rgba(66,122,161,.28),transparent 55%)"></div>
+<div style="position:relative">
+<h2 style="margin:0 0 8px;font:500 25px/1.2 'Space Grotesk';color:#F6F3EE;text-wrap:balance">From listing to verdict — and beyond.</h2>
+<p style="margin:0 0 16px;font:500 13px/1.6 'Satoshi Variable';color:#DAE1E7">No stake in whether you buy. When we can’t verify, we say so — free.</p>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="lg" full-width="{{ true }}" style="width:100%" hint-size="100%,48px">Analyse a listing — free</x-import>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:20px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F;text-align:center">
+<span>Resimator OY · Turku, Finland · hello@resimator.fi · Tietosuoja</span>
+<span>Analysis of public listing data — not investment advice.</span>
+</div>
+</div>
+<div style="width:390px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">390: chips wrap 2+1 · paste bar stacks over a full-width lime button (48 px, thumb zone) · loop player full-bleed minus gutters, same 12 s timing and reduced-motion poster (ids lp-m*) · steps compress to one-liners · packs stack with the 5-pack leading · band keeps the lime closer full-width · evidence section folds into the loop’s beat 3 at this width — not duplicated.</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">FI</span>Finnish pass — hero rendered, section strings mapped</div>
+<div style="display:flex;gap:18px;align-items:stretch;flex-wrap:wrap">
+<div data-screen-label="Landing FI hero" style="width:720px;background:#F6F3EE;border:1px solid #DFE1E7;border-radius:16px;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:44px 48px">
+<div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.1em;text-transform:uppercase;color:#427AA1;margin-bottom:14px">Asunnon ostajille ja sijoittajille — Suomi</div>
+<h2 style="margin:0 0 14px;font:500 37px/1.1 'Space Grotesk';letter-spacing:-.01em;color:#14222D;text-wrap:balance">Ilmoitus ei kerro <span style="white-space:nowrap">58 000</span> euron putkiremontista.</h2>
+<p style="margin:0 0 22px;font:500 15px/1.65 'Satoshi Variable';color:#46525E;text-wrap:pretty">Ilmoitukset on kirjoitettu myymään, ei varoittamaan. Ennen kuin tarjoat: liitä linkki — saat tuoton jonka todella omistaisit, seinissä odottavan remonttilaskun ja kysymykset, joita välittäjä toivoo ettet kysy.</p>
+<div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:8px 8px 8px 16px;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<span style="display:flex;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Copy01" size="16" hint-size="16px,16px"></x-import></span>
+<span style="flex:1;font:500 14px/1.4 'Satoshi Variable';color:#A2A8AE">https://asunnot.oikotie.fi/…</span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="md" hint-size="200px,44px">Analysoi — maksutta</x-import>
+</div>
+<div style="margin-top:12px;font:500 12.5px/1.5 'Satoshi Variable';color:#6D859F">Yhteenveto on maksuton jokaisesta ilmoituksesta. Ei tiliä. Koko raportti 79 € — ensimmäinen maksutta.</div>
+<div style="display:flex;gap:22px;margin-top:28px;font-variant-numeric:tabular-nums">
+<span><span style="display:block;font:500 22px/1.1 'Space Grotesk';color:#14222D">~60 s</span><span style="display:block;margin-top:2px;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">mediaanilukuaika</span></span>
+<span style="width:1px;background:#DFE1E7"></span>
+<span><span style="display:block;font:500 22px/1.1 'Space Grotesk';color:#14222D">14</span><span style="display:block;margin-top:2px;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">testiä politiikkaasi vasten</span></span>
+<span style="width:1px;background:#DFE1E7"></span>
+<span><span style="display:block;font:500 22px/1.1 'Space Grotesk';color:#14222D">3,1 %</span><span style="display:block;margin-top:2px;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">analyyseistä hylätään — emme arvaa</span></span>
+</div>
+</div>
+<div data-screen-label="Landing FI strings" style="width:700px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:24px 28px">
+<div style="font:700 10px/13px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F;margin-bottom:12px">Section strings · EN → FI</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 22px;font:500 12.5px/1.55 'Satoshi Variable';color:#46525E">
+<span>How it works · Why trust it · Pricing · Example report · Sign in</span><span style="color:#14222D">Näin se toimii · Miksi luottaa siihen · Hinnat · Esimerkkiraportti · Kirjaudu</span>
+<span>What happens in the <i>sixty seconds</i>?</span><span style="color:#14222D">Mitä siinä <span style="color:#427AA1">minuutissa</span> tapahtuu?</span>
+<span>Paste the link / Watch it read and price / Interrogate the verdict</span><span style="color:#14222D">Liitä linkki / Katso kun se lukee ja hinnoittelee / Kuulustele päätelmää</span>
+<span>Loop beats: 1 · Paste the link / 2 · It reads and prices — live / 3 · The verdict — sourced</span><span style="color:#14222D">1 · Liitä linkki / 2 · Se lukee ja hinnoittelee — suorana / 3 · Päätelmä — lähteineen</span>
+<span>Pain chips: Hidden renovation bills / Peak-anchored “bargains” / Rents that won’t hold</span><span style="color:#14222D">Piilotetut remonttilaskut / Huipputasoon ankkuroidut ”löydöt” / Vuokrat jotka eivät pidä</span>
+<span>A real analysis, start to finish — 60 seconds compressed to 12 · loops</span><span style="color:#14222D">Aito analyysi alusta loppuun — 60 sekuntia tiivistettynä 12:een · toistuu</span>
+<span>Read a real sample report →</span><span style="color:#14222D">Lue oikea esimerkkiraportti →</span>
+<span>Every number tells you <i>where it came from</i></span><span style="color:#14222D">Jokainen luku kertoo, <span style="color:#427AA1">mistä se tulee</span></span>
+<span>The maths on <i>one bad buy</i> · 58 200 € missed ÷ 79 € known = 736 reports</span><span style="color:#14222D">Yhden <span style="color:#427AA1">huonon kaupan</span> matematiikka · 58 200 € huomaamatta ÷ 79 € tietäen = 736 raporttia</span>
+<span>Most listings pass clean. You’re not paying for bad news — you’re paying to know which is which.</span><span style="color:#14222D">Useimmat ilmoitukset läpäisevät puhtaasti. Et maksa huonoista uutisista — maksat siitä, että tiedät kummasta on kyse.</span>
+<span>Your target debt-free price / Median undisclosed liability, when we flag one</span><span style="color:#14222D">Tavoitehintasi (velaton) / Mediaani piiloon jääneestä vastuusta, kun liputamme sellaisen</span>
+<span>Price the search, not the report</span><span style="color:#14222D">Hinnoittele etsintä, älä raporttia</span>
+<span>Fair questions · Is the free summary really free? / What if you get it wrong? / Is this investment advice?</span><span style="color:#14222D">Reilut kysymykset · Onko maksuton yhteenveto oikeasti maksuton? / Entä jos olette väärässä? / Onko tämä sijoitusneuvontaa?</span>
+<span>FAQ, remaining: Where do the numbers come from? / Do you work for agents or sellers? / Which listings can you read?</span><span style="color:#14222D">Mistä luvut tulevat? / Työskentelettekö välittäjille tai myyjille? / Mitä ilmoituksia luette?</span>
+<span>FAQ answer 1: Yes — for every listing, every time, no account…</span><span style="color:#14222D">Kyllä — jokaisesta ilmoituksesta, joka kerta, ilman tiliä. Tuotot, arvosanat, lippujen määrä ja vakavin lippu kokonaan. Loput avautuvat koko raportilla: 79 €, ensimmäinen maksutta.</span>
+<span>Do it yourself — or <i>sixty seconds</i> · Doing it yourself / Resimator Report</span><span style="color:#14222D">Tee se itse — tai <span style="color:#427AA1">kuusikymmentä sekuntia</span> · Itse tehden / Resimator-raportti</span>
+<span>DIY rows: Time per listing 2–4 h → ~60 s / renovation risk: gut feel → 27 contracts (median, P80) / evidence: memory → every claim quoted / listing #12: fatigue → same 14 tests / rent: the listing’s number → P10–P90, underwritten at P10 / cost: your evenings → 79 €</span><span style="color:#14222D">Aika: 2–4 t → ~60 s / remonttiriski: mututuntuma → 27 toteutunutta urakkaa (mediaani, P80) / näyttö: muistista → jokainen väite lainattuna / ilmoitus nro 12: väsymys → samat 14 testiä / vuokra: ilmoituksen luku → P10–P90, laskenta P10:llä / hinta: iltasi → 79 €</span>
+<span>What DIY still wins: the viewing. Go. We read documents, not moods.</span><span style="color:#14222D">Missä itse tekeminen voittaa: näyttö. Mene. Me luemme dokumentteja, emme tunnelmia.</span>
+<span>Don’t take our word for it — <i>read one</i> · This is a real analysis — scroll inside · Open it full ↗</span><span style="color:#14222D">Älä usko sanaamme — <span style="color:#427AA1">lue yksi</span> · Tämä on aito analyysi — vieritä · Avaa kokonaan ↗</span>
+<span>The miss on this very page / one missed renovation buys a lifetime of knowing · or 292 five-packs / And when we can’t verify enough to protect you, we refuse — and it costs nothing. / See pricing ↓</span><span style="color:#14222D">Tämän sivun oma huti / yksi huomaamatta jäänyt remontti maksaa elinikäisen tietämisen · tai 292 viisikkoa / Kun emme voi varmentaa tarpeeksi suojellaksemme sinua, kieltäydymme — eikä se maksa mitään. / Katso hinnat ↓</span>
+<span>Pricing cards: Single, for the one you’re serious about / 5-pack, a realistic search: shortlist five, view two, bid on one / 20-pack, for watching three cities</span><span style="color:#14222D">Yksittäinen — sille yhdelle, josta olet tosissasi / 5 kpl — realistinen etsintä: viisi listalle, kaksi näyttöön, yksi tarjous / 20 kpl — kolmen kaupungin seuraajalle</span>
+<span>Every listing’s summary is free · first full report free · VAT 25.5 % included · credits never expire</span><span style="color:#14222D">Jokaisen ilmoituksen yhteenveto on maksuton · ensimmäinen koko raportti maksutta · sis. alv 25,5 % · krediitit eivät vanhene</span>
+<span>Band: We read listings the way an analyst does… refuse… costs you nothing</span><span style="color:#14222D">Luemme ilmoitukset kuin analyytikko, eikä meillä ole panosta siihen, ostatko. Kun emme voi varmentaa, sanomme sen — eikä se maksa mitään.</span>
+<span>Hero trust line + stats: summary free… / median read time / tests against your policy / of analyses refused — we don’t guess</span><span style="color:#14222D">Yhteenveto on maksuton jokaisesta ilmoituksesta. Ei tiliä. Koko raportti 79 € — ensimmäinen maksutta. / mediaanilukuaika / testiä politiikkaasi vasten / analyyseistä hylätään — emme arvaa</span>
+<span>Evidence intro: No black box. Observed figures cite the sentence they were read from…</span><span style="color:#14222D">Ei mustaa laatikkoa. Havaitut luvut viittaavat lauseeseen, josta ne luettiin — ilmoituksen omalla suomella. Mallinnetut luvut nimeävät perusteensa. Ristiriidan edessä kieltäydymme arvaamasta ja kerromme, mikä dokumentti asian ratkaisee.</span>
+<span>DIY subtitle: You could do all of this by hand. Here’s what that trade looks like.</span><span style="color:#14222D">Voisit tehdä tämän kaiken itse. Tältä se vaihtokauppa näyttää.</span>
+<span>Sample intro: This is a real, public analysis — not a polished mock… the honest seam where the free summary ends.</span><span style="color:#14222D">Tämä on aito, julkinen analyysi — ei kiillotettu malli. Vieritä tässä: alkuperämerkinnät joka luvussa, suomenkielinen lause joka väitteen takana ja rehellinen sauma, johon maksuton yhteenveto päättyy.</span>
+<span>Sample bullets: Every analysis gets a page like this… / What’s locked stays visibly locked…</span><span style="color:#14222D">Jokainen analyysi saa tällaisen sivun; sen jakaminen on yleisin tapa löytää meidät. / Lukittu pysyy näkyvästi lukittuna — vakavuus ja kustannushaarukat näkyvissä, otsikot raportin takana.</span>
+<span>Evidence lease card: Ground rent resets on renewal. Recent resets in this district: +32–59 €/mo for 54 m², from 2032.</span><span style="color:#14222D">Maanvuokra tarkistetaan uusittaessa. Alueen tuoreet tarkistukset: +32–59 €/kk 54 m²:lle vuodesta 2032. (Lainaus pysyy aina alkukielisenä.)</span>
+<span>FAQ rail: The ones people actually ask before pasting their first link. Anything else — a human reads it.</span><span style="color:#14222D">Kysymykset, jotka oikeasti kysytään ennen ensimmäistä linkkiä. Muu — hello@resimator.fi, ihminen lukee sen.</span>
+<span>Steps subs: no sign-up… / every sentence, flags earn chips live… / fourteen tests, every figure sourced…</span><span style="color:#14222D">Ei rekisteröitymistä — yhteenveto on maksuton. / Joka lause, ei vain tiivistelmälaatikko — liput ansaitsevat merkkinsä suorana; remonttilasku hinnoitellaan toteutuneista urakoista. / Neljätoista testiä sinun säännöilläsi, jokainen luku lähteineen — kysy sitten raportilta mitä vain.</span>
+<span>Single / 5-pack (MOST USEFUL) / 20-pack</span><span style="color:#14222D">Yksittäinen / 5 kpl (HYÖDYLLISIN) / 20 kpl</span>
+<span>From listing to verdict — and beyond.</span><span style="color:#14222D">Ilmoituksesta päätelmään — ja pidemmälle.</span>
+<span>Analyse a listing — free</span><span style="color:#14222D">Analysoi ilmoitus — maksutta</span>
+<span>Analysis of public listing data — not investment advice.</span><span style="color:#14222D">Analyysi julkisesta ilmoitusdatasta — ei sijoitusneuvontaa.</span>
+</div>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid #F0EDE7;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Complete localization: every EN string on this page has its FI pair in this table or in the FI hero card — nav, hero, chips, loop, steps, evidence, cost, DIY, sample, pricing, FAQ, band, footer. FI is the default at /raportti; EN mirrors at /report. Numbers follow C12: ”3,1 %”, ”39,80 €/raportti”, ”sis. alv 25,5 %”. Steel Blue heading spans keep their position in FI. Long compounds stay whole — headings never hyphenate.</div>
+</div>
+</div>
+</div>
+
+<div style="margin:0 64px 64px;width:1440px;box-sizing:border-box;font:500 11.5px/1.65 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:10px 14px"><b style="color:#46525E">Handoff</b> · route /raportti (FI) · /report (EN) — the paste bar submits into the R1 flow (POST /analyses → /analysing/:id); every CTA lands on / or /unlock, never a signup form · hero mock and evidence card are live components (C5 YieldPair, C3 FlagCard, C2 CitationBlock from <a href="Resimator%20R5%20Components%20and%20Handoff.dc.html">R5</a>), not screenshots — they stay in sync with the product · hero is pain-led: the 58 000 € figure is deliberately rounded marketing copy (product surfaces keep exact figures); pain chips reuse severity dots as facts, not verdicts · how-it-works loop: this board ships a CSS storyboard (12 s, 3 beats, loop line, prefers-reduced-motion → static verdict beat); production swaps in a captioned screen-recording mp4/webm — muted, loop, playsinline, poster = beat 3, same three beats and timing · miss-cost calculator (#cost): stats are engine-published (GET /stats/miss-cost {medianLiabilityShare: 0.079, highFlagRate: 0.38}); the slider multiplies the published share by the chosen price — the one sanctioned client math on a marketing surface, never in product; the 736× ratio is the canonical deal, restated · slider steps 5 000 €, DS Slider show-label off, big figure is the display · FAQ (#faq): DS FAQ accordion pattern — one open at a time, Plus↔Minus, height auto-expand 200 ms standard ease; six marketing strings only (answers for rows 2–6 reuse product copy: engine v2.3 + provenance / instant credit refund + refusal / no stake, no lead-selling / Oikotie &amp; Etuovi sale listings / analysis, not advice); page emits FAQPage JSON-LD server-side · DIY comparison (#diy): ledger table, no lime, the closer concedes the viewing — honesty is the differentiator · sample embed (#sample): board shows a static condensed capture with fade + faux scrollbar; production embeds the real public page (lazy iframe, internal scroll, title ”Sample report”, keyboard-reachable Open-full link) — never a screenshot that can drift · localization: the FI table below is COMPLETE — every EN string pairs there or in the FI hero card · Steel Blue heading spans follow HeaderSection’s bracket convention — in code, author them as [brackets] on HeaderSection; brackets are markup, never rendered · stats strip is engine telemetry (median read, refusal rate), not marketing numbers · breakpoints: 1280 grid → 768 single column (hero card below copy, packs 3-across) → 390 stacked with full-width paste bar · Midnight band + lime CTA is the house closer; lime otherwise appears once (hero).</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return { n18: 18, n24: 24, n150000: 150000 };
+  }
+}
+</script>
+</body>
+</html>

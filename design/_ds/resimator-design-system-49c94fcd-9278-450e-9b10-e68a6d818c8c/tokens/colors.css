@@ -1,0 +1,107 @@
+/* Resimator colour system — values transcribed verbatim from the
+   "Resimator - Branding" Figma brandbook (Colour page + Figma Variables).
+   Tints are the brandbook's published 75% / 50% / 25% steps, not computed. */
+:root{
+  /* ── Primary ─────────────────────────────────────────────── */
+  --rsm-deep-midnight:#14222D;
+  --rsm-deep-midnight-75:#4F5962;
+  --rsm-deep-midnight-50:#899096;
+  --rsm-deep-midnight-25:#C4C8CA;
+  --rsm-neon-lime:#E7FE4D;
+  --rsm-neon-lime-75:#EDFE7A;
+  --rsm-neon-lime-50:#F3FFA6;
+  --rsm-neon-lime-25:#F9FFD2;
+
+  /* ── Neutrals ────────────────────────────────────────────── */
+  --rsm-warm-charcoal:#2B2A28;
+  --rsm-soft-sky:#EBF2FA;
+  --rsm-off-white:#F6F3EE;
+  --rsm-white:#FFFFFF;
+  --rsm-black:#000000;
+
+  /* ── Secondary ───────────────────────────────────────────── */
+  --rsm-slate-grey:#46525E;
+  --rsm-slate-grey-75:#747D86;
+  --rsm-slate-grey-50:#A2A8AE;
+  --rsm-slate-grey-25:#D1D4D7;
+
+  --rsm-steel-blue:#427AA1;
+  --rsm-steel-blue-75:#719BB9;
+  --rsm-steel-blue-50:#A0BCD0;
+  --rsm-steel-blue-25:#D0DEE7;
+
+  --rsm-misty-blue:#6D859F;
+  --rsm-misty-blue-75:#91A3B7;
+  --rsm-misty-blue-50:#B6C2CF;
+  --rsm-misty-blue-25:#DAE1E7;
+
+  --rsm-seafoam-green:#6DB59F;
+  --rsm-seafoam-green-75:#91C7B7;
+  --rsm-seafoam-green-50:#B6DACF;
+  --rsm-seafoam-green-25:#DAEDE7;
+
+  --rsm-coral-red:#FF6F61;
+  --rsm-coral-red-75:#FF9388;
+  --rsm-coral-red-50:#FFB7B0;
+  --rsm-coral-red-25:#FFDBD7;
+
+  --rsm-amber:#FFB300;
+  --rsm-amber-75:#FFC640;
+  --rsm-amber-50:#FFD980;
+  --rsm-amber-25:#FFECBF;
+
+  /* ── Product surface colours (Web-Design page + shipped site) ─ */
+  --rsm-bg-light:#DCECFF;      /* default page field on light marketing pages */
+  --rsm-bg-scrolled:#F6FBFF;   /* navbar background once scrolled */
+  --rsm-border-hairline:#DFE1E7;
+  --rsm-tint-mint:#DAEDE7;     /* gradient stop */
+  --rsm-tint-sky:#F6FBFF;      /* gradient stop */
+  --rsm-tint-cream:#FFF7E4;    /* gradient stop */
+
+  /* ── Semantic aliases ────────────────────────────────────── */
+  --surface-page:var(--rsm-bg-light);
+  --surface-page-dark:var(--rsm-deep-midnight);
+  --surface-card:var(--rsm-white);
+  --surface-card-frosted:rgba(246,243,238,.9);
+  --surface-card-dark:rgba(66,122,161,.14);
+  --surface-raised:var(--rsm-off-white);
+  --surface-inset:var(--rsm-soft-sky);
+
+  --text-primary:var(--rsm-deep-midnight);
+  --text-body:var(--rsm-warm-charcoal);
+  --text-muted:var(--rsm-misty-blue);
+  --text-link:var(--rsm-steel-blue);
+  --text-on-dark:var(--rsm-off-white);
+  --text-on-dark-muted:var(--rsm-misty-blue);
+  --text-on-accent:var(--rsm-deep-midnight);
+
+  --border-default:var(--rsm-border-hairline);
+  --border-strong:var(--rsm-misty-blue-50);
+  --border-on-dark:rgba(66,122,161,.2);
+
+  --accent:var(--rsm-neon-lime);
+  --accent-hover:var(--rsm-neon-lime-75);
+  --accent-contrast:var(--rsm-deep-midnight);
+
+  --status-success:var(--rsm-seafoam-green);
+  --status-warning:var(--rsm-amber);
+  --status-error:var(--rsm-coral-red);
+  --status-info:var(--rsm-steel-blue);
+
+  --focus-ring:var(--rsm-steel-blue);
+}
+
+/* Dark section scope — used on the footer, AI Solutions pages and any
+   Deep Midnight full-bleed band. Apply .rsm-dark to a wrapper. */
+.rsm-dark{
+  --surface-page:var(--rsm-deep-midnight);
+  --surface-card:rgba(66,122,161,.14);
+  --surface-card-frosted:rgba(20,34,45,.72);
+  --surface-raised:rgba(66,122,161,.2);
+  --text-primary:var(--rsm-off-white);
+  --text-body:var(--rsm-off-white);
+  --text-muted:var(--rsm-misty-blue);
+  --text-link:var(--rsm-neon-lime);
+  --border-default:rgba(66,122,161,.2);
+  --border-strong:var(--rsm-steel-blue);
+}

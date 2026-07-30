@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-tokens.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/styles.css">
+<script src="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:#F6F3EE;font-family:"Satoshi Variable","Satoshi",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#427AA1;text-decoration:none}
+a:hover{color:#14222D;text-decoration:underline}
+</style>
+</helmet>
+
+<div style="display:flex;align-items:center;gap:9px;padding:22px 64px 0;font:500 12.5px/1.5 'Satoshi Variable',system-ui;color:#6D859F;flex-wrap:wrap"><span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">RESIMATOR REPORT · €79 PRODUCT</span><a href="Resimator%20R1%20Paste%20and%20Verdict.dc.html" style="padding:4px 10px;border-radius:1000px">R1 Paste &amp; verdict</a><span style="color:#C4C8CA">·</span><a href="Resimator%20R2%20Policy%20and%20Purchase.dc.html" style="padding:4px 10px;border-radius:1000px">R2 Policy &amp; purchase</a><span style="color:#C4C8CA">·</span><span style="font-weight:700;color:#14222D;padding:4px 10px;border-radius:1000px;background:#E7FE4D">R3 Full report, chat &amp; print</span><span style="color:#C4C8CA">·</span><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html" style="padding:4px 10px;border-radius:1000px">R4 Public page, emails &amp; account</a><span style="color:#C4C8CA">·</span><a href="Resimator%20R5%20Components%20and%20Handoff.dc.html" style="padding:4px 10px;border-radius:1000px">R5 Components &amp; handoff</a><span style="margin-left:auto;color:#A2A8AE">v1 · 28.07.2026</span></div>
+
+<section id="r7" style="padding:56px 64px 48px;border-bottom:1px solid rgba(20,34,45,.1)">
+<div style="display:flex;align-items:baseline;gap:12px;margin:0 0 6px">
+<span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">R7</span>
+<h2 style="margin:0;font:500 24px/1.2 'Space Grotesk',system-ui;color:#14222D">Buyer · The full report — one document, the seam now open</h2>
+<span style="font:500 14px/1.4 'Satoshi Variable';color:#6D859F">Claim, evidence, claim, evidence. The chat sits beside it, scoped to this deal only.</span>
+</div>
+<sc-if value="{{ showFlowLines }}" hint-placeholder-val="{{ true }}">
+<div style="display:inline-block;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:12px;padding:9px 14px;margin:0 0 26px;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E">/r/:slug (paid) — same route as the summary; the seam unlocks in place → sections §1 verdict · §2 flags · §3 liability · §4 rent · §5 financing · §6 years · §7 tests → /r/:slug/pdf &nbsp;<span style="color:#6D859F">(chat docked right, 15-turn cap · re-run if listing changed · share toggle → R8 public page)</span></div>
+</sc-if>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-1</span>Full report · Purchased · top of document · chat fresh</div>
+<div data-screen-label="R7-1 Full report top" style="width:1440px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<div style="height:64px;display:flex;align-items:center;gap:18px;padding:0 48px;border-bottom:1px solid rgba(20,34,45,.08)">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n22 }}" asset-base="assets/logo" hint-size="118px,22px"></x-import>
+<span style="margin-left:auto;display:flex;align-items:center;gap:14px;font:500 13.5px/1.4 'Satoshi Variable'">
+<span style="font:700 11px/16px 'Satoshi Variable';padding:4px 11px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;font-variant-numeric:tabular-nums">4 CREDITS</span>
+<a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r10">My reports</a>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="sm" hint-size="140px,34px">Download PDF</x-import>
+</span>
+</div>
+<div style="display:flex;gap:24px;padding:36px 48px 48px;justify-content:center;align-items:flex-start">
+<div style="width:800px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:40px 46px">
+<div style="display:flex;align-items:baseline;gap:12px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase"><span style="color:#427AA1">Apartment risk analysis · full report</span><span style="margin-left:auto;color:#A2A8AE;letter-spacing:.04em">№ 2026-1187 · 28.07.2026</span></div>
+<h1 style="margin:12px 0 4px;font:500 30px/1.18 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, 33100 Tampere</h1>
+<div style="font:500 13px/1.6 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 4/6 krs, lift · 1962 · As Oy Tampereen Tuomiokolmio · debt-free 118 000 € · Oikotie 21966412, read 13:40</div>
+<div style="margin-top:14px;display:flex;align-items:center;gap:10px;border:1px solid #DFE1E7;border-radius:10px;background:#FBFAF7;padding:9px 14px;font:500 12px/1.5 'Satoshi Variable';color:#46525E">
+<span style="width:20px;height:20px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="12" hint-size="12px,12px"></x-import></span>
+<span>Unlocked 28.07.2026 · 5-pack · this is where the free summary ended — everything below the line was locked.</span>
+<span style="margin-left:auto;flex:none"><a href="#r7">Listing changed since? Re-run free</a></span>
+</div>
+<div style="margin-top:26px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§1</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">Verdict</h2><span style="margin-left:auto;font:700 11px/16px 'Satoshi Variable';padding:3px 10px;border-radius:1000px;background:#FFDBD7;color:#BE4437">DOES NOT PASS · BALANCED · 3 OF 14</span></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Gross yield</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px;background:#FBFAF7"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Real yield</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:10px"><span style="width:32px;height:32px;flex:none;border-radius:8px;background:#FFECBF;color:#B98900;font:500 18px/32px 'Space Grotesk';text-align:center">C</span><span style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Housing<br>company</span></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:10px"><span style="width:32px;height:32px;flex:none;border-radius:8px;background:#DAEDE7;color:#1E7F4F;font:500 18px/32px 'Space Grotesk';text-align:center">A</span><span style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Municipality<br>Tampere</span></div>
+</div>
+<p style="margin:12px 0 0;font:500 13.5px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">The listing’s 8.6 % is real arithmetic on a real rent — and it is not the yield you would own. Priced 15.6 % under the district median, this apartment carries the district’s largest un-executed renovation programme. Two of the three failing tests are properties of the building; no offer price repairs them.</p>
+<div style="margin:10px 0 0;font:500 11px/1.5 'Satoshi Variable';color:#A2A8AE">Prose is the model reading the engine’s numbers — it can phrase, it cannot originate a figure. §§3–7 show every input.</div>
+
+<div style="margin-top:30px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§2</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">The three flags</h2><span style="font:500 12px/1.4 'Satoshi Variable';color:#6D859F">each claim quotes the sentence it came from</span></div>
+<div style="margin-top:12px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:10px">
+<span style="width:7px;height:7px;flex:none;border-radius:50%;background:#FF6F61"></span><span style="font:500 15px/1.35 'Space Grotesk';color:#14222D;flex:1;min-width:0">1 · Pipe renovation surveyed but not carried out — unchanged from the free summary</span><span style="font:700 10.5px/15px 'Satoshi Variable';padding:3px 9px;border-radius:1000px;background:#FFDBD7;color:#BE4437;flex:none">HIGH · 58 200 €</span><a href="Resimator%20R1%20Paste%20and%20Verdict.dc.html#r1" style="flex:none;font:500 12px/1.4 'Satoshi Variable'">full text ↗</a>
+</div>
+<div style="margin-top:10px;border:1px solid #DFE1E7;border-left:3px solid #FFB300;border-radius:12px;padding:18px 22px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="width:7px;height:7px;border-radius:50%;background:#FFB300"></span><span style="font:500 16.5px/1.3 'Space Grotesk';color:#14222D">2 · The plot is leased from the city — the lease ends 31.12.2031</span><span style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:3px 9px;border-radius:1000px;background:#FFECBF;color:#B98900">CAUTION · COST AT RESET</span></div>
+<p style="margin:9px 0 0;font:500 13.5px/1.6 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">Ground rent resets when the lease is renegotiated. Tampere’s 2024–25 resets in this district raised charges by 0.60–1.10 €/m²/mo. For 54 m², that is <b>32–59 €/mo</b> onto the hoitovastike from 2032 — on top of the renovation financing that will already be running.</p>
+<div style="margin:11px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 10px 10px 0;padding:9px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#14222D;font-style:italic">”Tontti on vuokrattu Tampereen kaupungilta, maanvuokrasopimus voimassa 31.12.2031 saakka.”</div>
+<div style="margin-top:2px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 · translation: “The plot is leased from the City of Tampere; the ground lease runs to 31 Dec 2031.”</div>
+</div>
+<div style="margin-top:10px;font:500 12px/1.55 'Satoshi Variable';color:#46525E">Reset range from 11 Tampere ground-lease renewals 2023–2026 <span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:1px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span></div>
+</div>
+<div style="margin-top:10px;border:1px solid #DFE1E7;border-left:3px solid #FFB300;border-radius:12px;padding:18px 22px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="width:7px;height:7px;border-radius:50%;background:#FFB300"></span><span style="font:500 16.5px/1.3 'Space Grotesk';color:#14222D">3 · Windows and balcony doors are original, 1962</span><span style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:3px 9px;border-radius:1000px;background:#FFECBF;color:#B98900">CAUTION · 5 000–9 000 €</span></div>
+<p style="margin:9px 0 0;font:500 13.5px/1.6 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">Inside the LVIS scope they cost this apartment a 5 200 € share (§3). Done standalone they run 5 000–9 000 €. Until then, 1962 glazing suppresses winter comfort and sits visibly in the P10 rent — two of the 27 comparables with original windows let 6–9 % under the median.</p>
+<div style="margin:11px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 10px 10px 0;padding:9px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#14222D;font-style:italic">”Ikkunat ja parvekeovet ovat alkuperäiset.”</div>
+<div style="margin-top:2px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 · translation: “Windows and balcony doors are original.”</div>
+</div>
+</div>
+
+<div style="margin-top:30px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§3</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">Renovation liability — 58 200 €, 4–7 years</h2></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) 170px 120px 110px;gap:0 14px;font:700 10px/13px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F;padding:0 4px 7px;border-bottom:1px solid #DFE1E7"><span>Component</span><span style="text-align:right">Basis</span><span style="text-align:right">This apartment</span><span style="text-align:right">Provenance</span></div>
+<sc-for list="{{ liabilityRows }}" as="li" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px 120px 110px;gap:0 14px;align-items:baseline;padding:9px 4px;border-bottom:1px solid #F0EDE7">
+<span style="min-width:0"><span style="display:block;font:500 13.5px/1.4 'Satoshi Variable';color:#14222D">{{ li.name }}</span><span style="display:block;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">{{ li.note }}</span></span>
+<span style="text-align:right;font:500 12px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums">{{ li.basis }}</span>
+<span style="text-align:right;font:500 15px/1.3 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">{{ li.amount }}</span>
+<span style="text-align:right"><span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;{{ li.chipStyle }}">{{ li.chip }}</span></span>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px 120px 110px;gap:0 14px;align-items:baseline;padding:11px 4px;border-bottom:2px solid #14222D">
+<span style="font:700 13.5px/1.4 'Satoshi Variable';color:#14222D">Total, this apartment’s share</span><span style="text-align:right;font:500 12px/1.4 'Satoshi Variable';color:#46525E">window 4–7 years</span><span style="text-align:right;font:700 17px/1.2 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">58 200 €</span><span></span>
+</div>
+<div style="margin-top:10px;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E;text-wrap:pretty">Basis: 27 completed linjasaneeraus contracts, Pirkanmaa 2019–2026 — median 890 €/m², P80 1 040 €/m². At P80 the piping line alone is 56 200 € and the total <b>66 300 €</b>. Timing from the observed sequence: survey 2024 → project planning → decision (typ. +1–2 y) → execution (+2–4 y).</div>
+
+<div style="margin-top:26px;padding-top:16px;border-top:1px solid #F0EDE7;display:flex;gap:12px;align-items:center;font:500 12px/1.5 'Satoshi Variable';color:#6D859F"><span>Continues — §4 rent · §5 financing · §6 years · §7 the fourteen tests</span><span style="margin-left:auto">page 1 of 2 on screen · <a href="#r7b">scroll state R7-2 ↓</a></span></div>
+</div>
+
+<div style="width:380px;flex:none;position:sticky;top:0;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;box-shadow:0 1px 3px rgba(13,13,18,.05);display:flex;flex-direction:column;height:760px">
+<div style="padding:16px 20px;border-bottom:1px solid #F0EDE7;display:flex;align-items:center;gap:10px">
+<span style="width:30px;height:30px;flex:none;border-radius:9px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="15" hint-size="15px,15px"></x-import></span>
+<span style="min-width:0"><span style="display:block;font:500 15px/1.25 'Space Grotesk';color:#14222D">Ask this report</span><span style="display:block;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">answers only from this deal’s data · 15 of 15 left</span></span>
+</div>
+<div style="flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+<div style="font:500 12px/1.5 'Satoshi Variable';color:#6D859F">It knows the engine’s inputs, the quotes, and your policy. It won’t speculate past them.</div>
+<span style="align-self:flex-start;font:500 12.5px/1.4 'Satoshi Variable';color:#14222D;padding:9px 14px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;cursor:pointer" style-hover="background:#EBF2FA">Why did it fail my policy?</span>
+<span style="align-self:flex-start;font:500 12.5px/1.4 'Satoshi Variable';color:#14222D;padding:9px 14px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;cursor:pointer" style-hover="background:#EBF2FA">How did you get 58 200 €?</span>
+<span style="align-self:flex-start;font:500 12.5px/1.4 'Satoshi Variable';color:#14222D;padding:9px 14px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;cursor:pointer" style-hover="background:#EBF2FA">What if the rent is 900 €?</span>
+<span style="align-self:flex-start;font:500 12.5px/1.4 'Satoshi Variable';color:#14222D;padding:9px 14px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;cursor:pointer" style-hover="background:#EBF2FA">What should I ask the agent?</span>
+</div>
+<div style="padding:14px 16px;border-top:1px solid #F0EDE7;display:flex;gap:9px;align-items:center">
+<span style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:11px 14px;font:500 13px/1.4 'Satoshi Variable';color:#A2A8AE">Ask about this apartment…</span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.ButtonUtility" size="md" icon="ArrowUp" hint-size="40px,40px"></x-import>
+</div>
+</div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:1440px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">The unlock happens in place — same URL, seam replaced by the quiet “unlocked” strip (never confetti) · §-numbered sections are the chat’s citation targets and the PDF’s TOC · chat is a docked panel ≥1280 px, a bottom sheet below (deferred frame) · document column 800 px, body satoshi-500 13.5/1.6, section H2 space-grotesk-500 20/1.25.</div>
+</sc-if>
+</div>
+
+<div id="r7b" style="display:flex;flex-direction:column;gap:10px;margin-top:44px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-2</span>Full report · bottom of document · chat mid-conversation</div>
+<div data-screen-label="R7-2 Full report bottom" style="width:1440px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05)">
+<div style="display:flex;gap:24px;padding:36px 48px 48px;justify-content:center;align-items:flex-start">
+<div style="width:800px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:20px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:40px 46px">
+<div style="display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§4</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">Rent — underwritten at P10</h2></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr 1.35fr;gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:14px 16px;background:#FBFAF7;box-shadow:inset 0 0 0 1.5px #427AA1"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;color:#427AA1">P10 · UNDERWRITTEN</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">780 €</div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">every cash-flow figure uses this</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:14px 16px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">P50</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">845 €</div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">the listing’s implied rent</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:14px 16px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">P90</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">910 €</div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">renovated-kitchen ceiling</div></div>
+<div style="border:1px dashed #B6C2CF;border-radius:12px;padding:14px 16px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;color:#6D859F">YOUR FIGURE — SHOWN, NEVER USED</div><div style="margin-top:4px;font:500 24px/1 'Space Grotesk';color:#6D859F;font-variant-numeric:tabular-nums">900 €</div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">above P75 of 27 comparables</div></div>
+</div>
+<div style="margin-top:10px;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E">27 lettings, Tampere keskusta 45–60 m², 24 months, unrenovated kitchens weighted <span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:1px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span> · current tenancy 845 €/mo, open-ended <span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:1px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">OBSERVED</span></div>
+<div style="margin:10px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 10px 10px 0;padding:9px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#14222D;font-style:italic">”Hyvä vuokralainen, vuokrasopimus toistaiseksi voimassa, vuokra 845,00 €/kk.”</div>
+<div style="margin-top:2px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 · translation: “Good tenant, open-ended tenancy, rent 845.00 €/month.”</div>
+</div>
+
+<div style="margin-top:28px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§5</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">Financing assumed</h2><span style="font:500 12px/1.4 'Satoshi Variable';color:#6D859F">from your policy — edit there, this recomputes</span></div>
+<div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font:500 13px/1.6 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">
+<span>Equity <b>30 000 €</b></span><span>·</span><span>Bank loan <b>76 400 €</b> at <b>3.45 %</b>, 25 y → <b>380 €/mo</b> <span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:1px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">MAPPED</span></span><span>·</span><span>Transfer tax 1.5 % <b>1 770 €</b></span><span>·</span><span>Cash needed <b>31 800 €</b></span>
+</div>
+
+<div style="margin-top:28px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§6</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">Year by year — P10 rent, the renovation lands in year 5</h2></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:64px 1fr 1fr 1fr 1fr 1fr;gap:0 12px;font:700 10px/13px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F;padding:0 4px 7px;border-bottom:1px solid #DFE1E7"><span>Year</span><span style="text-align:right">Rent</span><span style="text-align:right">Charges</span><span style="text-align:right">Debt service</span><span style="text-align:right">Cash flow</span><span style="text-align:right">Cumulative</span></div>
+<sc-for list="{{ yearRows }}" as="y" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:64px 1fr 1fr 1fr 1fr 1fr;gap:0 12px;align-items:center;padding:8px 4px;border-bottom:1px solid #F0EDE7;background:{{ y.bg }}">
+<span style="font:500 13px/1.3 'Space Grotesk';color:#14222D">{{ y.y }}</span>
+<span style="text-align:right;font:500 13px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">{{ y.rent }}</span>
+<span style="text-align:right;font:500 13px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">{{ y.charges }}</span>
+<span style="text-align:right;font:500 13px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">4 560 €</span>
+<span style="text-align:right;font:500 13px/1.3 'Space Grotesk';color:{{ y.cfColor }};font-variant-numeric:tabular-nums">{{ y.cf }}</span>
+<span style="text-align:right;font:500 13px/1.3 'Satoshi Variable';color:{{ y.cfColor }};font-variant-numeric:tabular-nums">{{ y.cum }}</span>
+</div>
+</sc-for>
+<div style="margin-top:9px;font:500 11.5px/1.55 'Satoshi Variable';color:#6D859F">Y5: renovation financing enters at +310 €/mo <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span> · Y6→ rent uplift +8 % post-renovation <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span> · rent growth 1.5 %/y, charge growth 3.0 %/y.</div>
+
+<div style="margin-top:28px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§7</span><h2 style="margin:0;font:500 20px/1.25 'Space Grotesk';color:#14222D">The fourteen tests — Balanced</h2><a href="Resimator%20R2%20Policy%20and%20Purchase.dc.html#r5" style="margin-left:auto;font:500 12.5px/1.4 'Satoshi Variable'">edit thresholds ↗</a></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px">
+<sc-for list="{{ testsCompact }}" as="t" hint-placeholder-count="14">
+<div style="display:flex;align-items:baseline;gap:9px;padding:7px 2px;border-bottom:1px solid #F0EDE7">
+<span style="width:15px;flex:none;font:700 12px/1.3 'Satoshi Variable';color:{{ t.c }}">{{ t.mark }}</span>
+<span style="min-width:0;flex:1;font:500 12.5px/1.45 'Satoshi Variable';color:#14222D">{{ t.name }}</span>
+<span style="font:500 12px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums;white-space:nowrap">{{ t.vals }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:26px;padding-top:16px;border-top:2px solid #14222D;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">
+<span>№ 2026-1187 · engine v2.3 · listing read 28.07.2026 13:40 — figures reflect that moment</span><span style="margin-left:auto">Analysis of public listing data · not investment advice · Resimator OY</span>
+</div>
+<div style="margin-top:16px;display:flex;gap:10px">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="md" hint-size="170px,42px">Download PDF</x-import>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="md" hint-size="190px,42px">Make page public</x-import>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="tertiary" size="md" hint-size="200px,42px">Set up listing alerts</x-import>
+</div>
+</div>
+
+<div style="width:380px;flex:none;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;box-shadow:0 1px 3px rgba(13,13,18,.05);display:flex;flex-direction:column;height:900px">
+<div style="padding:16px 20px;border-bottom:1px solid #F0EDE7;display:flex;align-items:center;gap:10px">
+<span style="width:30px;height:30px;flex:none;border-radius:9px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="15" hint-size="15px,15px"></x-import></span>
+<span style="min-width:0"><span style="display:block;font:500 15px/1.25 'Space Grotesk';color:#14222D">Ask this report</span><span style="display:block;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">13 of 15 questions left</span></span>
+</div>
+<div style="flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+<div style="align-self:flex-end;max-width:85%;background:#14222D;color:#F6F3EE;border-radius:14px 14px 4px 14px;padding:10px 14px;font:500 13px/1.5 'Satoshi Variable'">How did you get 58 200 €?</div>
+<div style="align-self:flex-start;max-width:94%;border:1px solid #DFE1E7;border-radius:14px 14px 14px 4px;padding:12px 15px">
+<div style="font:500 13px/1.6 'Satoshi Variable';color:#2B2A28">Three parts. Piping: 54 m² × 890 €/m² = <b>48 100 €</b> — the median of 27 Pirkanmaa contracts. Roof share <b>4 900 €</b> and windows share <b>5 200 €</b> from the same survey scope. It’s a modelled median, not a quote: the P80 case is <b>66 300 €</b>.</div>
+<div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+<span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§3 Liability</span>
+<span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">quote: kuntotutkimus 2024</span>
+</div>
+</div>
+<div style="align-self:flex-end;max-width:85%;background:#14222D;color:#F6F3EE;border-radius:14px 14px 4px 14px;padding:10px 14px;font:500 13px/1.5 'Satoshi Variable'">What if the rent is 900 €?</div>
+<div style="align-self:flex-start;max-width:94%;border:1px solid #DFE1E7;border-radius:14px 14px 14px 4px;padding:12px 15px">
+<div style="font:500 13px/1.6 'Satoshi Variable';color:#2B2A28">At 900 € gross yield is <b>9.2 %</b> and base cash flow turns <b>+41 €/mo</b>. But 900 € sits above P75 of the comparables, so underwriting stays at P10 = 780 €. Your verdict doesn’t change — the liability share (49.3 %) and company grade (C) fail at any rent.</div>
+<div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+<span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§4 Rent</span>
+<span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§7 Tests</span>
+</div>
+</div>
+<div style="align-self:flex-start;font:500 11px/1.4 'Satoshi Variable';color:#A2A8AE">Answers cite their sections — tap a chip to scroll the document there.</div>
+</div>
+<div style="padding:14px 16px;border-top:1px solid #F0EDE7;display:flex;gap:9px;align-items:center">
+<span style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:11px 14px;font:500 13px/1.4 'Satoshi Variable';color:#A2A8AE">Ask about this apartment…</span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.ButtonUtility" size="md" icon="ArrowUp" hint-size="40px,40px"></x-import>
+</div>
+</div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:1440px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">Chat contract: grounded on {engine inputs, quotes, policy}; refuses beyond scope (“that’s not in this report’s data”); what-ifs re-run the engine, never arithmetic in the LLM; hard cap 15 turns/report with count visible; at 0 the input disables with “Re-run the analysis to reset.” · “Your figure” dashed card appears only after the user supplies one in chat or policy — dashed border = user-supplied, never engine.</div>
+</sc-if>
+</div>
+<div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-top:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-3</span>Full report · Mobile 390 · §-rail + chat sheet</div>
+<div data-screen-label="R7-3 Full report mobile" style="width:390px;height:800px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05);display:flex;flex-direction:column">
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid rgba(20,34,45,.08)"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n20 }}" asset-base="assets/logo" hint-size="108px,20px"></x-import><span style="margin-left:auto;font:700 10px/14px 'Satoshi Variable';padding:3px 9px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">4 CR</span><span style="font:500 13px/1 'Satoshi Variable';color:#427AA1">PDF</span></div>
+<div style="flex:none;display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid rgba(20,34,45,.08);background:rgba(246,243,238,.92);overflow:hidden">
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;background:#14222D;color:#F6F3EE;white-space:nowrap">§1 Verdict</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§2 Flags</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§3 Liability</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§4 Rent</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§5…</span>
+</div>
+<div style="flex:1;overflow:hidden;padding:18px 20px 0">
+<div style="display:flex;align-items:center;gap:8px;border:1px solid #DFE1E7;border-radius:10px;background:#FBFAF7;padding:8px 12px;font:500 11px/1.45 'Satoshi Variable';color:#46525E"><span style="width:16px;height:16px;flex:none;border-radius:50%;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="Check" size="10" hint-size="10px,10px"></x-import></span>Unlocked 28.07.2026 · 5-pack</div>
+<div style="margin-top:14px;font:700 10px/13px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase;color:#427AA1">Full report · № 2026-1187</div>
+<h1 style="margin:6px 0 3px;font:500 21px/1.25 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, Tampere</h1>
+<div style="font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 1962 · debt-free 118 000 €</div>
+<div style="margin-top:12px;border:1px solid #DFE1E7;border-left:4px solid #FF6F61;border-radius:12px;background:#FFF7F5;padding:12px 14px"><span style="font:500 17px/1.2 'Space Grotesk';color:#BE4437">Does not pass</span><span style="margin-left:8px;font:500 11.5px/1.4 'Satoshi Variable';color:#46525E">3 of 14 · Balanced</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+<div style="border:1px solid #DFE1E7;border-radius:10px;padding:11px 12px"><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Gross</div><div style="margin-top:3px;font:500 21px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:10px;padding:11px 12px;background:#FBFAF7"><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Real</div><div style="margin-top:3px;font:500 21px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:9px"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#FFECBF;color:#B98900;font:500 17px/30px 'Space Grotesk';text-align:center">C</span><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;text-transform:uppercase;color:#6D859F">Housing<br>company</span></div>
+<div style="border:1px solid #DFE1E7;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:9px"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#DAEDE7;color:#1E7F4F;font:500 17px/30px 'Space Grotesk';text-align:center">A</span><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;text-transform:uppercase;color:#6D859F">Municipality<br>Tampere</span></div>
+</div>
+<div style="margin-top:14px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:12px;padding:13px 14px">
+<div style="font:500 14px/1.3 'Space Grotesk';color:#14222D">1 · Pipe renovation surveyed, not done</div>
+<div style="margin-top:4px;font:700 10px/14px 'Satoshi Variable';color:#BE4437">HIGH · 58 200 € · 4–7 YEARS</div>
+<div style="margin:9px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:7px 10px">
+<div style="font:500 11.5px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024…”</div>
+<div style="margin-top:2px;font:500 9.5px/1.4 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412</div>
+</div>
+</div>
+<div style="margin-top:10px;border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="min-width:0;flex:1"><span style="display:block;font:500 13px/1.3 'Space Grotesk';color:#14222D">§3 Liability — 58 200 €</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">3 components · window 4–7 y</span></span><span style="display:flex;color:#A2A8AE"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowNarrowRight" size="14" hint-size="14px,14px"></x-import></span></div>
+<div style="margin-top:10px;font:500 11px/1.5 'Satoshi Variable';color:#A2A8AE;text-align:center">…§4 rent · §5 financing · §6 years · §7 tests continue as one column…</div>
+</div>
+<div style="flex:none;display:flex;align-items:center;gap:11px;padding:12px 16px 14px;background:rgba(246,243,238,.92);backdrop-filter:blur(8px);border-top:1px solid #DFE1E7">
+<span style="width:34px;height:34px;flex:none;border-radius:10px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="16" hint-size="16px,16px"></x-import></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:700 13px/1.3 'Satoshi Variable';color:#14222D">Ask this report</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">13 of 15 questions left</span></span>
+<span style="display:flex;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowUp" size="16" hint-size="16px,16px"></x-import></span>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:390px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">§-rail sticky under the top bar, scroll-spy sets the active pill · chat bar docks bottom, tap opens an 85 % sheet (same panel as desktop) · PDF moves into the top bar as a text action · all targets ≥44 px.</div>
+</sc-if>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-7</span>Full report · Tablet 768 · chat collapsed to a rail</div>
+<div data-screen-label="R7-7 Full report tablet" style="width:768px;height:820px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05);display:flex;flex-direction:column">
+<div style="height:60px;flex:none;display:flex;align-items:center;gap:14px;padding:0 32px;border-bottom:1px solid rgba(20,34,45,.08)">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n20 }}" asset-base="assets/logo" hint-size="108px,20px"></x-import>
+<span style="margin-left:auto;display:flex;align-items:center;gap:12px;font:500 13px/1.4 'Satoshi Variable'">
+<span style="font:700 10.5px/15px 'Satoshi Variable';padding:3px 10px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;font-variant-numeric:tabular-nums">4 CREDITS</span>
+<a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r10">My reports</a>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="sm" hint-size="130px,34px">Download PDF</x-import>
+</span>
+</div>
+<div style="flex:none;display:flex;gap:6px;padding:10px 32px;border-bottom:1px solid rgba(20,34,45,.08);background:rgba(246,243,238,.92)">
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;background:#14222D;color:#F6F3EE;white-space:nowrap">§1 Verdict</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§2 Flags</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§3 Liability</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§4 Rent</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§5 Financing</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§6 Years</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;white-space:nowrap">§7 Tests</span>
+</div>
+<div style="flex:1;overflow:hidden;display:flex;justify-content:center;padding:24px 32px 0">
+<div style="width:100%;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:30px 36px">
+<div style="display:flex;align-items:baseline;gap:12px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase"><span style="color:#427AA1">Full report</span><span style="margin-left:auto;color:#A2A8AE;letter-spacing:.04em">№ 2026-1187 · 28.07.2026</span></div>
+<h1 style="margin:10px 0 4px;font:500 26px/1.2 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, 33100 Tampere</h1>
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 4/6 krs, lift · 1962 · debt-free 118 000 € · Oikotie 21966412, read 13:40</div>
+<div style="margin-top:16px;border:1px solid #DFE1E7;border-left:4px solid #FF6F61;border-radius:12px;background:#FFF7F5;padding:13px 18px"><span style="font:500 19px/1.2 'Space Grotesk';color:#BE4437">Does not pass</span><span style="margin-left:10px;font:500 12.5px/1.4 'Satoshi Variable';color:#46525E">fails 3 of 14 · Balanced</span></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Gross yield</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px;background:#FBFAF7"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Real yield</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:9px"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#FFECBF;color:#B98900;font:500 17px/30px 'Space Grotesk';text-align:center">C</span><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;text-transform:uppercase;color:#6D859F">Housing<br>company</span></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:9px"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#DAEDE7;color:#1E7F4F;font:500 17px/30px 'Space Grotesk';text-align:center">A</span><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;text-transform:uppercase;color:#6D859F">Municipality<br>Tampere</span></div>
+</div>
+<p style="margin:14px 0 0;font:500 13px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">The listing’s 8.6 % is real arithmetic on a real rent — and it is not the yield you would own. Two of the three failing tests are properties of the building; no offer price repairs them.</p>
+<div style="margin-top:18px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:12px;padding:14px 18px">
+<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><span style="width:7px;height:7px;border-radius:50%;background:#FF6F61"></span><span style="font:500 15px/1.3 'Space Grotesk';color:#14222D;flex:1;min-width:0">1 · Pipe renovation surveyed but not carried out</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 9px;border-radius:1000px;background:#FFDBD7;color:#BE4437;flex:none">HIGH · 58 200 €</span></div>
+<div style="margin:10px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:8px 12px"><span style="font:500 12px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024 ja LVIS-hankesuunnittelu on käynnistetty.”</span><span style="display:block;margin-top:2px;font:500 10px/1.4 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412</span></div>
+</div>
+<div style="margin-top:12px;font:500 11px/1.5 'Satoshi Variable';color:#A2A8AE;text-align:center">…§2–§7 continue at full 704 px content width — same order as desktop…</div>
+</div>
+</div>
+<div style="flex:none;display:flex;align-items:center;gap:12px;padding:12px 32px 14px;background:rgba(246,243,238,.92);backdrop-filter:blur(8px);border-top:1px solid #DFE1E7">
+<span style="width:34px;height:34px;flex:none;border-radius:10px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="16" hint-size="16px,16px"></x-import></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:700 13px/1.3 'Satoshi Variable';color:#14222D">Ask this report</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">13 of 15 questions left · opens as a right-side panel</span></span>
+<span style="flex:none;border:1px solid #DFE1E7;border-radius:10px;background:#FFFFFF;padding:9px 13px;font:500 12.5px/1.4 'Satoshi Variable';color:#A2A8AE;width:280px;box-sizing:border-box">Ask about this apartment…</span>
+<span style="width:38px;height:38px;flex:none;border-radius:10px;box-shadow:inset 0 0 0 1px #DFE1E7;display:flex;align-items:center;justify-content:center;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowUp" size="15" hint-size="15px,15px"></x-import></span>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:768px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px"><b style="color:#46525E">768–1279 px breakpoint</b> · document takes the full width (max 704 px content) — the 380 px docked chat panel needs ≥1280 px, so here it collapses to this bottom rail with an inline input; sending opens a right-side overlay panel (same panel as desktop, 380 px, scrim over the document) · §-rail identical to mobile, all 7 pills fit without scrolling · top bar keeps the desktop actions — nothing moves into a menu · grades stay on one 4-across row.</div>
+</sc-if>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-8</span>Full report · Tablet 768 · chat panel open</div>
+<div data-screen-label="R7-8 Full report tablet chat open" style="width:768px;height:940px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;overflow:hidden;box-shadow:0 1px 3px rgba(13,13,18,.05);position:relative">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column">
+<div style="height:60px;flex:none;display:flex;align-items:center;gap:14px;padding:0 32px;border-bottom:1px solid rgba(20,34,45,.08)">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n20 }}" asset-base="assets/logo" hint-size="108px,20px"></x-import>
+<span style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:3px 10px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;font-variant-numeric:tabular-nums">4 CREDITS</span>
+</div>
+<div style="flex:1;padding:24px 32px 0;opacity:.92">
+<div style="width:100%;height:100%;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px 18px 0 0;padding:30px 36px;box-sizing:border-box">
+<h1 style="margin:0 0 4px;font:500 24px/1.2 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, Tampere</h1>
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#6D859F">§4 Rent — underwritten at P10</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px;background:#FBFAF7;box-shadow:inset 0 0 0 1.5px #427AA1"><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;color:#427AA1">P10 · UNDERWRITTEN</div><div style="margin-top:3px;font:500 20px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">780 €</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;color:#6D859F">P50</div><div style="margin-top:3px;font:500 20px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">845 €</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;color:#6D859F">P90</div><div style="margin-top:3px;font:500 20px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">910 €</div></div>
+</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;inset:0;background:rgba(20,34,45,.28)"></div>
+<div style="position:absolute;top:0;right:0;bottom:0;width:380px;background:#FFFFFF;border-left:1px solid #DFE1E7;box-shadow:-8px 0 24px rgba(13,13,18,.10);display:flex;flex-direction:column">
+<div style="padding:14px 18px;border-bottom:1px solid #F0EDE7;display:flex;align-items:center;gap:10px">
+<span style="width:28px;height:28px;flex:none;border-radius:8px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="14" hint-size="14px,14px"></x-import></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.25 'Space Grotesk';color:#14222D">Ask this report</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">12 of 15 questions left</span></span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.ButtonCloseX" size="sm" hint-size="34px,34px"></x-import>
+</div>
+<div style="flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+<div style="align-self:flex-end;max-width:80%;background:#14222D;color:#F6F3EE;border-radius:12px 12px 4px 12px;padding:8px 12px;font:500 12.5px/1.5 'Satoshi Variable'">Is 845 € a safe rent to assume?</div>
+<div style="align-self:flex-start;max-width:94%;border:1px solid #DFE1E7;border-radius:12px 12px 12px 4px;padding:10px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">845 € is the sitting tenancy — real and observed. For underwriting we still use P10 = <b>780 €</b>: if the tenant leaves, that’s the re-let floor among 27 comparables with this kitchen condition.</div>
+<div style="display:flex;gap:6px;margin-top:8px"><span style="font:700 9.5px/13px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§4 Rent</span></div>
+</div>
+</div>
+<div style="padding:12px 14px;border-top:1px solid #F0EDE7;display:flex;gap:8px;align-items:center">
+<span style="flex:1;border:1px solid #DFE1E7;border-radius:10px;padding:10px 12px;font:500 12.5px/1.4 'Satoshi Variable';color:#A2A8AE">Ask about this apartment…</span>
+<span style="width:36px;height:36px;flex:none;border-radius:10px;box-shadow:inset 0 0 0 1px #DFE1E7;display:flex;align-items:center;justify-content:center;color:#6D859F"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowUp" size="15" hint-size="15px,15px"></x-import></span>
+</div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:768px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">Panel slides from the right (240 ms, standard ease), 380 px — identical to the desktop dock, so no content reflows between breakpoints · scrim Deep Midnight 28 %, tap or Esc closes and returns focus to the rail input · §-chips in answers still scroll the document behind the scrim (panel stays open) · document keeps its scroll position on close.</div>
+</sc-if>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-4</span>Chat · Exhausted · 0 of 15</div>
+<div data-screen-label="R7-4 Chat exhausted" style="width:400px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:26px 24px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;overflow:hidden">
+<div style="padding:14px 18px;border-bottom:1px solid #F0EDE7;display:flex;align-items:center;gap:10px">
+<span style="width:28px;height:28px;flex:none;border-radius:8px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="14" hint-size="14px,14px"></x-import></span>
+<span style="min-width:0"><span style="display:block;font:500 14px/1.25 'Space Grotesk';color:#14222D">Ask this report</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#BE4437">0 of 15 questions left</span></span>
+</div>
+<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+<div style="align-self:flex-end;max-width:80%;background:#14222D;color:#F6F3EE;border-radius:12px 12px 4px 12px;padding:8px 12px;font:500 12.5px/1.5 'Satoshi Variable'">And if the lease reset lands at the top of the range?</div>
+<div style="align-self:flex-start;max-width:94%;border:1px solid #DFE1E7;border-radius:12px 12px 12px 4px;padding:10px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">At +1.10 €/m²/mo the charge rises 59 €/mo from 2032 — real yield drifts to <b>5.5 %</b>. Your verdict doesn’t move; the failing tests fail either way.</div>
+<div style="display:flex;gap:6px;margin-top:8px"><span style="font:700 9.5px/13px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§2 Flag 2</span></div>
+</div>
+<div style="border:1px solid #DFE1E7;border-radius:10px;background:#FBFAF7;padding:11px 13px;font:500 12px/1.6 'Satoshi Variable';color:#46525E">That was the fifteenth question for this report. The count resets when the analysis re-runs — free whenever the listing changes. Anything unresolved: <a href="#r7">hello@resimator.fi</a>.</div>
+</div>
+<div style="padding:12px 14px;border-top:1px solid #F0EDE7;display:flex;gap:8px;align-items:center;opacity:.5">
+<span style="flex:1;border:1px solid #DFE1E7;border-radius:10px;padding:10px 12px;font:500 12.5px/1.4 'Satoshi Variable';color:#A2A8AE">Question limit reached</span>
+<span style="width:36px;height:36px;border-radius:10px;box-shadow:inset 0 0 0 1px #DFE1E7;display:flex;align-items:center;justify-content:center;color:#A2A8AE"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="ArrowUp" size="15" hint-size="15px,15px"></x-import></span>
+</div>
+</div>
+<div style="margin-top:10px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Count is per report per run and persists across devices · the input disables rather than hides — the limit is stated, not mysterious · suggestion chips disappear at 0.</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-5</span>Report · Listing changed since purchase</div>
+<div data-screen-label="R7-5 Listing changed banner" style="width:820px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:28px 32px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-left:4px solid #FFB300;border-radius:14px;padding:18px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+<div style="min-width:0;flex:1">
+<div style="font:500 17px/1.3 'Space Grotesk';color:#14222D">The listing changed after this report was built</div>
+<div style="margin-top:4px;font:500 13px/1.6 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums">Asking price now <b>98 600 €</b> (was 104 600 €), seen 29.07.2026 08:12. These pages still show the 28.07 read — the diff is one line, so we name it instead of guessing at the rest.</div>
+</div>
+<span style="flex:none;display:flex;gap:10px;align-items:center">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="md" hint-size="170px,42px">Re-run — free</x-import>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="tertiary" size="md" hint-size="170px,42px">Keep this version</x-import>
+</span>
+</div>
+<div style="margin-top:10px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Banner pins under the report header · re-run keeps № and appends /v2 — v1 stays in My reports and as PDF · chat count resets with the new run · re-runs within 30 days of unlock cost 0 credits, always.</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-6</span>Full report · Finnish body · §1 + section map</div>
+<div data-screen-label="R7-6 Full report Finnish" style="width:820px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:28px 32px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:30px 36px">
+<div style="display:flex;align-items:baseline;gap:12px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase"><span style="color:#427AA1">Asunnon riskianalyysi · täysi raportti</span><span style="margin-left:auto;color:#A2A8AE;letter-spacing:.04em">№ 2026-1187 · 28.7.2026</span></div>
+<h1 style="margin:10px 0 4px;font:500 25px/1.2 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, 33100 Tampere</h1>
+<div style="font:500 12.5px/1.6 'Satoshi Variable';color:#6D859F;overflow-wrap:anywhere">2h+kk · 54 m² · 4/6 krs, hissi · rak. 1962 · velaton hinta 118 000 € · luettu 28.7.2026 13.40</div>
+<div style="margin-top:20px;display:flex;gap:10px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';letter-spacing:.08em;color:#A2A8AE">§1</span><h2 style="margin:0;font:500 18px/1.25 'Space Grotesk';color:#14222D">Päätelmä</h2><span style="margin-left:auto;font:700 10.5px/15px 'Satoshi Variable';padding:3px 10px;border-radius:1000px;background:#FFDBD7;color:#BE4437">EI LÄPÄISE · TASAPAINOINEN · 3/14</span></div>
+<p style="margin:10px 0 0;font:500 13px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty;overflow-wrap:anywhere">Ilmoituksen 8,6 % on oikeaa laskentaa oikealla vuokralla — mutta se ei ole tuotto, jonka omistaisit. Asunto on hinnoiteltu 15,6 % alle alueen mediaanin, ja se kantaa alueen suurimman toteuttamattoman korjausohjelman. Kaksi kolmesta hylkäävästä testistä on rakennuksen ominaisuuksia; mikään tarjoushinta ei korjaa niitä.</p>
+<div style="margin:12px 0 0;font:500 10.5px/1.5 'Satoshi Variable';color:#A2A8AE">Proosa on kielimallin luentaa moottorin luvuista — se voi muotoilla, ei koskaan keksiä lukua.</div>
+<div style="margin-top:20px;padding-top:14px;border-top:1px solid #F0EDE7;display:flex;gap:7px;flex-wrap:wrap">
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§2 Riskiliput · 3</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§3 Korjausvastuu · 58 200 €</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§4 Vuokra · P10 780 €</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§5 Rahoitus</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§6 Vuosi vuodelta</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§7 Neljätoista testiä</span>
+</div>
+</div>
+<div style="margin-top:10px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Full string parity — every § heading, chip and status exists in Finnish (C12 rules) · long compounds wrap with overflow-wrap on meta and body only, never in headings · the PDF (P1) uses these same strings.</div>
+</div>
+</div>
+</div>
+</div>
+<div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-top:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-9</span>Price history · annual district €/m² · expands from the header stat</div>
+<div data-screen-label="R7-9 Price history" style="width:1000px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:28px 32px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:28px 34px">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+<div style="min-width:0"><div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1">Price history · appendix to №&nbsp;2026-1187</div>
+<h2 style="margin:6px 0 0;font:500 21px/1.25 'Space Grotesk';color:#14222D">Tampere keskusta — realised €/m², 2h apartments 45–60 m²</h2></div>
+<span style="margin-left:auto;flex:none;display:flex;gap:8px;align-items:center">
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span>
+<span style="font:500 11.5px/1.4 'Satoshi Variable';color:#6D859F">annual medians · realised sales, Pirkanmaa data Q2/2026 · nominal €</span>
+</span>
+</div>
+<div style="display:grid;grid-template-columns:600px minmax(0,1fr);gap:30px;margin-top:22px;align-items:start">
+<div>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.LineAndBarChart" data="{{ priceHistory }}" chart-style="both" width="{{ n560 }}" height="{{ n230 }}" axis-labels="{{ true }}" legend="none" bar-color="#B6C2CF" line-color="#427AA1" hint-size="560px,230px"></x-import>
+<div style="margin-top:10px;display:flex;gap:16px;align-items:center;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#B6C2CF"></span>district median €/m²</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px solid #427AA1"></span>this apartment, asking — 2 185 €/m² <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">OBSERVED</span></span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">10-y growth</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">+1.9 %/y</div><div style="margin-top:4px;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">nominal CAGR 2016–2026</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">From 2022 peak</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">−6.8 %</div><div style="margin-top:4px;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">2 780 → 2 590 €/m²</div></div>
+</div>
+<p style="margin:0;font:500 13px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">This apartment asks <b>2 185 €/m²</b> — 15.6 % under a median that has itself already corrected 6.8 % from its 2022 peak. The discount is real, not a peak-anchored illusion. The likeliest reason it exists is §2 flag 1: the market prices the un-executed pipe renovation the same way this report does.</p>
+<div style="font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Medians are realised sales, not asking prices; 2026 covers H1 (214 transactions). Nominal figures — no inflation adjustment, said plainly.</div>
+</div>
+</div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:1000px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">Entry point: the header meta’s “2 185 €/m² · district median 2 590 €/m²” becomes a link — “price history ▸” — expanding this panel in place (R7-1) and anchoring it as the PDF’s appendix A · chart = DS LineAndBarChart (bars misty, steel line = this apartment, flat by definition) · data: GET /r/:id/price-history {series[{year, medianSqm, n}], dealSqm} — engine-served, MODELLED chip on the series, OBSERVED on the deal figure · tablet: chart full-width, stats 2-up below · mobile: stats first, chart scrolls horizontally at 560 px · FI: ”Hintahistoria — Tampereen keskusta, toteutuneet €/m²” · ”tämä asunto, pyyntihinta” · ”nimellishinnat — ei inflaatiokorjausta”.</div>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-top:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-10</span>Rent history · annual district median · expands from §4</div>
+<div data-screen-label="R7-10 Rent history" style="width:1000px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:28px 32px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:28px 34px">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+<div style="min-width:0"><div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1">Rent history · appendix B to №&nbsp;2026-1187</div>
+<h2 style="margin:6px 0 0;font:500 21px/1.25 'Space Grotesk';color:#14222D">Tampere keskusta — median rent €/mo, 2h apartments 45–60 m²</h2></div>
+<span style="margin-left:auto;flex:none;display:flex;gap:8px;align-items:center">
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span>
+<span style="font:500 11.5px/1.4 'Satoshi Variable';color:#6D859F">advertised lettings, 24-month rolling · Pirkanmaa data Q2/2026 · nominal €</span>
+</span>
+</div>
+<div style="display:grid;grid-template-columns:600px minmax(0,1fr);gap:30px;margin-top:22px;align-items:start">
+<div>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.LineAndBarChart" data="{{ rentHistory }}" chart-style="both" width="{{ n560 }}" height="{{ n230 }}" axis-labels="{{ true }}" legend="none" bar-color="#B6C2CF" line-color="#427AA1" hint-size="560px,230px"></x-import>
+<div style="margin-top:10px;display:flex;gap:16px;align-items:center;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#B6C2CF"></span>district median rent €/mo</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px solid #427AA1"></span>this apartment, sitting tenancy — 845 €/mo <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">OBSERVED</span></span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">10-y growth</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">+2.0 %/y</div><div style="margin-top:4px;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">nominal CAGR 2016–2026</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:12px;padding:12px 14px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Since the 2022 price peak</div><div style="margin-top:4px;font:500 22px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">+7.5 %</div><div style="margin-top:4px;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">800 → 860 €/mo — rents never corrected</div></div>
+</div>
+<p style="margin:0;font:500 13px/1.65 'Satoshi Variable';color:#2B2A28;text-wrap:pretty">Rents didn’t follow prices down. While €/m² corrected 6.8 % from 2022 (appendix A), the median 2h rent rose 7.5 % — that widening gap is why an 8.6 % gross yield exists at all. The sitting tenancy at <b>845 €</b> sits 1.7 % under the 2026 median: market-rate, not a discount to fix. Underwriting still uses P10 = 780 €, not the trend line.</p>
+<div style="font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F">Advertised rents, not contracts; unrenovated-kitchen weighting as §4. Nominal figures — no inflation adjustment, said plainly.</div>
+</div>
+</div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:1000px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">Entry point: §4’s “27 lettings, 24 months” source line gains “rent history ▸”, expanding this panel in place; PDF appendix B, always paired with appendix A on one sheet · same chart component and grammar as R7-9 — bars = market series (MODELLED), steel line = this deal’s observed figure · GET /r/:id/rent-history {series[{year, medianRent, n}], tenancyRent} · tablet/mobile behaviour identical to R7-9 · FI: ”Vuokrahistoria — Tampereen keskusta, mediaanivuokra €/kk” · ”tämä asunto, voimassa oleva vuokra” · ”vuokrat eivät laskeneet hintojen mukana”.</div>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-top:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R7-11</span>Agent question checklist · generated from this deal’s flags &amp; gaps</div>
+<div data-screen-label="R7-11 Agent checklist" style="width:1000px;background:#F6F3EE;border-radius:20px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:28px 32px">
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:18px;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);padding:28px 34px">
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+<div style="min-width:0"><div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#427AA1">Take to the viewing · appendix C to №&nbsp;2026-1187</div>
+<h2 style="margin:6px 0 0;font:500 21px/1.25 'Space Grotesk';color:#14222D">Seven questions for the agent — each one earned by this listing</h2></div>
+<span style="margin-left:auto;flex:none;display:flex;gap:10px;align-items:center">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="secondary" size="sm" hint-size="120px,34px">Copy all</x-import>
+<span style="font:500 11.5px/1.4 'Satoshi Variable';color:#6D859F">prints as the report’s last page</span>
+</span>
+</div>
+<div style="margin-top:18px;display:flex;flex-direction:column">
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">Ask for the <b>isännöitsijäntodistus</b> — it wasn’t provided with the listing.</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">Settles the repair years and the company’s finances in one document · tightens flags 1–3 and the C grade · re-running this report with it is free</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">SOURCE DOCUMENT</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">Ask for the <b>PTS</b> — the 2026–2031 long-term plan.</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">Prices the pipe scope and timing the company itself expects · flag 1, §3 — could move the 58 200 € estimate either way</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">SOURCE DOCUMENT</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">Has the <b>yhtiökokous decided</b> anything on the LVIS project — or only planned?</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">A decision date collapses the 4–7 year window and changes year-5 financing (§6) · flag 1</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">MEETING MINUTES</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">What are the <b>ground-lease renewal terms</b> for the 2031 reset — index, negotiation state?</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">Narrows the modelled +32–59 €/mo charge range · flag 2</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">LEASE CONTRACT</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">Are the <b>windows inside the LVIS scope</b>, or a separate future project?</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">Inside: 5 200 € share (§3) · standalone: 5 000–9 000 € on top · flag 3</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">PTS / MINUTES</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">When was the <b>rent last raised</b>, and on what index? Any notice given either way?</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">845 € is 1.7 % under median (appendix B) — the answer says whether it stays · §4</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E;margin-top:2px">TENANCY CONTRACT</span>
+</div>
+<div style="display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-top:1px solid #F0EDE7;border-bottom:1px solid #F0EDE7">
+<span style="width:18px;height:18px;flex:none;border:1.5px solid #C4C8CA;border-radius:5px;margin-top:1px"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 14px/1.45 'Satoshi Variable';color:#14222D">Energy certificate class and the <b>heating system’s age</b>?</span><span style="display:block;margin-top:2px;font:500 11.5px/1.5 'Satoshi Variable';color:#6D859F">Neither appears in the listing — the only two ordinary facts it omits</span></span>
+<span style="flex:none;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:3px 8px;border-radius:5px;border:1px dashed #B6C2CF;color:#6D859F;margin-top:2px">NOT IN LISTING</span>
+</div>
+</div>
+<div style="margin-top:14px;display:flex;gap:14px;align-items:center;font:500 12px/1.55 'Satoshi Variable';color:#6D859F"><span>Every question names the flag or gap that earned it — nothing generic. Bring back any of these documents and the <b>re-run is free</b>; the estimate tightens, the credit stays spent once.</span><span style="margin-left:auto;flex:none"><a href="#r7">Ask these in chat instead →</a></span></div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:1000px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">Lives after §7 in the document and prints as the last page (appendix C) — checkboxes are real print targets, on screen they persist per report · generated by engine rules: each flag emits its question template, each missing-document gap emits one; the LLM phrases, never invents an item · chat chip “What should I ask the agent?” (R7-1) answers with this list and cites it · Copy all → plain text with the address on top, ready for WhatsApp to the agent · document chips reuse C1 grammar (dashed = gap) · FI: ”Kysy välittäjältä — näyttöä varten” · ”Pyydä isännöitsijäntodistus” · ”Onko yhtiökokous päättänyt LVIS-hankkeesta?” · ”EI ILMOITUKSESSA” · contract: GET /r/:id/agent-checklist → items[{question, questionFi, basis:{flagId|gap}, answersWith, checked}].</div>
+</sc-if>
+</div>
+</div>
+
+</section>
+
+<section id="r7p" style="padding:56px 64px 48px;border-bottom:1px solid rgba(20,34,45,.1)">
+<div style="display:flex;align-items:baseline;gap:12px;margin:0 0 6px">
+<span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">R7-P</span>
+<h2 style="margin:0;font:500 24px/1.2 'Space Grotesk',system-ui;color:#14222D">The PDF — A4, the thing shown to a spouse and a bank</h2>
+<span style="font:500 14px/1.4 'Satoshi Variable';color:#6D859F">Page 1 rendered in Finnish (the primary market’s artifact). Pages 2–3 in English for review — full string parity.</span>
+</div>
+<div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin-top:20px">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">P1</span>A4 · Kansilehti / verdict · Finnish</div>
+<div data-screen-label="P1 A4 cover Finnish" style="width:794px;height:1123px;background:#FFFFFF;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);display:flex;flex-direction:column;padding:56px 64px">
+<div style="display:flex;align-items:center;gap:12px;padding-bottom:18px;border-bottom:2px solid #14222D">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n24 }}" asset-base="assets/logo" hint-size="130px,24px"></x-import>
+<span style="margin-left:auto;text-align:right;font:500 12px/1.5 'Satoshi Variable';color:#6D859F">Asunnon riskianalyysi<br><span style="color:#14222D;font-weight:700">№ 2026-1187</span> · 28.7.2026</span>
+</div>
+<div style="margin-top:36px;font:700 12px/15px 'Satoshi Variable';letter-spacing:.09em;text-transform:uppercase;color:#427AA1">Täysi raportti · luottamuksellinen</div>
+<h1 style="margin:12px 0 8px;font:500 34px/1.15 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14,<br>33100 Tampere</h1>
+<div style="font:500 15px/1.6 'Satoshi Variable';color:#46525E">2h+kk · 54 m² · 4/6 krs, hissi · rakennettu 1962<br>As Oy Tampereen Tuomiokolmio · vuokratontti (Tampereen kaupunki, päättyy 2031)</div>
+<div style="margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="border:1px solid #DFE1E7;border-radius:14px;padding:18px 22px"><div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Bruttotuotto</div><div style="margin-top:6px;font:500 38px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8,6 %</div><div style="margin-top:6px;font:500 13px/1.5 'Satoshi Variable';color:#6D859F">vuokra P50 845 € · velaton 118 000 €</div></div>
+<div style="border:1px solid #DFE1E7;border-radius:14px;padding:18px 22px;background:#FBFAF7"><div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Todellinen tuotto</div><div style="margin-top:6px;font:500 38px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5,8 %</div><div style="margin-top:6px;font:500 13px/1.5 'Satoshi Variable';color:#6D859F">sis. korjausvastuu 58 200 € (4–7 v)</div></div>
+</div>
+<div style="margin-top:12px;border:1px solid #DFE1E7;border-left:4px solid #FF6F61;border-radius:14px;background:#FFF7F5;padding:16px 22px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:500 24px/1.1 'Space Grotesk';color:#BE4437">Ei läpäise sijoituspolitiikkaa</span><span style="font:500 13px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums">3 / 14 testiä hylkää · Tasapainoinen</span></div>
+<div style="margin-top:6px;font:500 13.5px/1.6 'Satoshi Variable';color:#2B2A28">Kaksi kolmesta hylkäyksestä johtuu rakennuksesta, ei hinnasta. Korjausvastuu on 49,3 % velattomasta hinnasta — mikään tarjous ei korjaa sitä.</div>
+</div>
+<div style="margin-top:12px;display:flex;gap:12px">
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:14px;padding:14px 18px;display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;flex:none;border-radius:10px;background:#FFECBF;color:#B98900;font:500 22px/40px 'Space Grotesk';text-align:center">C</span><span style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Taloyhtiön<br>arvosana</span></div>
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:14px;padding:14px 18px;display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;flex:none;border-radius:10px;background:#DAEDE7;color:#1E7F4F;font:500 22px/40px 'Space Grotesk';text-align:center">A</span><span style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Sijaintikunta<br>Tampere</span></div>
+<div style="flex:1.4;border:1px solid #DFE1E7;border-radius:14px;padding:14px 18px"><div style="font:700 11px/14px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F">Riskiliput · 3</div>
+<div style="margin-top:7px;display:flex;flex-direction:column;gap:4px;font:500 12.5px/1.45 'Satoshi Variable';color:#14222D">
+<span style="display:flex;gap:7px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:#FF6F61;flex:none"></span>Putkiremontti tekemättä · 58 200 €</span>
+<span style="display:flex;gap:7px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:#FFB300;flex:none"></span>Vuokratontti päättyy 2031</span>
+<span style="display:flex;gap:7px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:#FFB300;flex:none"></span>Ikkunat alkuperäiset 1962</span>
+</div></div>
+</div>
+<div style="margin-top:auto">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;padding-top:18px;border-top:1px solid #DFE1E7;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E">
+<span>Lähteet: Oikotie 21966412 (luettu 28.7.2026 13.40) · Pirkanmaan markkinadata Q2/2026</span>
+<span style="text-align:right">Laskentamoottori v2.3 · kielimalli kirjoittaa vain proosan</span>
+<span>Isännöitsijäntodistusta ei toimitettu — arvio tarkentuu sillä maksutta</span>
+<span style="text-align:right;color:#6D859F">Analyysi, ei sijoitusneuvontaa · Resimator OY</span>
+</div>
+<div style="margin-top:14px;display:flex;align-items:center;font:500 11.5px/1.4 'Satoshi Variable';color:#A2A8AE"><span>resimator.fi/r/tuomiokirkonkatu-23-b-14-tampere</span><span style="margin-left:auto">1 / 3</span></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">P2</span>A4 · Flags &amp; liability · English</div>
+<div data-screen-label="P2 A4 flags liability" style="width:794px;height:1123px;background:#FFFFFF;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);display:flex;flex-direction:column;padding:48px 64px">
+<div style="display:flex;align-items:center;font:500 11px/1.4 'Satoshi Variable';color:#A2A8AE;padding-bottom:12px;border-bottom:1px solid #DFE1E7"><span>№ 2026-1187 · Tuomiokirkonkatu 23 B 14, Tampere</span><span style="margin-left:auto">Risk flags &amp; liability</span></div>
+<div style="margin-top:22px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">§2</span><h2 style="margin:0;font:500 19px/1.25 'Space Grotesk';color:#14222D">The three flags — claim, then its sentence</h2></div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+<div style="border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:12px;padding:13px 17px">
+<div style="display:flex;gap:9px;align-items:baseline"><span style="font:500 14.5px/1.3 'Space Grotesk';color:#14222D;flex:1">1 · Pipe renovation surveyed but not carried out</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFDBD7;color:#BE4437;flex:none">HIGH · 58 200 € · 4–7 Y</span></div>
+<div style="margin-top:6px;font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">Survey 2024, LVIS planning started, nothing executed since 1962. The classic pre-renovation sequence; cost falls on the buyer of the shares.</div>
+<div style="margin:8px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:7px 11px"><span style="font:500 12px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024 ja LVIS-hankesuunnittelu on käynnistetty.” · ”Viemäreiden kuvaus tehty 2023, korjaustarpeita todettu.”</span><span style="display:block;margin-top:2px;font:500 10px/1.4 'Satoshi Variable';color:#6D859F">Listing text, Oikotie 21966412</span></div>
+</div>
+<div style="border:1px solid #DFE1E7;border-left:3px solid #FFB300;border-radius:12px;padding:13px 17px">
+<div style="display:flex;gap:9px;align-items:baseline"><span style="font:500 14.5px/1.3 'Space Grotesk';color:#14222D;flex:1">2 · Plot leased from the city — lease ends 31.12.2031</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFECBF;color:#B98900;flex:none">CAUTION · RESET RISK</span></div>
+<div style="margin-top:6px;font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">District resets 2024–25 added 0.60–1.10 €/m²/mo → 32–59 €/mo for 54 m² from 2032, on top of renovation financing.</div>
+<div style="margin:8px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:7px 11px"><span style="font:500 12px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Tontti on vuokrattu Tampereen kaupungilta, maanvuokrasopimus voimassa 31.12.2031 saakka.”</span><span style="display:block;margin-top:2px;font:500 10px/1.4 'Satoshi Variable';color:#6D859F">Listing text, Oikotie 21966412</span></div>
+</div>
+<div style="border:1px solid #DFE1E7;border-left:3px solid #FFB300;border-radius:12px;padding:13px 17px">
+<div style="display:flex;gap:9px;align-items:baseline"><span style="font:500 14.5px/1.3 'Space Grotesk';color:#14222D;flex:1">3 · Windows and balcony doors original, 1962</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFECBF;color:#B98900;flex:none">CAUTION · 5 000–9 000 €</span></div>
+<div style="margin-top:6px;font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">5 200 € share inside the LVIS scope (§3); standalone 5 000–9 000 €. Original glazing visibly suppresses P10 rent among comparables.</div>
+<div style="margin:8px 0 0;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 8px 8px 0;padding:7px 11px"><span style="font:500 12px/1.5 'Satoshi Variable';color:#14222D;font-style:italic">”Ikkunat ja parvekeovet ovat alkuperäiset.”</span><span style="display:block;margin-top:2px;font:500 10px/1.4 'Satoshi Variable';color:#6D859F">Listing text, Oikotie 21966412</span></div>
+</div>
+</div>
+<div style="margin-top:24px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">§3</span><h2 style="margin:0;font:500 19px/1.25 'Space Grotesk';color:#14222D">Renovation liability, component by component</h2></div>
+<div style="margin-top:10px;display:grid;grid-template-columns:minmax(0,1fr) 170px 110px 100px;gap:0 12px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F;padding:0 2px 6px;border-bottom:1px solid #DFE1E7"><span>Component</span><span style="text-align:right">Basis</span><span style="text-align:right">Share</span><span style="text-align:right">Provenance</span></div>
+<sc-for list="{{ liabilityRows }}" as="li" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px 110px 100px;gap:0 12px;align-items:baseline;padding:8px 2px;border-bottom:1px solid #F0EDE7">
+<span style="font:500 12.5px/1.4 'Satoshi Variable';color:#14222D">{{ li.name }}</span>
+<span style="text-align:right;font:500 11.5px/1.4 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums">{{ li.basis }}</span>
+<span style="text-align:right;font:500 13.5px/1.3 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">{{ li.amount }}</span>
+<span style="text-align:right"><span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;{{ li.chipStyle }}">{{ li.chip }}</span></span>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 170px 110px 100px;gap:0 12px;padding:9px 2px;border-bottom:2px solid #14222D"><span style="font:700 12.5px/1.4 'Satoshi Variable';color:#14222D">Total · window 4–7 years</span><span style="text-align:right;font:500 11.5px/1.4 'Satoshi Variable';color:#46525E">P80 case 66 300 €</span><span style="text-align:right;font:700 15px/1.2 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">58 200 €</span><span></span></div>
+<div style="margin-top:8px;font:500 11px/1.55 'Satoshi Variable';color:#6D859F">27 completed linjasaneeraus contracts, Pirkanmaa 2019–2026 · median 890 €/m², P80 1 040 €/m² · timing from the observed survey → planning → decision → execution sequence.</div>
+<div style="margin-top:auto;display:flex;align-items:center;font:500 11.5px/1.4 'Satoshi Variable';color:#A2A8AE"><span>Resimator · engine v2.3</span><span style="margin-left:auto">2 / 3</span></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">P3</span>A4 · Numbers &amp; the fourteen tests · English</div>
+<div data-screen-label="P3 A4 numbers tests" style="width:794px;height:1123px;background:#FFFFFF;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);display:flex;flex-direction:column;padding:48px 64px">
+<div style="display:flex;align-items:center;font:500 11px/1.4 'Satoshi Variable';color:#A2A8AE;padding-bottom:12px;border-bottom:1px solid #DFE1E7"><span>№ 2026-1187 · Tuomiokirkonkatu 23 B 14, Tampere</span><span style="margin-left:auto">Underwriting &amp; tests</span></div>
+<div style="margin-top:22px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">§4–5</span><h2 style="margin:0;font:500 19px/1.25 'Space Grotesk';color:#14222D">Rent and financing</h2></div>
+<div style="margin-top:10px;display:flex;gap:10px;font-variant-numeric:tabular-nums">
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:12px 15px;background:#FBFAF7;box-shadow:inset 0 0 0 1.5px #427AA1"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.05em;color:#427AA1">P10 · UNDERWRITTEN</div><div style="margin-top:3px;font:500 21px/1 'Space Grotesk';color:#14222D">780 €</div></div>
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:12px 15px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.05em;color:#6D859F">P50</div><div style="margin-top:3px;font:500 21px/1 'Space Grotesk';color:#14222D">845 €</div></div>
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:12px 15px"><div style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.05em;color:#6D859F">P90</div><div style="margin-top:3px;font:500 21px/1 'Space Grotesk';color:#14222D">910 €</div></div>
+<div style="flex:2.1;border:1px solid #DFE1E7;border-radius:12px;padding:12px 15px;font:500 11.5px/1.5 'Satoshi Variable';color:#46525E">Equity 30 000 € · loan 76 400 € @ 3.45 %, 25 y → 380 €/mo · transfer tax 1 770 € · cash in 31 800 €</div>
+</div>
+<div style="margin-top:22px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">§6</span><h2 style="margin:0;font:500 19px/1.25 'Space Grotesk';color:#14222D">Year by year, P10 rent</h2></div>
+<div style="margin-top:10px;display:grid;grid-template-columns:56px 1fr 1fr 1fr 1fr 1fr;gap:0 10px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.05em;text-transform:uppercase;color:#6D859F;padding:0 2px 6px;border-bottom:1px solid #DFE1E7"><span>Year</span><span style="text-align:right">Rent</span><span style="text-align:right">Charges</span><span style="text-align:right">Debt</span><span style="text-align:right">Cash flow</span><span style="text-align:right">Cumulative</span></div>
+<sc-for list="{{ yearRows }}" as="y" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:56px 1fr 1fr 1fr 1fr 1fr;gap:0 10px;padding:7px 2px;border-bottom:1px solid #F0EDE7;background:{{ y.bg }}">
+<span style="font:500 12px/1.3 'Space Grotesk';color:#14222D">{{ y.y }}</span>
+<span style="text-align:right;font:500 12px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">{{ y.rent }}</span>
+<span style="text-align:right;font:500 12px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">{{ y.charges }}</span>
+<span style="text-align:right;font:500 12px/1.3 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">4 560 €</span>
+<span style="text-align:right;font:500 12px/1.3 'Space Grotesk';color:{{ y.cfColor }};font-variant-numeric:tabular-nums">{{ y.cf }}</span>
+<span style="text-align:right;font:500 12px/1.3 'Satoshi Variable';color:{{ y.cfColor }};font-variant-numeric:tabular-nums">{{ y.cum }}</span>
+</div>
+</sc-for>
+<div style="margin-top:7px;font:500 10.5px/1.5 'Satoshi Variable';color:#6D859F">Y5 adds renovation financing +310 €/mo (modelled) · Y6→ +8 % post-renovation rent uplift (modelled) · growth: rent 1.5 %/y, charges 3.0 %/y.</div>
+<div style="margin-top:22px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">§7</span><h2 style="margin:0;font:500 19px/1.25 'Space Grotesk';color:#14222D">The fourteen tests — Balanced policy</h2></div>
+<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:5px 18px">
+<sc-for list="{{ testsCompact }}" as="t" hint-placeholder-count="14">
+<div style="display:flex;align-items:baseline;gap:8px;padding:5px 2px;border-bottom:1px solid #F0EDE7">
+<span style="width:13px;flex:none;font:700 11px/1.3 'Satoshi Variable';color:{{ t.c }}">{{ t.mark }}</span>
+<span style="min-width:0;flex:1;font:500 11.5px/1.4 'Satoshi Variable';color:#14222D">{{ t.name }}</span>
+<span style="font:500 11px/1.35 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums;white-space:nowrap">{{ t.vals }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:auto">
+<div style="padding-top:14px;border-top:2px solid #14222D;display:flex;gap:14px;font:500 10.5px/1.55 'Satoshi Variable';color:#6D859F"><span style="flex:1">OBSERVED read from source · MAPPED computed from observed · MODELLED engine model on market data · ESTIMATED stated range. Figures reflect the listing as read 28.07.2026 13:40. Analysis of public data — not investment advice. Resimator OY, Turku.</span></div>
+<div style="margin-top:12px;display:flex;align-items:center;font:500 11.5px/1.4 'Satoshi Variable';color:#A2A8AE"><span>resimator.fi/r/tuomiokirkonkatu-23-b-14-tampere</span><span style="margin-left:auto">3 / 3</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:44px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">R3-FI</span>Finnish pass — new frames R7-3/4/5/7/8 · (R7-6 is the FI body itself)</div>
+<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+<div data-screen-label="R7-3 R7-7 FI rail and chat bar" style="width:560px;background:#F6F3EE;border-radius:16px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:22px 24px">
+<div style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.07em;color:#A2A8AE;margin-bottom:10px">R7-3 / R7-7 · §-NAUHA + KESKUSTELUPALKKI</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;background:#14222D;color:#F6F3EE">§1 Päätelmä</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§2 Riskiliput</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§3 Korjausvastuu</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§4 Vuokra</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§5 Rahoitus</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§6 Vuosi vuodelta</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 12px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">§7 Testit</span>
+</div>
+<div style="margin-top:12px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:11px">
+<span style="width:30px;height:30px;flex:none;border-radius:9px;background:#14222D;color:#E7FE4D;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Icon" name="MessageSmileCircle" size="15" hint-size="15px,15px"></x-import></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:700 12.5px/1.3 'Satoshi Variable';color:#14222D">Kysy raportilta</span><span style="display:block;font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">13 / 15 kysymystä jäljellä · aukeaa oikeasta reunasta</span></span>
+<span style="flex:none;border:1px solid #DFE1E7;border-radius:10px;background:#FFFFFF;padding:8px 12px;font:500 11.5px/1.4 'Satoshi Variable';color:#A2A8AE">Kysy tästä asunnosta…</span>
+</div>
+<div style="margin-top:9px;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">Yläpalkin toiminnot: ”Lataa PDF” · ”Omat raportit” · 4 KREDIITTIÄ.</div>
+</div>
+<div data-screen-label="R7-4 FI chat exhausted" style="width:560px;background:#F6F3EE;border-radius:16px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:22px 24px">
+<div style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.07em;color:#A2A8AE;margin-bottom:10px">R7-4 · KYSYMYKSET KÄYTETTY</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:14px 18px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:500 14px/1.3 'Space Grotesk';color:#14222D">Kysy raportilta</span><span style="font:500 10.5px/1.4 'Satoshi Variable';color:#BE4437">0 / 15 kysymystä jäljellä</span></div>
+<div style="margin-top:10px;border:1px solid #DFE1E7;border-radius:10px;background:#FBFAF7;padding:10px 13px;font:500 12px/1.6 'Satoshi Variable';color:#46525E">Se oli tämän raportin viidestoista kysymys. Laskuri nollautuu, kun analyysi ajetaan uudelleen — maksutta aina, kun ilmoitus muuttuu. Jäikö jotain auki: <a href="#r7">hello@resimator.fi</a>.</div>
+<div style="margin-top:10px;display:flex;gap:8px;align-items:center;opacity:.5"><span style="flex:1;border:1px solid #DFE1E7;border-radius:10px;padding:9px 12px;font:500 12px/1.4 'Satoshi Variable';color:#A2A8AE">Kysymysraja täynnä</span></div>
+</div>
+</div>
+<div data-screen-label="R7-5 FI listing changed" style="width:560px;background:#F6F3EE;border-radius:16px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:22px 24px">
+<div style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.07em;color:#A2A8AE;margin-bottom:10px">R7-5 · ILMOITUS MUUTTUI</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-left:4px solid #FFB300;border-radius:12px;padding:14px 18px">
+<div style="font:500 15px/1.3 'Space Grotesk';color:#14222D">Ilmoitus muuttui raportin luonnin jälkeen</div>
+<div style="margin-top:4px;font:500 12px/1.6 'Satoshi Variable';color:#46525E;font-variant-numeric:tabular-nums">Pyyntihinta nyt <b>98 600 €</b> (oli 104 600 €), havaittu 29.7.2026 8.12. Nämä sivut näyttävät 28.7. luennan — muutos on yksi rivi, joten nimeämme sen arvailun sijaan.</div>
+<div style="margin-top:10px;display:flex;gap:8px"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="sm" hint-size="200px,36px">Aja uudelleen — maksutta</x-import><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="tertiary" size="sm" hint-size="160px,36px">Pidä tämä versio</x-import></div>
+</div>
+<div style="margin-top:9px;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">v1 säilyy Omissa raporteissa ja PDF:nä · keskustelulaskuri nollautuu uuden ajon myötä.</div>
+</div>
+<div data-screen-label="R7-8 FI chat panel" style="width:560px;background:#F6F3EE;border-radius:16px;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05);padding:22px 24px">
+<div style="font:700 9.5px/13px 'Satoshi Variable';letter-spacing:.07em;color:#A2A8AE;margin-bottom:10px">R7-8 · PANEELI AUKI · ESIMERKKIVASTAUS</div>
+<div style="background:#FFFFFF;border:1px solid #DFE1E7;border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+<div style="align-self:flex-end;max-width:80%;background:#14222D;color:#F6F3EE;border-radius:12px 12px 4px 12px;padding:8px 12px;font:500 12px/1.5 'Satoshi Variable'">Onko 845 € turvallinen vuokraoletus?</div>
+<div style="align-self:flex-start;max-width:94%;border:1px solid #DFE1E7;border-radius:12px 12px 12px 4px;padding:9px 12px">
+<div style="font:500 12px/1.55 'Satoshi Variable';color:#2B2A28">845 € on istuva vuokrasuhde — todellinen ja havaittu. Laskenta käyttää silti P10:tä = <b>780 €</b>: jos vuokralainen lähtee, se on uudelleenvuokrauksen lattia 27 verrokin joukossa.</div>
+<div style="display:flex;gap:6px;margin-top:7px"><span style="font:700 9px/12px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§4 Vuokra</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin-top:44px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.08em;text-transform:uppercase;color:#6D859F"><span style="font:700 10px/16px 'Space Grotesk';padding:2px 7px;border-radius:5px;background:#14222D;color:#E7FE4D">P4</span>A4 · Rahoitusyhteenveto pankille · bank-ready, Finnish</div>
+<div data-screen-label="P4 A4 bank summary" style="width:794px;height:1123px;background:#FFFFFF;border:1px solid #DFE1E7;box-shadow:0 1px 3px rgba(13,13,18,.05),0 1px 2px rgba(13,13,18,.04);display:flex;flex-direction:column;padding:52px 64px">
+<div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:2px solid #14222D">
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Logo" variant="lockup" tone="positive" size="{{ n22 }}" asset-base="assets/logo" hint-size="118px,22px"></x-import>
+<span style="margin-left:auto;text-align:right;font:500 12px/1.5 'Satoshi Variable';color:#6D859F">Rahoitusyhteenveto pankille<br><span style="color:#14222D;font-weight:700">№ 2026-1187 · v2</span> · 29.7.2026</span>
+</div>
+<h1 style="margin:22px 0 4px;font:500 26px/1.2 'Space Grotesk';color:#14222D">Tuomiokirkonkatu 23 B 14, 33100 Tampere</h1>
+<div style="font:500 12.5px/1.6 'Satoshi Variable';color:#6D859F">2h+kk · 54 m² · 4/6 krs, hissi · 1962 · As Oy Tampereen Tuomiokolmio · vuokratontti (päättyy 2031) · Oikotie 21966412, luettu 29.7.2026</div>
+<div style="margin-top:20px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">1</span><h2 style="margin:0;font:500 17px/1.25 'Space Grotesk';color:#14222D">Kauppa ja rahoitustarve</h2></div>
+<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:0 36px">
+<div style="display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Myyntihinta</span><span style="margin-left:auto">98 600 €</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Yhtiölainaosuus (maksetaan pois)</span><span style="margin-left:auto">13 400 €</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:700 12.5px/1.4 'Satoshi Variable';color:#14222D"><span>Velaton hinta</span><span style="margin-left:auto">112 000 €</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Varainsiirtovero 1,5 %</span><span style="margin-left:auto">1 680 €</span></div>
+</div>
+<div style="display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Oma pääoma</span><span style="margin-left:auto">30 000 €</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:700 12.5px/1.4 'Satoshi Variable';color:#14222D"><span>Haettava laina</span><span style="margin-left:auto">83 680 €</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Luototusaste velattomasta (LTV)</span><span style="margin-left:auto">74,7 %</span></div>
+<div style="display:flex;padding:7px 0;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Kohde vakuutena</span><span style="margin-left:auto">pankin arvion mukaan</span></div>
+</div>
+</div>
+<div style="margin-top:18px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">2</span><h2 style="margin:0;font:500 17px/1.25 'Space Grotesk';color:#14222D">Kantokyky kuukausitasolla — varovaisin oletuksin</h2></div>
+<div style="margin-top:10px;display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:0 2px 6px;border-bottom:1px solid #DFE1E7;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F"><span></span><span style="text-align:right">Peruskorko 3,45 %</span><span style="text-align:right">Stressikorko 5,50 %</span></div>
+<div style="display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:7px 2px;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Vuokratuotto — laskennassa P10, ei P50 <span style="font:700 8.5px/10px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MALLINNETTU</span></span><span style="text-align:right">+780 €</span><span style="text-align:right">+780 €</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:7px 2px;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Hoitovastike 5,50 €/m² <span style="font:700 8.5px/10px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">HAVAITTU</span></span><span style="text-align:right">−297 €</span><span style="text-align:right">−297 €</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:7px 2px;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Vajaakäyttö- ja ylläpitovaraus (1 kk/v + varaus)</span><span style="text-align:right">−117 €</span><span style="text-align:right">−117 €</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:7px 2px;border-bottom:1px solid #F0EDE7;font:500 12.5px/1.4 'Satoshi Variable';color:#2B2A28"><span>Lainanhoito, annuiteetti 25 v (83 680 €)</span><span style="text-align:right">−416 €</span><span style="text-align:right">−514 €</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:0 14px;padding:9px 2px;border-bottom:2px solid #14222D;font:700 13px/1.4 'Satoshi Variable';color:#14222D"><span>Kassavirta / kk</span><span style="text-align:right;color:#BE4437">−50 €</span><span style="text-align:right;color:#BE4437">−148 €</span></div>
+</div>
+<div style="margin-top:8px;font:500 11px/1.6 'Satoshi Variable';color:#6D859F">Laskelma tarkoituksella varovainen: vuokrana P10 (istuva vuokra 845 €/kk on havaittu; alueen mediaani 860 €/kk). P50-vuokralla kassavirta peruskorolla on +15 €/kk.</div>
+<div style="margin-top:18px;display:flex;gap:9px;align-items:center"><span style="font:700 11px/14px 'Space Grotesk';color:#A2A8AE">3</span><h2 style="margin:0;font:500 17px/1.25 'Space Grotesk';color:#14222D">Tiedossa oleva korjausvastuu — kerrottu pankille suoraan</h2></div>
+<div style="margin-top:10px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:10px;padding:12px 16px;font:500 12.5px/1.6 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">Linjasaneeraus kartoitettu, ei toteutettu: osuus <b>56 400 €</b>, ajoittuu 4–5 vuoteen (isännöitsijäntodistus + PTS saatu). Toteutuessaan rahoitusvastike ≈ <b>+310 €/kk</b> vuodesta 5 — vuokrankorotuspotentiaali remontin jälkeen +8 % <span style="font:700 8.5px/10px 'Satoshi Variable';letter-spacing:.05em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MALLINNETTU</span>. Vuokratontin maanvuokra tarkistetaan 2031 (arvio +32–59 €/kk).</div>
+<div style="margin-top:auto">
+<div style="padding-top:14px;border-top:2px solid #14222D;font:500 10.5px/1.6 'Satoshi Variable';color:#6D859F">Lähteet: Oikotie 21966412 (luettu 29.7.2026) · isännöitsijäntodistus &amp; PTS (toimitettu 28.7.2026) · Pirkanmaan markkinadata Q2/2026 · laskentamoottori v2.3. Tämä on analyysi ostajan tueksi — <b>ei lainatarjous eikä vakuusarvio</b>. Resimator OY, Turku.</div>
+<div style="margin-top:12px;display:flex;align-items:center;font:500 11.5px/1.4 'Satoshi Variable';color:#A2A8AE"><span>resimator.fi/r/tuomiokirkonkatu-23-b-14-tampere</span><span style="margin-left:auto">1 / 1</span></div>
+</div>
+</div>
+<sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+<div style="width:794px;font:500 11.5px/1.6 'Satoshi Variable';color:#6D859F;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:10px;padding:8px 12px">One sheet, the bank’s reading order: purchase → loan → monthly serviceability at base AND stress rate → known liabilities disclosed up front (hiding the pipe renovation from a bank helps nobody) · uses v2 figures (post price-drop, post documents) with loan re-derived: 112 000 + 1 680 − 30 000 = 83 680 € · entry: report footer “Bank summary (PDF)” next to Download PDF; GET /r/:id/bank-summary.pdf?lang=fi|en · applicant hands it over with the full report attached · EN variant string-par (“Financing summary for your bank”, “Deliberately conservative: P10 rent underwritten”).</div>
+</sc-if>
+</div>
+</div>
+
+<div style="margin-top:44px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+<div style="width:1000px;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:14px;padding:16px 20px">
+<div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F;margin-bottom:10px">Handoff notes — R7 · print</div>
+<div style="display:flex;flex-direction:column;gap:6px;font:500 12.5px/1.6 'Satoshi Variable';color:#46525E">
+<div><b>Print</b> → A4 210×297, margins 17 mm, running header from p2, footer = public URL + page x/y · body ≥12 pt equivalents (values above are the 96-dpi px) · semantic tints must survive grayscale: severity is border-weight + label, never colour alone.</div>
+<div><b>Document rhythm</b> → claim (satoshi 13.5/1.6 ink) directly followed by its quote block (steel-blue 3 px rule, soft-sky fill, italic Finnish + source line + translation). A number never appears without a chip or an OBSERVED source within its row.</div>
+<div><b>Chat API</b> → POST /r/:id/chat {q} → {answer, citations:[{section,anchor}], turnsLeft} · engine what-ifs run POST /r/:id/whatif {rent:900} and the answer embeds returned figures verbatim.</div>
+<div><b>States</b> → purchased default (R7-1/2) · chat empty/mid/exhausted · listing-changed banner (re-run free) · PDF generating (button spinner 2–4 s).</div>
+<div><b>Deferred frames</b> — all rendered above: report mobile R7-3 · chat exhausted R7-4 · listing-changed R7-5 · FI body R7-6 · tablet 768 R7-7/R7-8.</div>
+<div><b>Breakpoints</b> → ≥1280 chat docks beside the 800 px document (R7-1) · 768–1279 document full-width, chat = bottom rail → right overlay panel (R7-7/8) · ≤767 single column, §-rail + chat sheet (R7-3).</div>
+<div><b>Price &amp; rent history</b> → R7-9 expands from the header €/m² stat, R7-10 from §4’s lettings line; GET /r/:id/price-history · /rent-history; PDF appendices A + B (one sheet); chat cites them as “price history” / “rent history”.</div>
+<div><b>Agent checklist</b> → R7-11 after §7, prints as appendix C; engine-generated from flags + gaps (LLM phrases only); checkbox state persists per report; “Copy all” exports plain text; chat chip “What should I ask the agent?” cites it.</div>
+<div><b>Bank summary</b> → P4, one A4 in the bank’s reading order (purchase → loan → base+stress serviceability → liabilities disclosed); GET /r/:id/bank-summary.pdf?lang=fi|en; entry beside Download PDF; always uses the current version’s figures with P10 underwriting stated.</div>
+</div>
+</div>
+</div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showFlowLines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Canvas&quot;},&quot;showAnnotations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Canvas&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const obs = 'box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D';
+    const mod = 'box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F';
+    const est = 'border:1px dashed #B6C2CF;color:#6D859F';
+    const passC = '#1E7F4F', failC = '#BE4437';
+    return {
+      showFlowLines: p.showFlowLines ?? true,
+      showAnnotations: p.showAnnotations ?? true,
+      n20: 20, n22: 22, n24: 24, n560: 560, n230: 230,
+      priceHistory: [
+        {label:'2016', value:2150, line:2185}, {label:'2017', value:2230, line:2185}, {label:'2018', value:2320, line:2185},
+        {label:'2019', value:2400, line:2185}, {label:'2020', value:2450, line:2185}, {label:'2021', value:2610, line:2185},
+        {label:'2022', value:2780, line:2185}, {label:'2023', value:2640, line:2185}, {label:'2024', value:2560, line:2185},
+        {label:'2025', value:2570, line:2185}, {label:'2026', value:2590, line:2185}
+      ],
+      rentHistory: [
+        {label:'2016', value:705, line:845}, {label:'2017', value:720, line:845}, {label:'2018', value:738, line:845},
+        {label:'2019', value:755, line:845}, {label:'2020', value:770, line:845}, {label:'2021', value:782, line:845},
+        {label:'2022', value:800, line:845}, {label:'2023', value:825, line:845}, {label:'2024', value:842, line:845},
+        {label:'2025', value:852, line:845}, {label:'2026', value:860, line:845}
+      ],
+      liabilityRows: [
+        {name:'Piping renovation (linjasaneeraus)', note:'water + drains + electrics risers, bathrooms to code', basis:'54 m² × 890 €/m² median', amount:'48 100 €', chip:'MODELLED', chipStyle:mod},
+        {name:'Roof, apartment’s share', note:'felt roof renewed 1998 — at end of cycle within the window', basis:'company est. ÷ share ratio', amount:'4 900 €', chip:'ESTIMATED', chipStyle:est},
+        {name:'Windows & balcony doors, share', note:'original 1962 — inside the LVIS scope (flag 3)', basis:'company est. ÷ share ratio', amount:'5 200 €', chip:'ESTIMATED', chipStyle:est}
+      ],
+      yearRows: [
+        {y:'Y1', rent:'9 360 €', charges:'5 750 €', cf:'−950 €', cum:'−950 €', cfColor:failC, bg:'transparent'},
+        {y:'Y2', rent:'9 500 €', charges:'5 920 €', cf:'−980 €', cum:'−1 930 €', cfColor:failC, bg:'transparent'},
+        {y:'Y3', rent:'9 640 €', charges:'6 100 €', cf:'−1 020 €', cum:'−2 950 €', cfColor:failC, bg:'transparent'},
+        {y:'Y4', rent:'9 790 €', charges:'6 280 €', cf:'−1 050 €', cum:'−4 000 €', cfColor:failC, bg:'transparent'},
+        {y:'Y5', rent:'9 930 €', charges:'10 190 €', cf:'−4 820 €', cum:'−8 820 €', cfColor:failC, bg:'rgba(255,179,0,.07)'},
+        {y:'Y10', rent:'11 550 €', charges:'11 220 €', cf:'−4 230 €', cum:'−30 500 €', cfColor:failC, bg:'transparent'}
+      ],
+      testsCompact: [
+        {mark:'✓', c:passC, name:'Gross yield ≥ 6.0 %', vals:'8.6 %'},
+        {mark:'✓', c:passC, name:'Net yield ≥ 4.0 %', vals:'5.6 %'},
+        {mark:'✗', c:failC, name:'Cash flow @ 3.45 % ≥ 0 €', vals:'−14 €/mo'},
+        {mark:'✓', c:passC, name:'Cash flow @ 5.5 % ≥ −150 €', vals:'−103 €/mo'},
+        {mark:'✗', c:failC, name:'Liability ≤ 25 % of debt-free', vals:'49.3 %'},
+        {mark:'✗', c:failC, name:'Company grade ≥ B', vals:'C'},
+        {mark:'✓', c:passC, name:'Municipality grade ≥ B', vals:'A'},
+        {mark:'✓', c:passC, name:'Price vs district median ≤ +10 %', vals:'−15.6 %'},
+        {mark:'✓', c:passC, name:'LTV ≤ 75 %', vals:'73 %'},
+        {mark:'✓', c:passC, name:'Cash needed ≤ 95 000 €', vals:'31 800 €'},
+        {mark:'✓', c:passC, name:'P10 covers charges + interest', vals:'+81 €/mo'},
+        {mark:'✓', c:passC, name:'Hoitovastike ≤ 6.00 €/m²', vals:'5.50 €'},
+        {mark:'✓', c:passC, name:'Company loan ≤ 30 %', vals:'11.4 %'},
+        {mark:'✓', c:passC, name:'No decided unfunded project < 3 y', vals:'none'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

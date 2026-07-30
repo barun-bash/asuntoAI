@@ -1,0 +1,16 @@
+/* Resimator webfonts.
+   Satoshi — real .woff2 binaries lifted from the production site
+   (resimator-website-v2 → next/app/fonts/satoshi).
+   Space Grotesk — served from Google Fonts (the site loads it via next/font/google). */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Light.woff2") format("woff2");font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Medium.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-MediumItalic.woff2") format("woff2");font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Black.woff2") format("woff2");font-weight:900;font-style:normal;font-display:swap}
+/* Variable cut — preferred when the renderer supports it. Figma files reference it as "Satoshi Variable". */
+@font-face{font-family:"Satoshi Variable";src:url("../assets/fonts/Satoshi-Variable.woff2") format("woff2");font-weight:300 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Satoshi Variable";src:url("../assets/fonts/Satoshi-VariableItalic.woff2") format("woff2");font-weight:300 900;font-style:italic;font-display:swap}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-tokens.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/tokens/fig-typography.css">
+<link rel="stylesheet" href="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/styles.css">
+<script src="_ds/resimator-design-system-49c94fcd-9278-450e-9b10-e68a6d818c8c/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:#F6F3EE;font-family:"Satoshi Variable","Satoshi",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#427AA1;text-decoration:none}
+a:hover{color:#14222D;text-decoration:underline}
+</style>
+</helmet>
+
+<div style="display:flex;align-items:center;gap:9px;padding:22px 64px 0;font:500 12.5px/1.5 'Satoshi Variable',system-ui;color:#6D859F;flex-wrap:wrap"><span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">RESIMATOR REPORT · €79 PRODUCT</span><a href="Resimator%20R1%20Paste%20and%20Verdict.dc.html" style="padding:4px 10px;border-radius:1000px">R1 Paste &amp; verdict</a><span style="color:#C4C8CA">·</span><a href="Resimator%20R2%20Policy%20and%20Purchase.dc.html" style="padding:4px 10px;border-radius:1000px">R2 Policy &amp; purchase</a><span style="color:#C4C8CA">·</span><a href="Resimator%20R3%20Full%20Report%20and%20Chat.dc.html" style="padding:4px 10px;border-radius:1000px">R3 Full report, chat &amp; print</a><span style="color:#C4C8CA">·</span><a href="Resimator%20R4%20Public%20Emails%20Account.dc.html" style="padding:4px 10px;border-radius:1000px">R4 Public page, emails &amp; account</a><span style="color:#C4C8CA">·</span><span style="font-weight:700;color:#14222D;padding:4px 10px;border-radius:1000px;background:#E7FE4D">R5 Components &amp; handoff</span><span style="margin-left:auto;color:#A2A8AE">v1 · 28.07.2026</span></div>
+
+<section id="inv" style="padding:48px 64px 56px">
+<div style="display:flex;align-items:baseline;gap:12px;margin:0 0 22px">
+<span style="font:700 10px/1 'Space Grotesk',system-ui;letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:#14222D;color:#E7FE4D">INVENTORY</span>
+<h2 style="margin:0;font:500 24px/1.2 'Space Grotesk',system-ui;color:#14222D">Report components — every specimen used on R1–R4, with rules</h2>
+<span style="font:500 14px/1.4 'Satoshi Variable';color:#6D859F">New components only; buttons, inputs and logo come from the Resimator DS unchanged.</span>
+</div>
+
+<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:stretch">
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C1</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">ProvenanceChip</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">every number carries one</span></div>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center">
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">OBSERVED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">MAPPED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;border:1px dashed #B6C2CF;color:#6D859F">ESTIMATED</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;border:1px dashed #B6C2CF;color:#6D859F">LOW CONFIDENCE</span>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">HAVAITTU</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">YHDISTETTY</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MALLINNETTU</span>
+<span style="font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;padding:2px 6px;border-radius:5px;border:1px dashed #B6C2CF;color:#6D859F">ARVIOITU</span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Satoshi 700 9.5/12, +6 % tracking, radius 5, padding 2×6 · solid hairline = machine-derived; <b>dashed = uncertainty</b> (estimated / low-confidence / user-supplied) · ink darkens with certainty: Ink → Slate → Steel-grey · never coloured green/amber/red — provenance is not a verdict · sits inline after the number, gap 8 · tooltip carries the one-line definition · in print, chips render at 7 pt and must stay legible in grayscale.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C2</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">CitationBlock</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">the trust primitive</span></div>
+<div style="margin-top:14px;border-left:3px solid #427AA1;background:#EBF2FA;border-radius:0 10px 10px 0;padding:10px 14px">
+<div style="font:500 13px/1.55 'Satoshi Variable';color:#14222D;font-style:italic">”Taloyhtiössä on teetetty kuntotutkimus 2024 ja LVIS-hankesuunnittelu on käynnistetty.”</div>
+<div style="margin-top:3px;font:500 11px/1.5 'Satoshi Variable';color:#6D859F">Listing text · Oikotie 21966412 · read 28.07.2026 · translation: “A condition survey was commissioned in 2024 and HVAC-E project planning has begun.”</div>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Steel Blue 3 px left rule + Soft Sky fill, radius 0/10/10/0 · quote: Satoshi 500 italic, ink, in Finnish always (source language is the evidence) · source line: 11/1.5 steel-grey — source · id · read-date · translation appended only when UI lang ≠ listing lang · <b>placement rule: directly under the claim it supports, never pooled in a footnote</b> · in chat answers it collapses to a §-chip (C12).</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C3</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">FlagCard</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">severity = border + label, never fill</span></div>
+<div style="margin-top:14px;border:1px solid #DFE1E7;border-left:3px solid #FF6F61;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:9px">
+<span style="width:7px;height:7px;flex:none;border-radius:50%;background:#FF6F61"></span><span style="font:500 14px/1.3 'Space Grotesk';color:#14222D;flex:1;min-width:0">Pipe renovation surveyed but not carried out</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFDBD7;color:#BE4437;flex:none">HIGH · 58 200 €</span>
+</div>
+<div style="margin-top:8px;border:1px solid #DFE1E7;border-left:3px solid #FFB300;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:9px">
+<span style="width:7px;height:7px;flex:none;border-radius:50%;background:#FFB300"></span><span style="font:500 14px/1.3 'Space Grotesk';color:#14222D;flex:1;min-width:0">Plot leased from the city — ends 2031</span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFECBF;color:#B98900;flex:none">CAUTION</span>
+</div>
+<div style="margin-top:8px;border:1px solid #DFE1E7;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:9px">
+<span style="width:7px;height:7px;flex:none;border-radius:50%;background:#FFB300"></span><span style="display:flex;gap:6px;flex:1;min-width:0"><span style="height:12px;border-radius:4px;background:#DAE1E7;width:46%"></span><span style="height:12px;border-radius:4px;background:#E8E4DC;width:22%"></span></span><span style="font:700 10px/14px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#FFECBF;color:#B98900;flex:none">CAUTION · 5–9 K€</span><span style="display:flex;color:#6D859F"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Anatomy: dot 7 px → title Space Grotesk 500 → severity pill (Coral-washed HIGH / Amber-washed CAUTION) · body + citations (C2) + cost line expand inside · <b>locked variant</b>: title replaced by two redaction bars (misty 46 % + sand 22 %, static), severity + cost range stay honest, a lock glyph (Lucide path, inlined) trailing · white card on paper; severity never tints the card fill.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C4</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">GradeTile + SeverityDots</span></div>
+<div style="display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap">
+<span style="width:40px;height:40px;border-radius:10px;background:#DAEDE7;color:#1E7F4F;font:500 22px/40px 'Space Grotesk';text-align:center">A</span>
+<span style="width:40px;height:40px;border-radius:10px;background:#E8F0DD;color:#4F7A1E;font:500 22px/40px 'Space Grotesk';text-align:center">B</span>
+<span style="width:40px;height:40px;border-radius:10px;background:#FFECBF;color:#B98900;font:500 22px/40px 'Space Grotesk';text-align:center">C</span>
+<span style="width:40px;height:40px;border-radius:10px;background:#FFE1CF;color:#C05621;font:500 22px/40px 'Space Grotesk';text-align:center">D</span>
+<span style="width:40px;height:40px;border-radius:10px;background:#FFDBD7;color:#BE4437;font:500 22px/40px 'Space Grotesk';text-align:center">E</span>
+<span style="width:1px;height:28px;background:#DFE1E7;margin:0 6px"></span>
+<span style="display:flex;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#FF6F61"></span><span style="width:8px;height:8px;border-radius:50%;background:#FFB300"></span><span style="width:8px;height:8px;border-radius:50%;background:#FFB300"></span></span>
+<span style="font:500 12px/1.4 'Satoshi Variable';color:#46525E">1 high · 2 caution</span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Grades A–E: 40 px tile, radius 10, Space Grotesk 500 22 · wash + deep-tone letter pairs above are the only grade colours; they are <b>verdict</b> colours and appear nowhere else in the product · always paired with a two-line caption (what graded · why) · dots: 8 px, count ≤ 4 shown then “+n” · a11y: tile has aria-label “Housing company grade C — majors pending”; dots always accompanied by text (“1 high”).</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C5</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">MetricCard / YieldPair</span></div>
+<div style="display:flex;gap:10px;margin-top:14px">
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px"><div style="display:flex;align-items:center;gap:7px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Gross yield <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#46525E">MAPPED</span></div><div style="margin-top:4px;font:500 26px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">the listing’s number</div></div>
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px;background:#FBFAF7"><div style="display:flex;align-items:center;gap:7px;font:700 9.5px/12px 'Satoshi Variable';letter-spacing:.06em;text-transform:uppercase;color:#6D859F">Real yield <span style="font:700 9px/11px 'Satoshi Variable';letter-spacing:.06em;padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#6D859F">MODELLED</span></div><div style="margin-top:4px;display:flex;align-items:baseline;gap:7px"><span style="font:500 26px/1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">5.8 %</span><span style="font:700 10px/14px 'Satoshi Variable';padding:1px 7px;border-radius:1000px;background:#FFECBF;color:#B98900">−2.8 pp</span></div><div style="margin-top:5px;font:500 11px/1.45 'Satoshi Variable';color:#6D859F">with the liability priced in</div></div>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Hairline card, radius 12–14 · label caps 9.5 + chip · value Space Grotesk 500, tabular — 54/44/26 px by context · delta pill amber when the truth is worse, seafoam when better · the “real” card alone gets Warm White fill: <b>the corrected number is the highlighted one</b> · P10 “underwritten” variant: 1.5 px steel inset ring (R7-2) · user-supplied variant: dashed border, grey value, “shown, never used”.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C6</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">VerdictBanner</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">the only red/green fills in the product</span></div>
+<div style="margin-top:14px;border:1px solid #DFE1E7;border-left:4px solid #FF6F61;border-radius:12px;background:#FFF7F5;padding:12px 16px"><span style="font:500 19px/1.2 'Space Grotesk';color:#BE4437">Does not pass</span><span style="margin-left:10px;font:500 12px/1.4 'Satoshi Variable';color:#46525E">fails 3 of 14 · Balanced</span></div>
+<div style="margin-top:8px;border:1px solid #DFE1E7;border-left:4px solid #6DB59F;border-radius:12px;background:#F4FAF8;padding:12px 16px"><span style="font:500 19px/1.2 'Space Grotesk';color:#1E7F4F">Passes</span><span style="margin-left:10px;font:500 12px/1.4 'Satoshi Variable';color:#46525E">14 of 14 · 2 near your line</span></div>
+<div style="margin-top:8px;border:1px solid #DFE1E7;border-left:4px solid #B6C2CF;border-radius:12px;background:#FBFAF7;padding:12px 16px"><span style="font:500 19px/1.2 'Space Grotesk';color:#46525E">No verdict — analysis refused</span><span style="margin-left:10px;font:500 12px/1.4 'Satoshi Variable';color:#6D859F">2 extractions low-confidence</span></div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">4 px severity rule + 4 % wash + deep-tone verdict phrase · always carries the count (“3 of 14”) and the policy name — a verdict is never contextless · fail copy leads with what’s fixable vs structural · refused state is grey, never red: refusal ≠ danger · aria-live assertive on policy re-runs.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C7</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">TestRow + PresetPills</span></div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">Conservative</span>
+<span style="font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;background:#14222D;color:#F6F3EE">Balanced</span>
+<span style="display:inline-flex;align-items:center;gap:6px;font:700 11px/1 'Satoshi Variable';padding:8px 13px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D">Custom<span style="width:5px;height:5px;border-radius:50%;background:#E7FE4D;box-shadow:0 0 0 1px #C4C8CA"></span></span>
+</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) 86px 74px 64px 58px;gap:0 10px;align-items:center;padding:8px 4px;border-bottom:1px solid #F0EDE7;background:rgba(255,111,97,.05)">
+<span style="font:500 12.5px/1.3 'Satoshi Variable';color:#14222D">Cash flow at 3.45 %</span>
+<span style="text-align:right;font:500 13px/1.3 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">−14 €/mo</span>
+<span style="text-align:right;font:500 11.5px/1.3 'Satoshi Variable';color:#46525E">≥ 0 €</span>
+<span style="text-align:right;font:500 11.5px/1.3 'Satoshi Variable';color:#BE4437">−14 €</span>
+<span style="text-align:right"><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;padding:2px 7px;border-radius:1000px;background:#FFDBD7;color:#BE4437">FAIL</span></span>
+</div>
+<div style="margin-top:0;display:grid;grid-template-columns:minmax(0,1fr) 86px 74px 64px 58px;gap:0 10px;align-items:center;padding:8px 4px;border-bottom:1px solid #F0EDE7">
+<span style="font:500 12.5px/1.3 'Satoshi Variable';color:#14222D">Gross yield</span>
+<span style="text-align:right;font:500 13px/1.3 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">8.6 %</span>
+<span style="text-align:right;font:500 11.5px/1.3 'Satoshi Variable';color:#46525E">≥ 6.0 %</span>
+<span style="text-align:right;font:500 11.5px/1.3 'Satoshi Variable';color:#1E7F4F">+2.6 pp</span>
+<span style="text-align:right"><span style="font:700 9px/12px 'Satoshi Variable';letter-spacing:.04em;padding:2px 7px;border-radius:1000px;background:#DAEDE7;color:#1E7F4F">PASS</span></span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Columns: test (EN + FI subline) · deal value (Grotesk tabular) · <b>your line</b> (editable, steppers on focus) · margin (signed, coloured by direction, amber when |margin| &lt; 15 % of threshold) · PASS/FAIL pill · failing rows wash coral 5 % and sort first on mobile · presets: radiogroup pills, Custom shows lime dirty-dot; thresholds edit → auto-switch to Custom, Reset link appears.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C8</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">ProgressStep</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">the 60 s that sells the product</span></div>
+<div style="margin-top:14px;display:flex;flex-direction:column">
+<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #F0EDE7">
+<span style="width:24px;height:24px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#14222D;color:#E7FE4D"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="min-width:0;flex:1"><span style="display:block;font:500 13.5px/1.35 'Satoshi Variable';color:#14222D">Reading the renovation history <span style="display:inline-flex;margin-left:6px;font:700 9px/12px 'Satoshi Variable';letter-spacing:.05em;padding:2px 7px;border-radius:1000px;background:#FFECBF;color:#B98900">FLAGGED</span></span><span style="display:block;font:500 11.5px/1.5 'Satoshi Variable';color:#46525E">“Kuntotutkimus 2024” found — no renovation since 1962</span></span>
+<span style="flex:none;font:500 11px/24px 'Satoshi Variable';color:#A2A8AE;font-variant-numeric:tabular-nums">0:18</span>
+</div>
+<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #F0EDE7">
+<span style="width:24px;height:24px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid #DFE1E7;background:#FFFFFF"><span style="width:11px;height:11px;border:2px solid #A0BCD0;border-top-color:#427AA1;border-radius:50%"></span></span>
+<span style="min-width:0;flex:1;font:700 13.5px/24px 'Satoshi Variable';color:#14222D">Pricing the risk…</span>
+</div>
+<div style="display:flex;gap:12px;padding:9px 0;opacity:.45">
+<span style="width:24px;height:24px;flex:none;border-radius:50%;border:1px dashed #DFE1E7;background:#FFFFFF"></span>
+<span style="min-width:0;flex:1;font:500 13.5px/24px 'Satoshi Variable';color:#14222D">Running the numbers</span>
+</div>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Done: Ink disc, lime check · running: hairline disc + steel spinner (900 ms linear), label 700 · pending: dashed disc, 45 % opacity · each completion prints its found-fact (real data, not theatre) and elapsed time; flags earn amber chips live · min 600 ms visible per step; list aria-live polite.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C9</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">ChatBubble + SectionChip</span></div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="align-self:flex-end;max-width:75%;background:#14222D;color:#F6F3EE;border-radius:12px 12px 4px 12px;padding:8px 12px;font:500 12.5px/1.5 'Satoshi Variable'">How did you get 58 200 €?</div>
+<div style="align-self:flex-start;max-width:92%;border:1px solid #DFE1E7;border-radius:12px 12px 12px 4px;padding:10px 13px">
+<div style="font:500 12.5px/1.55 'Satoshi Variable';color:#2B2A28">Three parts: piping 48 100 € (median of 27 contracts), roof 4 900 €, windows 5 200 €.</div>
+<div style="display:flex;gap:6px;margin-top:8px"><span style="font:700 9.5px/13px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">§3 Liability</span><span style="font:700 9.5px/13px 'Satoshi Variable';padding:2px 8px;border-radius:1000px;background:#EBF2FA;color:#427AA1">quote: kuntotutkimus 2024</span></div>
+</div>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">User: Ink bubble, paper text, 12/12/4/12 · answer: hairline bubble on white, ink text · every answer ends with §-chips (Soft Sky / Steel) that scroll the document — <b>an uncited answer is a bug</b> · turn counter in header (“13 of 15 left”); at 0 the input disables with the reset rule · what-if answers restate that underwriting doesn’t move.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C10</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">Seam + UnlockBar + CreditsChip</span></div>
+<div style="margin-top:14px;position:relative;border:1px solid #DFE1E7;border-radius:12px;overflow:hidden">
+<div style="padding:8px 14px 0">
+<div style="display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #F0EDE7"><span style="width:6px;height:6px;border-radius:50%;background:#FFB300"></span><span style="display:flex;gap:5px;flex:1"><span style="height:11px;border-radius:4px;background:#DAE1E7;width:50%"></span><span style="height:11px;border-radius:4px;background:#E8E4DC;width:19%"></span></span><span style="display:flex;color:#6D859F"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span></div>
+</div>
+<div style="padding:10px 14px 12px;background:linear-gradient(180deg,rgba(246,243,238,0),rgba(246,243,238,.94) 45%);margin-top:-14px;position:relative;display:flex;align-items:center;gap:10px">
+<span style="padding-top:12px;min-width:0;flex:1;font:500 13px/1.3 'Space Grotesk';color:#14222D">2 more flags in the full report</span>
+<span style="padding-top:12px;flex:none"><x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="sm" hint-size="120px,34px">Unlock · 79 €</x-import></span>
+</div>
+</div>
+<div style="margin-top:10px;display:flex;align-items:center;gap:10px;border:1px solid #DFE1E7;border-radius:10px;background:rgba(246,243,238,.92);padding:9px 12px">
+<span style="min-width:0;flex:1"><span style="display:block;font:700 12px/1.3 'Satoshi Variable';color:#14222D">Full report · 79 €</span><span style="display:block;font:500 10px/1.4 'Satoshi Variable';color:#6D859F">first one free · or 1 credit</span></span>
+<x-import component-from-global-scope="ResimatorDesignSystem_49c94f.Button" hierarchy="primary" size="sm" hint-size="92px,34px">Unlock</x-import>
+<span style="font:700 10px/14px 'Satoshi Variable';padding:3px 9px;border-radius:1000px;box-shadow:inset 0 0 0 1px #DFE1E7;color:#14222D;font-variant-numeric:tabular-nums">4 CREDITS</span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">Seam: paper-gradient veil (no blur — blur promises pixels underneath; there are none, data is server-redacted) over locked rows + headline count + one lime CTA · price context line always: “first one free · or 1 credit · VAT included” · mobile: bar docks bottom, 44 px+, backdrop-blur 8 on 92 % paper · CreditsChip: hairline pill, tabular count, in the top bar whenever signed in; links to R10.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C11</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">PackCard + StatusText</span></div>
+<div style="margin-top:14px;display:flex;gap:10px">
+<div style="flex:1;border:2px solid #14222D;border-radius:12px;background:#14222D;padding:13px 15px;position:relative"><span style="position:absolute;top:-9px;left:12px;font:700 8.5px/1 'Satoshi Variable';letter-spacing:.05em;padding:3px 7px;border-radius:1000px;background:#E7FE4D;color:#14222D">MOST USEFUL</span><div style="font:500 20px/1.1 'Space Grotesk';color:#F6F3EE;font-variant-numeric:tabular-nums">199 €</div><div style="font:500 10.5px/1.4 'Satoshi Variable';color:#91A3B7">5-pack · 39.80 €/report</div></div>
+<div style="flex:1;border:1px solid #DFE1E7;border-radius:12px;padding:13px 15px"><div style="font:500 20px/1.1 'Space Grotesk';color:#14222D;font-variant-numeric:tabular-nums">79 €</div><div style="font:500 10.5px/1.4 'Satoshi Variable';color:#6D859F">single report</div></div>
+</div>
+<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font:500 12px/1.5 'Satoshi Variable'">
+<span style="color:#14222D">Unlocked</span><span style="color:#427AA1">Summary only</span><span style="color:#B98900">Price dropped ↓</span><span style="color:#A2A8AE">Listing ended</span><span style="color:#BE4437">FAILS 3</span><span style="color:#1E7F4F">PASSES</span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">PackCard: the recommended pack is the only Midnight fill on paper surfaces; others hairline · per-report math always shown · MOST USEFUL badge, never “BEST VALUE” theatre · StatusText vocabulary (R10) is text-colour only, no pills — the row stays a document line · policy pills reuse C7’s PASS/FAIL washes.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C12</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">Number &amp; language rules</span></div>
+<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font:500 12.5px/1.7 'Satoshi Variable';color:#2B2A28;font-variant-numeric:tabular-nums">
+<span style="color:#6D859F;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700">English UI</span><span style="color:#6D859F;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700">Finnish UI</span>
+<span>118 000 € · 8.6 % · −2.8 pp</span><span>118 000 € · 8,6 % · −2,8 %-yks.</span>
+<span>28.07.2026 13:41</span><span>28.7.2026 13.41</span>
+<span>845 €/mo · 890 €/m²</span><span>845 €/kk · 890 €/m²</span>
+</div>
+<div style="margin-top:12px;font:500 12px/1.65 'Satoshi Variable';color:#46525E">€ formatting is fi-FI in both languages (space thousands, symbol after) — the subject matter is Finnish money · decimals: point in EN, comma in FI · minus is U+2212, thin space before units · all numerals tabular · dates FI-style in both, seconds never shown · quotes stay Finnish in both languages (C2) · Space Grotesk = headings + all data values; Satoshi = everything else; no third face anywhere, email falls back to system stack.</div>
+</div>
+
+<div style="width:490px;background:#FFFFFF;border:1px solid #DFE1E7;border-radius:16px;padding:22px 26px">
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:700 10px/14px 'Space Grotesk';color:#A2A8AE">C13</span><span style="font:500 16px/1.3 'Space Grotesk';color:#14222D">Post-v1 additions</span><span style="margin-left:auto;font:500 11px/1.4 'Satoshi Variable';color:#6D859F">specimens live on their home boards</span></div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;font:500 12px/1.6 'Satoshi Variable';color:#46525E">
+<div><b style="color:#14222D">TipCard</b> — anchored onboarding note: white card, 1.5 px Steel border + notch, target haloed 3 px steel, rest dimmed 45 %; dots + Skip/Next; never modal → <a href="Resimator%20R1%20Paste%20and%20Verdict.dc.html#r15">R15</a></div>
+<div><b style="color:#14222D">TimelineEntry</b> — right-aligned tabular timestamp · 8–9 px event disc (Ink done / Amber change / Steel document) · title + delta subline; append-only, newest first → <a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r12">R12</a></div>
+<div><b style="color:#14222D">ChecklistRow</b> — 18 px hairline checkbox square (print target), question + basis subline, trailing document chip; dashed chip = gap (C1 grammar) → <a href="Resimator%20R3%20Full%20Report%20and%20Chat.dc.html#r7">R7-11</a></div>
+<div><b style="color:#14222D">RadioOptionCard</b> — radio circle + column of label/caption; selected = 1.5 px Steel border on Soft Sky → <a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r11">R11-2</a> / <a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r14">R14-1</a></div>
+<div><b style="color:#14222D">Best-in-row dot</b> — 6 px Steel disc before the winning fact; facts only, never the verdict row → <a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r13">R13</a></div>
+<div><b style="color:#14222D">OG badge variants</b> — verdict washes on Midnight (amber delta / seafoam pass / grey hairline refusal); lime reserved for the REAL figure → <a href="Resimator%20R4%20Public%20Emails%20Account.dc.html#r8">R8-5</a></div>
+<div><b style="color:#14222D">History chart</b> — DS LineAndBarChart only: misty bars = market series (MODELLED), flat Steel line = this deal (OBSERVED); nominal, said plainly → <a href="Resimator%20R3%20Full%20Report%20and%20Chat.dc.html#r7">R7-9/10</a></div>
+</div>
+</div>
+
+</div>
+
+<div style="margin-top:36px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+<div style="width:1508px;background:#FFFFFF;border:1px dashed #DFE1E7;border-radius:14px;padding:18px 22px">
+<div style="font:700 10.5px/14px 'Satoshi Variable';letter-spacing:.07em;text-transform:uppercase;color:#6D859F;margin-bottom:10px">System rules — read first, then the boards</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 28px;font:500 12.5px/1.65 'Satoshi Variable';color:#46525E">
+<div><b>Colour discipline.</b> Paper #F6F3EE ground, white sheets, hairline #DFE1E7. Steel Blue = interaction + evidence. Seafoam/Amber/Coral = verdicts only, as washes + deep text, never solid fills. Neon Lime = exactly one primary action per screen (+ the dirty-dot and check-disc accents); the one stated exception is lime-on-Midnight inside the featured pack card (R6-1) — the house CTA-band pairing, allowed alongside the screen's pay button. Midnight fills: the OG card family (R8-2/R8-5), the recommended pack, the top-bar FI pill, the user’s chat bubble (C9), and timeline/check discs — never a page background on paper surfaces.</div>
+<div><b>Register.</b> Every surface is a document: numbered (№), dated, sourced, versioned (engine v2.3). No dashboards, no sidebars, no cards-for-cards’-sake. The seam is honest (severity + cost ranges visible), refusal is a first-class state, and nothing is charged before a verdict exists. Voice: analyst who reads the fine print — “The yield in the listing is not the yield you would own.”</div>
+<div><b>Coverage.</b> Six files, 60+ frames, nothing deferred: core journey (R1–R8), emails ×6 (R9), account (R10), refunds (R11), tracking (R12), compare (R13), notifications (R14), onboarding (R15, on R1), deletion &amp; export (R16), print P1–P4 incl. the bank summary, plus the marketing landing. Every flow has entry, success, error and empty/edge (validation R1-3, fetch-fail R1-9, withdrawn R1-10, refusal R1-11, declined R6-3, zero-credits R6-4, listing-ended R8-3, empty drawer R10-3) and three breakpoints + a Finnish pass per board. Touch targets ≥44 px; focus order and aria-live noted per board.</div>
+</div>
+</div>
+</div>
+</section>
+
+</x-dc>
+</body>
+</html>
