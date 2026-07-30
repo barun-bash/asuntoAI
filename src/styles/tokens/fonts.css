@@ -1,0 +1,68 @@
+/* Resimator webfonts — app variant of design/_ds/…/tokens/fonts.css.
+   Satoshi binaries are served from /fonts/satoshi (copied verbatim from the DS bundle).
+   Space Grotesk is loaded via next/font/google in src/app/layout.tsx (exposed as --font-space-grotesk). */
+
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-MediumItalic.woff2") format("woff2");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Black.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+/* Variable cut — preferred when the renderer supports it. */
+@font-face {
+    font-family: "Satoshi Variable";
+    src: url("/fonts/satoshi/Satoshi-Variable.woff2") format("woff2");
+    font-weight: 300 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi Variable";
+    src: url("/fonts/satoshi/Satoshi-VariableItalic.woff2") format("woff2");
+    font-weight: 300 900;
+    font-style: italic;
+    font-display: swap;
+}

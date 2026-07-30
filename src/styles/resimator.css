@@ -1,0 +1,89 @@
+/* Resimator Report — product theme layer.
+   Token VALUES come verbatim from design/_ds/…/tokens/ (imported below — do not edit those files).
+   This file maps them onto Tailwind v4 @theme so utilities resolve to DS values.
+   Colour discipline (spec §2): paper #F6F3EE, white sheets, hairline #DFE1E7;
+   Steel Blue = interaction + evidence; Seafoam/Amber/Coral = verdicts only;
+   Neon Lime = one primary action per screen. */
+
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/elevation.css";
+
+@theme {
+    /* Brand hues (+ published 75/50/25 tints) */
+    --color-rsm-midnight: var(--rsm-deep-midnight);
+    --color-rsm-midnight-75: var(--rsm-deep-midnight-75);
+    --color-rsm-midnight-50: var(--rsm-deep-midnight-50);
+    --color-rsm-midnight-25: var(--rsm-deep-midnight-25);
+    --color-rsm-lime: var(--rsm-neon-lime);
+    --color-rsm-lime-75: var(--rsm-neon-lime-75);
+    --color-rsm-lime-50: var(--rsm-neon-lime-50);
+    --color-rsm-lime-25: var(--rsm-neon-lime-25);
+    --color-rsm-charcoal: var(--rsm-warm-charcoal);
+    --color-rsm-paper: var(--rsm-off-white);
+    --color-rsm-soft-sky: var(--rsm-soft-sky);
+    --color-rsm-hairline: var(--rsm-border-hairline);
+    --color-rsm-slate: var(--rsm-slate-grey);
+    --color-rsm-steel: var(--rsm-steel-blue);
+    --color-rsm-steel-75: var(--rsm-steel-blue-75);
+    --color-rsm-steel-50: var(--rsm-steel-blue-50);
+    --color-rsm-steel-25: var(--rsm-steel-blue-25);
+    --color-rsm-misty: var(--rsm-misty-blue);
+    --color-rsm-misty-75: var(--rsm-misty-blue-75);
+    --color-rsm-misty-50: var(--rsm-misty-blue-50);
+    --color-rsm-misty-25: var(--rsm-misty-blue-25);
+    --color-rsm-seafoam: var(--rsm-seafoam-green);
+    --color-rsm-seafoam-75: var(--rsm-seafoam-green-75);
+    --color-rsm-seafoam-50: var(--rsm-seafoam-green-50);
+    --color-rsm-seafoam-25: var(--rsm-seafoam-green-25);
+    --color-rsm-coral: var(--rsm-coral-red);
+    --color-rsm-coral-75: var(--rsm-coral-red-75);
+    --color-rsm-coral-50: var(--rsm-coral-red-50);
+    --color-rsm-coral-25: var(--rsm-coral-red-25);
+    --color-rsm-amber: var(--rsm-amber);
+    --color-rsm-amber-75: var(--rsm-amber-75);
+    --color-rsm-amber-50: var(--rsm-amber-50);
+    --color-rsm-amber-25: var(--rsm-amber-25);
+
+    /* Type */
+    --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Satoshi Variable", "Satoshi", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Radii (cards 20, tiles 14, inputs 12, buttons pill) */
+    --radius-rsm-card: var(--radius-card);
+    --radius-rsm-tile: var(--radius-icon);
+    --radius-rsm-input: var(--radius-xl);
+
+    /* Elevation */
+    --shadow-rsm-chip: var(--shadow-chip);
+    --shadow-rsm-sm: var(--shadow-sm);
+    --shadow-rsm-stack: var(--shadow-stack);
+
+    /* Motion (200–250 ms, cubic-bezier(.4,0,.2,1), no spring) */
+    --ease-rsm: var(--ease-standard);
+}
+
+/* next/font exposes Space Grotesk as --font-space-grotesk; re-point the DS token at it
+   (unlayered, after the token imports, so it wins over tokens/typography.css). */
+:root {
+    --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Product surface: white sheet on paper, document register (spec §2). */
+body {
+    background: var(--rsm-off-white);
+    color: var(--text-primary);
+}
+
+/* All numerals tabular (spec §2/§7). */
+.tnum,
+[data-num] {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Long FI compounds wrap on meta/body only — never headings (spec §7). */
+.wrap-anywhere {
+    overflow-wrap: anywhere;
+}

@@ -1,0 +1,50 @@
+/* Shadows, blurs and the frosted-glass treatment.
+   Resimator shadows are near-invisible: hairline rings plus 1–3px of lift.
+   The only heavy shadow in the system is the scrolled navbar. */
+:root {
+    /* Pills and chips: a 1px ring drawn as an inset shadow + two micro-lifts.
+     Verbatim from the Figma "Item" badge. */
+    --shadow-chip: inset 0 0 0 1px var(--rsm-border-hairline), 0 1px 3px 0 rgba(13, 13, 18, 0.05), 0 1px 2px 0 rgba(13, 13, 18, 0.04);
+    --shadow-xs: 0 1px 2px 0 rgba(13, 13, 18, 0.04);
+    --shadow-sm: 0 1px 3px 0 rgba(13, 13, 18, 0.05), 0 1px 2px 0 rgba(13, 13, 18, 0.04);
+    --shadow-swatch: 0 4px 4px 0 rgba(0, 0, 0, 0.1); /* brandbook colour cards */
+    --shadow-navbar: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+    /* "derek" — the deep, six-stop stack the site uses on feature cards */
+    --shadow-stack:
+        0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06), 0 6px 6px -3px rgba(0, 0, 0, 0.06),
+        0 12px 12px -6px rgba(0, 0, 0, 0.06), 0 24px 24px -12px rgba(0, 0, 0, 0.06);
+    --shadow-glass: 0 6px 24px rgba(0, 0, 0, 0.2);
+
+    --blur-card: 4px; /* frosted feature cards */
+    --blur-glass: 8px; /* .glass-card */
+    --ring-focus: 0 0 0 3px rgba(66, 122, 161, 0.35);
+}
+
+/* Frosted card — the homepage feature tile. */
+.rsm-frosted {
+    background: var(--surface-card-frosted);
+    backdrop-filter: blur(var(--blur-card));
+    -webkit-backdrop-filter: blur(var(--blur-card));
+    border-radius: var(--radius-card);
+}
+
+/* Glass card — lifted from the production site's .glass-card. */
+.rsm-glass {
+    position: relative;
+    border-radius: 20px;
+    isolation: isolate;
+    transition: all 0.3s var(--ease-standard);
+    box-shadow: var(--shadow-glass);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.rsm-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: 20px;
+    box-shadow: inset 0 0 20px -5px rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+}
