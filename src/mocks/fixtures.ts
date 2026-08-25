@@ -4,11 +4,22 @@
  * Every figure is engine-authored here; the UI formats but never computes (§6.2).
  * Locked flags exist ONLY in redacted form — there is no hidden content to leak (§6.4).
  */
-import type { Analysis, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
+import type { Analysis, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
 
 export const CANONICAL_SLUG = "tuomiokirkonkatu-23-b-14-tampere";
 export const REFUSED_SLUG = "rautatienkatu-18-c-44-tampere";
 export const WITHDRAWN_SLUG = "kalevanpuisto-4-a-9-tampere";
+
+/* ── Packs (R6-1) ────────────────────────────────────────────────────────────
+   Engine-authored figures (VAT 25.5 % included; per-report prices published,
+   never derived in the UI): single 79 € / 1 credit · 5-pack 199 € / 39.80 €
+   per report · 20-pack 349 € / 17.45 € per report. The 5-pack is the featured
+   lime-on-Midnight card. Credits never expire; one credit = one full report. */
+export const packs: Pack[] = [
+    { id: "single", credits: 1, priceEur: 79, perReportEur: 79 },
+    { id: "five", credits: 5, priceEur: 199, perReportEur: 39.8, featured: true },
+    { id: "twenty", credits: 20, priceEur: 349, perReportEur: 17.45 },
+];
 
 /* ── Policy test set (R5-1…R5-5) ─────────────────────────────────────────────
    Every figure below is engine-authored. The Balanced set is transcribed

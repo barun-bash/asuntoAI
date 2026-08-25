@@ -76,6 +76,11 @@ export function formatEURPerSqm(value: number, lang: Lang): string {
     return `${formatEUR(value, lang)}/m²`;
 }
 
+/** Per-report pack math (R6-1): 39.8 → "39.80 €/report" · FI "39,80 €/raportti". */
+export function formatEURPerReport(value: number, lang: Lang, decimals = 2): string {
+    return `${formatEUR(value, lang, decimals)}/${lang === "fi" ? "raportti" : "report"}`;
+}
+
 /** ISO → EN "28.07.2026 13:41" · FI "28.7.2026 13.41". */
 export function formatDateTime(iso: string, lang: Lang): string {
     const d = new Date(iso);

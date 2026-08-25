@@ -19,7 +19,7 @@ const SEAM_ANCHOR = "paywall-seam";
  * centered 720/840 column ≥1280, 704 content at 768–1279, stacked ≤767.
  * h1 receives focus on arrival (a11y §11). Server data arrives pre-redacted.
  */
-export function VerdictView({ analysis }: { analysis: Analysis }) {
+export function VerdictView({ analysis, unlocked = false }: { analysis: Analysis; unlocked?: boolean }) {
     const { lang, t } = useLang();
     const h1Ref = useRef<HTMLHeadingElement>(null);
 
@@ -119,7 +119,7 @@ export function VerdictView({ analysis }: { analysis: Analysis }) {
 
                     {/* The honest seam */}
                     <div id={SEAM_ANCHOR}>
-                        <PaywallSeam lockedFlags={lockedFlags} total={verdict.flagCount.total} />
+                        <PaywallSeam lockedFlags={lockedFlags} total={verdict.flagCount.total} reportSlug={analysis.slug} unlocked={unlocked} />
                     </div>
 
                     {/* Policy panel (R5-1…R5-5) — full panel visible on the free verdict. */}
@@ -143,7 +143,7 @@ export function VerdictView({ analysis }: { analysis: Analysis }) {
                     </footer>
                 </div>
             </main>
-            <StickyUnlockBar anchorId={SEAM_ANCHOR} />
+            {unlocked ? null : <StickyUnlockBar anchorId={SEAM_ANCHOR} reportSlug={analysis.slug} />}
         </div>
     );
 }
