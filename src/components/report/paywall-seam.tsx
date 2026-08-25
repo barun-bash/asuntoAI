@@ -14,17 +14,27 @@ import { cx } from "@/utils/cx";
  * Once the account owns the report, the CTA area swaps to an "open" banner —
  * the full document ships with the report slice (R7), so the veil and the
  * severity/range rows stay (§6.4 still applies; flagged in the PR).
+ *
+ * R8 visitor variants: a shared-link visitor never sees the unlock CTA — the
+ * card sells analysing your OWN listing (R8-1: "a visitor can't buy someone
+ * else's report", CTA routes to /). Ended listings (R8-3) swap it for the
+ * district-hunting card. The locked rows + veil are identical for everyone —
+ * "free tier shown to everyone; the seam sells the rest" (R8 header).
  */
 export function PaywallSeam({
     lockedFlags,
     total,
     reportSlug,
     unlocked = false,
+    visitor = false,
+    ended = false,
 }: {
     lockedFlags: FlagRedacted[];
     total: number;
     reportSlug: string;
     unlocked?: boolean;
+    visitor?: boolean;
+    ended?: boolean;
 }) {
     const { t } = useLang();
     const unlockHref = `/unlock?report=${reportSlug}`;
@@ -62,6 +72,34 @@ export function PaywallSeam({
                         <span className="block font-display text-lg font-medium text-rsm-midnight">{t.unlock.unlockedTitle}</span>
                         <span className="mt-1 block text-sm leading-relaxed wrap-anywhere text-rsm-charcoal">{t.unlock.unlockedBody}</span>
                     </span>
+                </div>
+            ) : visitor && ended ? (
+                /* R8-3 — ended listing: the district-hunting card (CTA → /). */
+                <div className="mt-4 flex flex-col items-stretch gap-2.5 rounded-[10px] border border-rsm-hairline bg-rsm-editor-bg px-[15px] py-[13px] text-center">
+                    <p className="text-[13px] leading-[1.45] text-rsm-slate">{t.publicPage.endedHunting}</p>
+                    <Link
+                        href="/"
+                        className="inline-flex min-h-11 items-center justify-center rounded-full bg-rsm-lime px-6 text-sm font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75"
+                    >
+                        {t.publicPage.endedCta}
+                    </Link>
+                </div>
+            ) : visitor ? (
+                /* R8-1 — shared-link visitor: "the person who shared this bought
+                   the full report"; CTA routes to /, never to /unlock. */
+                <div className="mt-4 flex flex-col gap-3 rounded-rsm-tile border border-rsm-hairline bg-rsm-editor-bg px-5 py-4 md:flex-row md:items-center md:gap-3.5">
+                    <span className="min-w-0 flex-1">
+                        <span className="block font-display text-[15.5px] leading-[1.3] font-medium text-rsm-midnight">
+                            {tpl(t.publicPage.seamTitle, { n: lockedFlags.length })}
+                        </span>
+                        <span className="mt-0.5 block text-[12.5px] leading-[1.5] wrap-anywhere text-rsm-slate">{t.publicPage.seamBody}</span>
+                    </span>
+                    <Link
+                        href="/"
+                        className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-rsm-lime px-6 text-sm font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75"
+                    >
+                        {t.publicPage.seamCta}
+                    </Link>
                 </div>
             ) : (
                 <div className="mt-4 flex flex-col items-start gap-3 rounded-rsm-card border border-rsm-hairline bg-white p-5 shadow-rsm-sm md:items-center md:text-center">

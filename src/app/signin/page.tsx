@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { PRIVATE_OG_IMAGE } from "@/lib/og";
+
+/* R8-5d: sign-in is a private route — brand-only OG card, noindex. */
+export const metadata: Metadata = {
+    title: "Sign in",
+    robots: { index: false, follow: false },
+    openGraph: { images: [{ url: PRIVATE_OG_IMAGE, width: 1200, height: 630 }] },
+};
 
 /** TODO(R10 slice): magic-link sign-in (R10-2/6). Placeholder until that slice ships. */
 export default function Page() {

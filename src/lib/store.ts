@@ -47,6 +47,10 @@ interface StoreShape {
     /** Chat turns used per account per report (R7) — the 15-turn cap is per
        report per run and persists across devices (R7-4 annotation). */
     chatTurns: Map<string, Map<string, number>>;
+    /** Owner-controlled public-page visibility (R8): reportId → public.
+       Absent = public — "public = free summary, always" (R8 header); the
+       owner's toggle controls recents listing and the OG/noindex register. */
+    visibility: Map<string, boolean>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -61,6 +65,7 @@ if (!globalStore.__asuntoStore) {
         invoices: new Map(),
         sessions: new Map(),
         chatTurns: new Map(),
+        visibility: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
@@ -416,3 +421,26 @@ export function askChat(accountId: string, analysis: Analysis, q: string, lang: 
         },
     };
 }
+
+/* ── Public page & visibility (R8) ───────────────────────────────────────────
+   /r/:slug is public by default — the free summary IS the public page
+   (R8 header: "public = free summary, always"). The owner flip (R7-2 footer
+   "Make page public") controls recents listing and, when private, the page
+   drops to noindex + the private-generic OG card (R8-5d). Owner-only writes:
+   the toggle route requires the unlocking account's cookie. */
+
+export function isPublicReport(reportId: string): boolean {
+    return store.visibility.get(reportId) ?? true;
+}
+
+export function setReportVisibility(reportId: string, isPublic: boolean): void {
+    store.visibility.set(reportId, isPublic);
+}
+
+/* The analyst vs. shared-visitor distinction (R1-6 vs R8-1): both see the free
+   tier, but the visitor gets the "someone shared this" banner and a CTA that
+   routes to / — never to /unlock ("a visitor can't buy someone else's
+   report"). The mock has no account before checkout, so POST /api/analyses
+   stamps this cookie with the run's slug; the page treats a matching cookie as
+   the analyst (no visitor chrome). Cleared naturally by being per-session. */
+export const RUNNER_COOKIE = "asunto_runner";

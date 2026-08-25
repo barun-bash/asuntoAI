@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FlagCard } from "@/components/report/flag-card";
 import { PolicyPanel } from "@/components/report/policy-panel";
 import { ProvenanceChip } from "@/components/report/provenance-chip";
+import { PublicToggle } from "@/components/report/public-toggle";
 import { capFirst, formatDate, formatDateTime, formatEUR, formatPercent, numberWord } from "@/lib/format";
 import { evaluatePolicy, formatPolicyLine } from "@/lib/policy";
 import type { Analysis, FlagFull } from "@/lib/types";
@@ -682,12 +683,15 @@ export function ReportDocument({
     changed,
     unlockDate,
     unlockOrigin,
+    initialPublic,
 }: {
     analysis: Analysis;
     yourFigure: { display: string; note: string } | null;
     changed: boolean;
     unlockDate: string;
     unlockOrigin: string;
+    /** Owner visibility for the public page — the R7-2 footer toggle (R8). */
+    initialPublic: boolean;
 }) {
     const { lang, t } = useLang();
     const { listing } = analysis;
@@ -770,6 +774,10 @@ export function ReportDocument({
                     >
                         {t.report.downloadPdf}
                     </Link>
+                    {/* "Make page public" (R7-2 secondary) — the R8 visibility
+                       toggle; "Set up listing alerts" ships with tracking
+                       (slice 8) — R7-2 shows both beside this button. */}
+                    <PublicToggle slug={analysis.slug} initialPublic={initialPublic} />
                     {/* P4 annotation: the bank summary's entry is "Bank summary
                        (PDF)" in the report footer, next to Download PDF. */}
                     <Link
@@ -778,9 +786,6 @@ export function ReportDocument({
                     >
                         {t.print.bankSummaryLink}
                     </Link>
-                    {/* "Make page public" ships with the R8 slice (6); "Set up
-                       listing alerts" with tracking (slice 8) — R7-2 shows both
-                       beside this button on the board. */}
                 </div>
             </article>
 

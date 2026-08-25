@@ -11,6 +11,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+    // Canonical origin (R8-1 footer: resimator.fi); OG images resolve against it.
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "https://resimator.fi"),
     title: {
         default: "Resimator Report — Apartment risk report, Finland",
         template: "%s · Resimator Report",
