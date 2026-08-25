@@ -348,8 +348,10 @@ export const dict = {
             footerMoment: "№ {n} · moottori v2.3 · ilmoitus luettu {time} — luvut kuvastavat tuota hetkeä",
             footerLegal: "Analyysi julkisesta ilmoitusdatasta · ei sijoitusneuvontaa · Resimator OY",
             changedTitle: "Ilmoitus muuttui raportin luonnin jälkeen",
+            /* R3-FI verbatim, incl. the v1-persistence + chat-reset tail that
+               the EN frame legitimately omits. */
             changedBody:
-                "Pyyntihinta nyt {now} (oli {was}), havaittu {seen}. Nämä sivut näyttävät {readDay} luennan — muutos on yksi rivi, joten nimeämme sen arvailun sijaan.",
+                "Pyyntihinta nyt {now} (oli {was}), havaittu {seen}. Nämä sivut näyttävät {readDay} luennan — muutos on yksi rivi, joten nimeämme sen arvailun sijaan. v1 säilyy Omissa raporteissa ja PDF:nä · keskustelulaskuri nollautuu uuden ajon myötä.",
             changedRerun: "Aja uudelleen — maksutta",
             changedKeep: "Pidä tämä versio",
         },

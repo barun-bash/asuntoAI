@@ -98,10 +98,15 @@ export function redactFlag(flag: ClientFlag): ClientFlag {
     };
 }
 
-/** The full analysis as the client is allowed to see it (free tier). */
+/** The full analysis as the client is allowed to see it (free tier).
+   §6.4: the full-report payload (liability rows, year rows, chat answers,
+   the listing-change diff) is locked content — it must never reach an unpaid
+   client, so `report` is dropped here at the boundary alongside the flag
+   redaction; it opens only via unlockAnalysis() behind the unlock. */
 export function redactAnalysis(analysis: Analysis): Analysis {
     return {
         ...analysis,
+        report: undefined,
         verdict: analysis.verdict ? { ...analysis.verdict, flags: analysis.verdict.flags.map((f) => redactFlag(f as FlagFull)) } : undefined,
     };
 }

@@ -124,8 +124,8 @@ export function ReportView({
     // calculator (slice 8) becomes the second producer.
     const [yourFigure, setYourFigure] = useState<YourFigure | null>(null);
     useEffect(() => {
-        setYourFigure(readYourFigure());
-    }, []);
+        setYourFigure(readYourFigure(analysis.slug));
+    }, [analysis.slug]);
 
     const unlockDate = formatDate(new Date(unlockTs).toISOString(), lang);
     const unlockOrigin = unlockPackId

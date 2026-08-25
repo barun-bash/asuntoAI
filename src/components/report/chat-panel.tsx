@@ -20,7 +20,9 @@ import { cx } from "@/utils/cx";
  * shows (R7-4). Suggestion chips disappear at 0.
  */
 
-const YOUR_FIGURE_KEY = "resimator:your-figure:v1";
+/** User-supplied figures are stored per report — one deal's what-if rent must
+   never show up dashed on another report's §4. */
+const yourFigureKey = (slug: string) => `resimator:your-figure:v1:${slug}`;
 
 export interface YourFigure {
     display: string;
@@ -28,9 +30,9 @@ export interface YourFigure {
 }
 
 /** Reads a previously supplied user figure (chat what-if) for §4's dashed card. */
-export function readYourFigure(): YourFigure | null {
+export function readYourFigure(slug: string): YourFigure | null {
     try {
-        const raw = window.localStorage.getItem(YOUR_FIGURE_KEY);
+        const raw = window.localStorage.getItem(yourFigureKey(slug));
         if (!raw) return null;
         const parsed = JSON.parse(raw) as Partial<YourFigure>;
         return typeof parsed.display === "string" && typeof parsed.note === "string" ? { display: parsed.display, note: parsed.note } : null;
@@ -77,11 +79,11 @@ function useChat(slug: string, initialTurnsLeft: number, onYourFigure: (figure: 
                     setMessages((m) => [...m, { role: "answer", text: data.answer!, strongs: data.strongs, citations: data.citations }]);
                 }
                 // The what-if published the user's figure — §4's dashed card
-                // (shown, never used) appears and persists locally.
+                // (shown, never used) appears and persists locally, per report.
                 if (data.yourFigure) {
                     onYourFigure(data.yourFigure);
                     try {
-                        window.localStorage.setItem(YOUR_FIGURE_KEY, JSON.stringify(data.yourFigure));
+                        window.localStorage.setItem(yourFigureKey(slug), JSON.stringify(data.yourFigure));
                     } catch {
                         // Storage unavailable — the card just won't persist.
                     }
@@ -100,13 +102,13 @@ function useChat(slug: string, initialTurnsLeft: number, onYourFigure: (figure: 
 }
 
 /* ── Citation chip → scrolls the document to the section; the panel stays
-   open (R7-8 annotation). Slightly taller than the frame on touch (≥44 px). ── */
+   open (R7-8 annotation). ≥44 px on touch (§8), compact in the desktop dock. ── */
 function CitationChip({ section, anchor }: { section: string; anchor: string }) {
     return (
         <button
             type="button"
             onClick={() => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-            className="inline-flex min-h-8 items-center rounded-full bg-rsm-soft-sky px-2.5 text-[10px] leading-none font-bold text-rsm-steel transition-colors duration-200 ease-rsm hover:bg-rsm-steel-25 md:min-h-6"
+            className="inline-flex min-h-11 items-center rounded-full bg-rsm-soft-sky px-2.5 text-[10px] leading-none font-bold text-rsm-steel transition-colors duration-200 ease-rsm hover:bg-rsm-steel-25 md:min-h-6"
         >
             {section}
         </button>
