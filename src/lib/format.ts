@@ -156,4 +156,18 @@ export function capFirst(s: string): string {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/** Board register masks the email domain in chrome: "anne.virtanen@…" (R10-1/R10-6). */
+export function maskEmail(email: string): string {
+    const local = email.split("@")[0] ?? email;
+    return `${local}@…`;
+}
+
+/** Account-menu initials from the email local part: "anne.virtanen@…" → "AV". */
+export function emailInitials(email: string): string {
+    const local = email.split("@")[0] ?? "?";
+    const parts = local.split(/[._-]+/).filter(Boolean);
+    const letters = parts.length > 1 ? `${parts[0][0]}${parts[1][0]}` : local.slice(0, 2);
+    return letters.toUpperCase();
+}
+
 export { MINUS, NBSP };

@@ -14,7 +14,28 @@
  */
 import type { Lang } from "@/lib/i18n";
 import { isSupportedListingUrl } from "@/lib/listing-url";
-import type { Account, Analysis, ChatResponse, ClientFlag, DeclineCode, FlagFull, InvoiceRecord, LedgerEntry, Pack, PackId, PaymentIntent } from "@/lib/types";
+import { evaluatePolicy } from "@/lib/policy";
+import type {
+    Account,
+    AccountReportRow,
+    Analysis,
+    ChatResponse,
+    ClientFlag,
+    DeclineCode,
+    ExportJob,
+    FlagFull,
+    InvoiceRecord,
+    LedgerEntry,
+    NotificationPrefs,
+    NotificationPrefsPatch,
+    Pack,
+    PackId,
+    PaymentIntent,
+    RefundReason,
+    RefundRecord,
+    RefundTarget,
+    Watch,
+} from "@/lib/types";
 import { CHAT_TURN_CAP } from "@/lib/types";
 import { canonicalAnalysis, fixtures, packs } from "@/mocks/fixtures";
 
@@ -29,6 +50,8 @@ interface RunRecord {
     slug: string;
     status: Analysis["status"];
     startedAt: number;
+    /** Account that created the run (cookie at POST /api/analyses, R10 drawer). */
+    accountId?: string;
 }
 
 interface CheckoutSession {
@@ -51,6 +74,19 @@ interface StoreShape {
        Absent = public — "public = free summary, always" (R8 header); the
        owner's toggle controls recents listing and the OG/noindex register. */
     visibility: Map<string, boolean>;
+    /** Pending magic links (R10-2/6): token → {email, expiresAt}. The send
+       layer is the backend's — the mock never emails; see DEV_MOCK_TOKEN. */
+    magicLinks: Map<string, { email: string; expiresAt: number }>;
+    /** Saved watch queries per account (R10-5). */
+    watches: Map<string, Watch>;
+    /** Refund records: accountId → reportId → record (one per report, R11 guards). */
+    refunds: Map<string, Map<string, RefundRecord>>;
+    /** Notification prefs per account (R14). Absent = DEFAULT_NOTIFICATIONS. */
+    notifications: Map<string, NotificationPrefs>;
+    /** GDPR export jobs per account (R16). */
+    exports: Map<string, ExportJob[]>;
+    /** Pending single-use deletion tokens (R16): token → {accountId, expiresAt}. */
+    deletionTokens: Map<string, { accountId: string; expiresAt: number }>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -66,14 +102,27 @@ if (!globalStore.__asuntoStore) {
         sessions: new Map(),
         chatTurns: new Map(),
         visibility: new Map(),
+        magicLinks: new Map(),
+        watches: new Map(),
+        refunds: new Map(),
+        notifications: new Map(),
+        exports: new Map(),
+        deletionTokens: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
 
-export function createRun(): RunRecord {
+/** Dev-only stand-in for the emailed single-use tokens (magic link, account
+   deletion). The real flows email a random token; the mock never sends mail,
+   so token "dev" (with the email/cookie as identity) is the documented
+   backdoor for local development and smoke tests. Never meaningful in
+   production, where the send layer exists. */
+export const DEV_MOCK_TOKEN = "dev";
+
+export function createRun(accountId?: string): RunRecord {
     // Every supported URL replays the canonical analysis (the sandbox fixture pattern, R17).
     const id = `run_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-    const run: RunRecord = { id, slug: canonicalAnalysis.slug, status: "running", startedAt: Date.now() };
+    const run: RunRecord = { id, slug: canonicalAnalysis.slug, status: "running", startedAt: Date.now(), accountId };
     store.runs.set(id, run);
     return run;
 }
@@ -207,7 +256,8 @@ export type CheckoutResult =
               | "report_required"
               | "first_free_used"
               | "no_credits"
-              | "already_unlocked";
+              | "already_unlocked"
+              | "relock_guard";
       };
 
 export interface CheckoutInput {
@@ -242,6 +292,14 @@ export function createCheckout(input: CheckoutInput): CheckoutResult {
     // must resolve to a completed analysis; first-free and use-credit require one.
     if (input.reportId && !hasVerdict(input.reportId)) return { ok: false, error: "unknown_report" };
     if ((isFirstFree || isUseCredit) && !input.reportId) return { ok: false, error: "report_required" };
+
+    // R11 guards: a refunded report stays open, but the same listing can't be
+    // re-unlocked by the same account for 30 days (re_lock_until) — enforced
+    // here, before any charge. Mock note: the guard is dormant while a refund
+    // leaves the report unlocked (the already_unlocked/no-spend paths catch a
+    // repeat first); it binds the day re-runs mint fresh report ids.
+    const prospective = input.cookieAccount ?? getAccount(store.accountByEmail.get(email));
+    if (prospective && input.reportId && isReLockBlocked(prospective.id, input.reportId)) return { ok: false, error: "relock_guard" };
 
     const base: Omit<PaymentIntent, "id" | "status"> = {
         kind: isFirstFree ? "first-free" : isUseCredit ? "use-credit" : "pack",
@@ -444,3 +502,361 @@ export function setReportVisibility(reportId: string, isPublic: boolean): void {
    stamps this cookie with the run's slug; the page treats a matching cookie as
    the analyst (no visitor chrome). Cleared naturally by being per-session. */
 export const RUNNER_COOKIE = "asunto_runner";
+
+/* ── Sign-in (R10-2/R10-6) ───────────────────────────────────────────────────
+   Magic-link only — 15 min, single use, no password (R10 handoff-notes
+   "Account"). The mock never sends mail: POST /api/auth/magic-link records
+   the pending link, and GET /api/auth/callback?token=dev&email=… stands in
+   for the emailed link in development (DEV_MOCK_TOKEN, documented above). */
+
+export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
+
+const EMAIL_RE = /^\S+@\S+\.\S+$/;
+
+/** Records a pending magic link. Always "sent" when the address is valid —
+   the send layer is the backend's (mock; no enumeration, same as the boards'
+   "the same form creates the account"). */
+export function requestMagicLink(email: string): boolean {
+    const normalized = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(normalized)) return false;
+    const token = `ml_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    store.magicLinks.set(token, { email: normalized, expiresAt: Date.now() + MAGIC_LINK_TTL_MS });
+    return true;
+}
+
+/** Consumes a magic-link token (single use) and returns the account it
+   resolves to — created on first use ("New here? The same form creates the
+   account.", R10-2). The dev token attaches the account by its email param. */
+export function consumeMagicLink(token: string, devEmail?: string): Account | undefined {
+    if (token === DEV_MOCK_TOKEN) {
+        const email = (devEmail ?? "").trim().toLowerCase();
+        return EMAIL_RE.test(email) ? getOrCreateAccount(email) : undefined;
+    }
+    const record = store.magicLinks.get(token);
+    if (!record || record.expiresAt < Date.now()) return undefined;
+    store.magicLinks.delete(token); // single use
+    return getOrCreateAccount(record.email);
+}
+
+/* ── My reports (R10-*) ──────────────────────────────────────────────────────
+   The drawer is a plain route at this stack — the boards' "drawer of
+   documents" is the register metaphor, and R8-5d maps /reports as a private
+   ROUTE (brand OG card, noindex); an overlay drawer over arbitrary pages
+   would need global chrome the boards don't specify. Rows derive from the
+   store: reports the cookie account unlocked plus runs it created. */
+
+export function listAccountReports(accountId: string): AccountReportRow[] {
+    const rows: AccountReportRow[] = [];
+    const seen = new Set<string>();
+
+    const push = (reportId: string, unlocked: boolean) => {
+        if (seen.has(reportId)) return;
+        const analysis = getAnalysisById(reportId);
+        if (!analysis?.listing || !analysis.verdict) return; // refused/withdrawn carry no drawer row
+        seen.add(reportId);
+        /* The pill "re-evaluates live against the current policy" (R10-1). Mock:
+           the account's edited policy persists client-side in the report
+           session (R5 slice); the drawer evaluates the default Balanced preset
+           until per-account policy persistence lands with the tracking slice. */
+        const run = analysis.policy ? evaluatePolicy(analysis.policy, analysis.policy.presets.balanced) : undefined;
+        const unlock = unlocked ? getUnlockInfo(accountId, reportId) : undefined;
+        rows.push({
+            reportId,
+            slug: analysis.slug,
+            number: analysis.number,
+            addr: `${analysis.listing.addr}, ${analysis.listing.city}`,
+            city: analysis.listing.city,
+            type: analysis.listing.type,
+            typeFi: analysis.listing.typeFi,
+            m2: analysis.listing.m2,
+            analysedAt: analysis.readAt,
+            gross: analysis.verdict.grossYield.value,
+            real: analysis.verdict.realYield.value,
+            liabilityTotal: analysis.verdict.liability.total,
+            dots: analysis.verdict.flags.map((f) => f.severity),
+            policyPassing: run?.passing ?? false,
+            policyFails: run?.failCount ?? 0,
+            policyTotal: run?.total ?? 0,
+            status: analysis.listingStatus?.state === "ended" ? "ended" : unlocked ? "unlocked" : "summary",
+            unlockTs: unlock?.ts,
+        });
+    };
+
+    for (const reportId of store.unlocks.get(accountId) ?? []) push(reportId, true);
+    for (const run of store.runs.values()) {
+        if (run.accountId === accountId && run.status === "done") {
+            const analysis = getBySlug(run.slug);
+            if (analysis) push(analysis.id, isUnlocked(accountId, analysis.id));
+        }
+    }
+
+    // Newest activity first (unlocked by unlock date, then by analysis date).
+    return rows.sort((a, b) => (b.unlockTs ?? Date.parse(b.analysedAt)) - (a.unlockTs ?? Date.parse(a.analysedAt)));
+}
+
+/* ── Watch (R10-5) ───────────────────────────────────────────────────────────
+   Watch = saved query {district, type, maxPrice, policyFilter}; matches
+   auto-run the free tier only — 0 credits until an unlock (§4). The match
+   runner itself is the tracking slice (R12); this is the stored query. */
+
+export function getWatch(accountId: string): Watch | undefined {
+    return store.watches.get(accountId);
+}
+
+export function saveWatch(accountId: string, input: { district: string; type: string; maxPrice: number | null; policyFilter: boolean }): Watch | undefined {
+    const district = input.district.trim().slice(0, 80);
+    if (!district) return undefined;
+    if (input.type !== "yksio" && input.type !== "2h" && input.type !== "3h+") return undefined;
+    // Max price is optional in the R10-5 frame — null means no cap; when
+    // present it must be a non-negative integer euro amount.
+    let maxPrice: number | null = null;
+    if (input.maxPrice !== null) {
+        maxPrice = Math.round(Number(input.maxPrice));
+        if (!Number.isFinite(maxPrice) || maxPrice < 0) return undefined;
+    }
+    const watch: Watch = { district, type: input.type, maxPrice, policyFilter: input.policyFilter === true, updatedAt: Date.now() };
+    store.watches.set(accountId, watch);
+    return watch;
+}
+
+export function clearWatch(accountId: string): void {
+    store.watches.delete(accountId);
+}
+
+/* ── Refunds (R11-*) ─────────────────────────────────────────────────────────
+   POST /reports/:id/refund {reason, note?, target} (handoff-notes "Contract").
+   Credit target resolves synchronously: append-only ledger {delta:+1,
+   reason:"refund", reportId}, the report STAYS unlocked (we never claw back
+   reading), one credit refund per report (409 on the second). Card target
+   opens a human-review ticket (≤ 1 business day SLA; mock stays pending).
+   The card path also remains open AFTER a credit refund (R11-3/R9-5 "Rather
+   have the 79 € back?") — the one-per-report guard binds the credit. */
+
+export const RELOCK_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+
+/** 30-day re-lock guard (R11 guards) — see createCheckout. */
+export function isReLockBlocked(accountId: string, reportId: string): boolean {
+    const until = store.refunds.get(accountId)?.get(reportId)?.reLockUntil;
+    return !!until && until > Date.now();
+}
+
+export type RefundResult =
+    | { ok: true; target: "credit"; balance: number; reLockUntil: number; restored?: "free" }
+    | { ok: true; target: "card"; status: "pending" }
+    | { ok: false; error: "not_unlocked" | "bad_reason" | "note_required" | "already_refunded" | "ticket_pending" };
+
+const REFUND_REASONS: RefundReason[] = ["misread", "wrong_listing", "other"];
+
+export function refundReport(accountId: string, reportId: string, input: { reason: string; note?: string; target: string }): RefundResult {
+    if (!isUnlocked(accountId, reportId)) return { ok: false, error: "not_unlocked" };
+    const reason = input.reason as RefundReason;
+    if (!REFUND_REASONS.includes(reason)) return { ok: false, error: "bad_reason" };
+    const note = input.note?.trim().slice(0, 500) || undefined;
+    // Note required only for "misread" — it routes to the extraction team (R11-2).
+    if (reason === "misread" && !note) return { ok: false, error: "note_required" };
+    const target = input.target as RefundTarget;
+    if (target !== "credit" && target !== "card") return { ok: false, error: "bad_reason" };
+
+    let byReport = store.refunds.get(accountId);
+    if (!byReport) {
+        byReport = new Map();
+        store.refunds.set(accountId, byReport);
+    }
+    const record: RefundRecord = byReport.get(reportId) ?? { reason, note };
+    record.reason = reason;
+    if (note) record.note = note;
+
+    if (target === "credit") {
+        if (record.creditAt) return { ok: false, error: "already_refunded" };
+        record.creditAt = Date.now();
+        record.reLockUntil = Date.now() + RELOCK_WINDOW_MS;
+        byReport.set(reportId, record);
+
+        /* REGRESSION GUARD (credit-mint exploit): the +1 restore is legitimate
+           ONLY against an actual spend. A first-free unlock costs nothing
+           (ledger reason "free", delta 0), so refunding it used to mint a real
+           credit from thin air — and the cycle refund → spend → refund → …
+           across DIFFERENT listings (the 30-day re-lock guard binds only the
+           same listing) turned one free claim into unlimited unlocked reports.
+           Rule: no spend entry, no credit. A free unlock instead restores the
+           account's claim (freeClaimed) — the report still stays open, and
+           createCheckout's own "no prior full report" rule keeps the chain
+           closed. Unlocks in this store only ever come from spend/free
+           entries, so the absence of both is unreachable — still no mint. */
+        const entries = store.ledger.get(accountId) ?? [];
+        if (entries.some((e) => e.reportId === reportId && e.reason === "spend")) {
+            // Synchronous restore; the unlock set is untouched — the report stays open.
+            appendLedger(accountId, { delta: +1, reason: "refund", reportId, ts: Date.now() });
+            return { ok: true, target: "credit", balance: balanceOf(accountId), reLockUntil: record.reLockUntil };
+        }
+        const account = getAccount(accountId);
+        if (account && entries.some((e) => e.reportId === reportId && e.reason === "free")) account.freeClaimed = false;
+        return { ok: true, target: "credit", restored: "free", balance: balanceOf(accountId), reLockUntil: record.reLockUntil };
+    }
+
+    if (record.cardTicket?.status === "pending") return { ok: false, error: "ticket_pending" };
+    record.cardTicket = { status: "pending", at: Date.now() };
+    byReport.set(reportId, record);
+    // Mock: the review ticket never resolves here; the real flow is Stripe
+    // refund on approve (handoff-notes "Contract").
+    return { ok: true, target: "card", status: "pending" };
+}
+
+/* ── Notifications (R14) ─────────────────────────────────────────────────────
+   GET/PATCH /account/notifications {tracking:{on,digest}, watch:{on,digest},
+   analysisDone, productNews}. Transactional mail (receipts, refunds, sign-in
+   links) is always sent — no toggle, stated plainly. Digest default daily
+   08.00 local ("one email a day"); Instant still caps at 3/day. Per-object
+   mutes (Stop tracking / Stop watching) live on their objects (R12/R10-5) —
+   this page only links their counts (R14 header annotation). */
+
+export const DEFAULT_NOTIFICATIONS: NotificationPrefs = {
+    tracking: { on: true, digest: "daily" },
+    watch: { on: true, digest: "daily" },
+    analysisDone: true,
+    productNews: false, // off by default — "we don't market at people mid-purchase"
+};
+
+export function getNotifications(accountId: string): NotificationPrefs {
+    const prefs = store.notifications.get(accountId);
+    return prefs
+        ? { ...prefs, tracking: { ...prefs.tracking }, watch: { ...prefs.watch } }
+        : { ...DEFAULT_NOTIFICATIONS, tracking: { ...DEFAULT_NOTIFICATIONS.tracking }, watch: { ...DEFAULT_NOTIFICATIONS.watch } };
+}
+
+/** PATCH semantics: absent keys keep their stored value; returns the saved state. */
+export function setNotifications(accountId: string, patch: NotificationPrefsPatch): NotificationPrefs {
+    const current = getNotifications(accountId);
+    const digest = (v: unknown, fallback: "daily" | "instant") => (v === "instant" ? "instant" : v === "daily" ? "daily" : fallback);
+    const next: NotificationPrefs = {
+        tracking: {
+            on: typeof patch.tracking?.on === "boolean" ? patch.tracking.on : current.tracking.on,
+            digest: digest(patch.tracking?.digest, current.tracking.digest),
+        },
+        watch: {
+            on: typeof patch.watch?.on === "boolean" ? patch.watch.on : current.watch.on,
+            digest: digest(patch.watch?.digest, current.watch.digest),
+        },
+        analysisDone: typeof patch.analysisDone === "boolean" ? patch.analysisDone : current.analysisDone,
+        productNews: typeof patch.productNews === "boolean" ? patch.productNews : current.productNews,
+    };
+    store.notifications.set(accountId, next);
+    return getNotifications(accountId);
+}
+
+/* ── Export & deletion (R16) ─────────────────────────────────────────────────
+   POST /account/export → job {status, url?, expiresAt} — the zip holds
+   /reports/*.pdf (all versions), /analyses/*.json, /chat/*.txt, policy.json,
+   ledger.csv, watches.json (R16 contracts). DELETE /account via a single-use
+   emailed token (15 min): refund unused credits at the per-credit price paid
+   → purge account+content → anonymise receipts (kirjanpitolaki 6 y) → unlist
+   owned public analyses → drop from all mail lists. A pending export blocks
+   deletion until delivered or cancelled. */
+
+export const EXPORT_LINK_TTL_MS = 48 * 60 * 60 * 1000;
+export const DELETION_TOKEN_TTL_MS = 15 * 60 * 1000;
+
+/** Mock: the zip build + email send are the backend's; the job is recorded
+   "delivered" because the emailed 48 h link IS the delivery. A real
+   "pending" job would block deletion (see deleteAccount). */
+export function createExportJob(accountId: string): ExportJob {
+    const job: ExportJob = {
+        id: `exp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+        status: "delivered",
+        createdAt: Date.now(),
+        expiresAt: Date.now() + EXPORT_LINK_TTL_MS,
+    };
+    const jobs = store.exports.get(accountId) ?? [];
+    jobs.push(job);
+    store.exports.set(accountId, jobs);
+    return job;
+}
+
+export function hasPendingExport(accountId: string): boolean {
+    return (store.exports.get(accountId) ?? []).some((j) => j.status === "pending");
+}
+
+/** What deletion refunds: unused credits at the per-credit price the account
+   actually paid (the latest pack purchase's published perReportEur — engine
+   figure, never derived client-side). Nothing paid → 0 €. */
+export function deletionPreview(accountId: string): { unusedCredits: number; perCreditEur: number; refundAmountEur: number } {
+    const unusedCredits = balanceOf(accountId);
+    const purchase = [...(store.ledger.get(accountId) ?? [])].reverse().find((e) => e.reason === "purchase");
+    const perCreditEur = purchase?.packId ? (getPack(purchase.packId)?.perReportEur ?? 0) : 0;
+    return { unusedCredits, perCreditEur, refundAmountEur: Math.round(unusedCredits * perCreditEur * 100) / 100 };
+}
+
+/** Issues the single-use deletion token. Mock: the emailed link (15 min) is
+   never sent — DEV_MOCK_TOKEN stands in locally, documented above. */
+export function requestAccountDeletion(accountId: string): void {
+    const token = `del_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    store.deletionTokens.set(token, { accountId, expiresAt: Date.now() + DELETION_TOKEN_TTL_MS });
+}
+
+/** The emailed-link landing (GET confirm) resolves its account from the token
+   alone — the link may open on another device, so no cookie is required. */
+export function peekDeletionToken(token: string): string | undefined {
+    const record = store.deletionTokens.get(token);
+    return record && record.expiresAt >= Date.now() ? record.accountId : undefined;
+}
+
+export type DeleteAccountResult =
+    { ok: true; refundedCredits: number; refundAmountEur: number } | { ok: false; error: "unknown_account" | "bad_token" | "export_pending" };
+
+export function deleteAccount(accountId: string, token: string): DeleteAccountResult {
+    const account = getAccount(accountId);
+    if (!account) return { ok: false, error: "unknown_account" };
+    if (token === DEV_MOCK_TOKEN) {
+        // Dev-only stand-in for the emailed single-use token (see DEV_MOCK_TOKEN).
+    } else {
+        const record = store.deletionTokens.get(token);
+        if (!record || record.accountId !== accountId || record.expiresAt < Date.now()) return { ok: false, error: "bad_token" };
+        store.deletionTokens.delete(token); // single use
+    }
+    // A pending export blocks deletion until delivered or cancelled (R16 contracts).
+    if (hasPendingExport(accountId)) return { ok: false, error: "export_pending" };
+
+    const { unusedCredits, refundAmountEur } = deletionPreview(accountId);
+
+    // Spec order (§5): refund unused credits (mock Stripe refund) at the
+    // per-credit price paid → purge → anonymise receipts → unlist publics.
+    const owned = new Set<string>(store.unlocks.get(accountId) ?? []);
+    for (const run of store.runs.values()) {
+        if (run.accountId === accountId) {
+            const analysis = getBySlug(run.slug);
+            if (analysis) owned.add(analysis.id);
+        }
+    }
+    for (const reportId of owned) setReportVisibility(reportId, false); // unlisted
+
+    // Receipts stay 6 years, anonymised — kirjanpitolaki, stated on the card:
+    // amounts and dates kept for the books, identity stripped.
+    for (const intent of store.intents.values()) {
+        if (intent.accountId === accountId || intent.email === account.email) intent.email = `anon_${intent.id}@receipts.invalid`;
+    }
+    for (const invoice of store.invoices.values()) {
+        if (invoice.email === account.email) {
+            invoice.email = `anon_${invoice.id}@receipts.invalid`;
+            invoice.name = undefined;
+            invoice.company = undefined;
+        }
+    }
+
+    // Purge account + content (reports, tracking, watches, chat history). Runs
+    // keep their replay value detached; "drop from all mail lists" = the
+    // notifications record goes with the account (the mock has no lists).
+    store.accountByEmail.delete(account.email);
+    store.accounts.delete(accountId);
+    store.ledger.delete(accountId);
+    store.unlocks.delete(accountId);
+    store.chatTurns.delete(accountId);
+    store.watches.delete(accountId);
+    store.notifications.delete(accountId);
+    store.refunds.delete(accountId);
+    store.exports.delete(accountId);
+    for (const run of store.runs.values()) {
+        if (run.accountId === accountId) run.accountId = undefined;
+    }
+
+    return { ok: true, refundedCredits: unusedCredits, refundAmountEur };
+}
