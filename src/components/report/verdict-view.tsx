@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { FlagCard, LiabilityItemRow, LockedFlagRow } from "@/components/report/flag-card";
 import { GradeTile } from "@/components/report/grade-tile";
 import { PaywallSeam, StickyUnlockBar } from "@/components/report/paywall-seam";
-import { PolicyPills } from "@/components/report/policy-pills";
+import { PolicyPanel } from "@/components/report/policy-panel";
 import { ProvenanceChip } from "@/components/report/provenance-chip";
 import { TopBar } from "@/components/report/top-bar";
 import { YieldMetricRow } from "@/components/report/yield-metric-row";
@@ -122,7 +122,10 @@ export function VerdictView({ analysis }: { analysis: Analysis }) {
                         <PaywallSeam lockedFlags={lockedFlags} total={verdict.flagCount.total} />
                     </div>
 
-                    <PolicyPills />
+                    {/* Policy panel (R5-1…R5-5) — full panel visible on the free verdict. */}
+                    {analysis.policy ? (
+                        <PolicyPanel policy={analysis.policy} addr={listing.addr} flagCount={verdict.flagCount.total} seamAnchorId={SEAM_ANCHOR} />
+                    ) : null}
 
                     {/* Provenance legend (C1 definitions) + engine note */}
                     <footer className="flex flex-col gap-2 border-t border-rsm-hairline pt-5">

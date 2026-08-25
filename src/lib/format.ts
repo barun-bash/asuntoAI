@@ -51,6 +51,26 @@ export function formatPp(value: number, lang: Lang, decimals = 1): string {
     return lang === "fi" ? `${num}${NBSP}%-yks.` : `${num}${NBSP}pp`;
 }
 
+/** Always-signed pp margin (R5): +2.6 → "+2.6 pp" · FI "+2,6 %-yks."; whole numbers drop the decimal ("+2 pp"). */
+export function formatPpSigned(value: number, lang: Lang, decimals = 1): string {
+    const rounded = Number(value.toFixed(decimals));
+    const dec = Number.isInteger(rounded) ? 0 : decimals;
+    const out = formatPp(Math.abs(rounded), lang, dec);
+    return value < 0 ? `${MINUS}${out.replace(MINUS, "")}` : `+${out}`;
+}
+
+/** Always-signed € margin (R5): +47 → "+47 €" · −14 → "−14 €" (fi-FI grouping both languages). */
+export function formatEURSigned(value: number, lang: Lang, decimals = 0): string {
+    return value < 0 ? formatEUR(value, lang, decimals) : `+${formatEUR(value, lang, decimals)}`;
+}
+
+/** Grade-step margin (R5): −1 → "−1 grade" (EN) · "−1 arvosana" (FI). */
+export function formatGradeMargin(value: number, lang: Lang): string {
+    const n = Math.trunc(value);
+    const unit = lang === "fi" ? "arvosana" : Math.abs(n) === 1 ? "grade" : "grades";
+    return `${n < 0 ? MINUS : "+"}${Math.abs(n)}${NBSP}${unit}`;
+}
+
 /** €/m² figure: 2185 → "2 185 €/m²" (both languages). */
 export function formatEURPerSqm(value: number, lang: Lang): string {
     return `${formatEUR(value, lang)}/m²`;
@@ -70,6 +90,65 @@ export function formatDateTime(iso: string, lang: Lang): string {
 /** ISO → EN "28.07.2026" · FI "28.7.2026". */
 export function formatDate(iso: string, lang: Lang): string {
     return formatDateTime(iso, lang).split(" ")[0];
+}
+
+/** Clock time for the policy "re-ran" meta (R5-1): EN "13:44:07" · FI "13.44.07". */
+export function formatTime(date: Date, lang: Lang): string {
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+    const ss = String(date.getSeconds()).padStart(2, "0");
+    return lang === "fi" ? `${hh}.${mm}.${ss}` : `${hh}:${mm}:${ss}`;
+}
+
+/* Number words for the policy banner (the board spells small counts:
+   "Two of the three failures", "clears six failures", FI "Kuutta hylkäystä").
+   FI carries nominative (subject counts) and partitive ("{n} hylkäystä") forms. */
+const EN_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"];
+const FI_WORDS_NOM = [
+    "nolla",
+    "yksi",
+    "kaksi",
+    "kolme",
+    "neljä",
+    "viisi",
+    "kuusi",
+    "seitsemän",
+    "kahdeksan",
+    "yhdeksän",
+    "kymmenen",
+    "yksitoista",
+    "kaksitoista",
+    "kolmetoista",
+    "neljätoista",
+];
+const FI_WORDS_PART = [
+    "nollaa",
+    "yhtä",
+    "kahta",
+    "kolmea",
+    "neljää",
+    "viittä",
+    "kuutta",
+    "seitsemää",
+    "kahdeksaa",
+    "yhdeksää",
+    "kymmentä",
+    "yhtätoista",
+    "kahtatoista",
+    "kolmeatoista",
+    "neljätoista",
+];
+
+/** 2 → "two" (EN) · "kaksi" (FI nom) · "kahta" (FI part). Lowercase; falls back to the numeral outside 0–14. */
+export function numberWord(n: number, lang: Lang, fiCase: "nom" | "part" = "nom"): string {
+    if (n < 0 || n > 14) return String(n);
+    if (lang === "fi") return fiCase === "part" ? FI_WORDS_PART[n] : FI_WORDS_NOM[n];
+    return EN_WORDS[n];
+}
+
+/** Capitalizes the first letter — for sentence-initial number words. */
+export function capFirst(s: string): string {
+    return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export { MINUS, NBSP };
