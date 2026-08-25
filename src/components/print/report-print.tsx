@@ -177,7 +177,7 @@ function FlagsSheet({ analysis, lang, t, page, total }: SheetProps) {
                     <article key={flag.id} className={cx("p-flag", flag.severity === "high" && "p-flag-high")}>
                         <div className="p-flag-head">
                             <span className="p-flag-title p-num">
-                                {i + 1} · {lang === "fi" ? flag.titleFi : flag.title}
+                                {i + 1} · {lang === "fi" ? (flag.printTitleFi ?? flag.titleFi) : (flag.printTitle ?? flag.title)}
                             </span>
                             {/* Severity label + cost meta in words — never colour alone. */}
                             <span className={cx("p-pill p-num", flag.severity === "high" ? "p-pill-high" : "p-pill-caution")}>

@@ -41,7 +41,8 @@ export default async function Page({
                 basePath={`/r/${slug}/bank-summary.pdf`}
                 backHref={`/r/${slug}${suffix}`}
                 lang={lang}
-                hint={t.print.toolbarHint.replace("{pages}", "1")}
+                // One-pager → the singular hint ("A4 · 1 sivu" / "A4 · 1 page").
+                hint={t.print.toolbarHintOne.replace("{pages}", "1")}
                 labels={{ back: t.print.toolbarBack, print: t.print.toolbarPrint }}
             />
             <main>

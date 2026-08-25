@@ -444,6 +444,10 @@ export const canonicalAnalysis: Analysis = {
                     en: "District resets 2024–25 added 0.60–1.10 €/m²/mo → 32–59 €/mo for 54 m² from 2032, on top of renovation financing.",
                     fi: "Alueen tarkistukset 2024–25 nostivat 0,60–1,10 €/m²/kk → 32–59 €/kk 54 m²:lle vuodesta 2032, remontin rahoituksen päälle.",
                 },
+                // P2's compressed card title — EN verbatim from the frame; FI in the
+                // same telegram style (composed) — flagged in the PR.
+                printTitle: "Plot leased from the city — lease ends 31.12.2031",
+                printTitleFi: "Tontti vuokrattu Tampereen kaupungilta — maanvuokra päättyy 31.12.2031",
                 costRange: "5–9 K€",
                 costRangeFi: "5–9 t€",
                 costNote: "COST AT RESET",
@@ -485,6 +489,10 @@ export const canonicalAnalysis: Analysis = {
                     en: "5 200 € share inside the LVIS scope (§3); standalone 5 000–9 000 €. Original glazing visibly suppresses P10 rent among comparables.",
                     fi: "LVIS-kokonaisuuden sisällä osuus 5 200 € (§3); erillisenä 5 000–9 000 €. Alkuperäinen lasitus painaa näkyvästi P10-vuokraa verrokkeihin nähden.",
                 },
+                // P2's compressed card title — EN verbatim from the frame; FI in the
+                // same telegram style (composed) — flagged in the PR.
+                printTitle: "Windows and balcony doors original, 1962",
+                printTitleFi: "Ikkunat ja parvekeovet alkuperäiset, 1962",
                 costRange: "5–9 K€",
                 costRangeFi: "5–9 t€",
                 costNote: "5 000–9 000 €",

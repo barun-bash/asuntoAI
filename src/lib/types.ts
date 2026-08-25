@@ -89,8 +89,12 @@ export interface FlagFull {
     /** Optional provenance note under the quotes (R7-1 flag 2 reset-range line). */
     note?: { text: LocalText; basis: Provenance };
     /** Print variants (R7-P P1/P2) — engine-published, tighter than the screen copy:
-       printLine = P1 cover flag summary line; printMeta = P2 pill tail after the
-       severity label; printBody = P2's compressed claim paragraph. */
+       printTitle/printTitleFi = P2's compressed card title (flags 2–3; flag 1's
+       screen title is already the board's); printLine = P1 cover flag summary
+       line; printMeta = P2 pill tail after the severity label; printBody = P2's
+       compressed claim paragraph. */
+    printTitle?: string;
+    printTitleFi?: string;
     printLine?: LocalText;
     printMeta?: LocalText;
     printBody?: LocalText;
