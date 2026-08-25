@@ -512,8 +512,8 @@ export type WatchType = "yksio" | "2h" | "3h+";
 export interface Watch {
     district: string;
     type: WatchType;
-    /** Debt-free maximum price (€). */
-    maxPrice: number;
+    /** Debt-free maximum price (€) — optional in the R10-5 frame; null = no cap. */
+    maxPrice: number | null;
     /** "Only email me matches that could pass my policy on the free summary" (R10-5). */
     policyFilter: boolean;
     updatedAt: number;

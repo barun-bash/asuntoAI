@@ -47,6 +47,9 @@ export function RefundSheet({
     const [error, setError] = useState<"reason" | "note" | "generic" | "already_refunded" | "ticket_pending" | null>(null);
     const [balance, setBalance] = useState<number | null>(null);
     const [reLockUntil, setReLockUntil] = useState<number | null>(null);
+    /** Set when the refunded unlock was free — no credit was minted, the claim
+       came back instead (see the regression guard in store.refundReport). */
+    const [restoredFree, setRestoredFree] = useState(false);
     const headingRef = useRef<HTMLHeadingElement>(null);
 
     // Reset per subject/open; confirmation moves focus to the heading (§11).
@@ -58,6 +61,7 @@ export function RefundSheet({
             setError(null);
             setBalance(null);
             setReLockUntil(null);
+            setRestoredFree(false);
         }
     }, [open, subject.slug]);
     useEffect(() => {
@@ -82,7 +86,7 @@ export function RefundSheet({
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ reason, note: note.trim() || undefined, target }),
             });
-            const data = (await res.json()) as { status?: string; balance?: number; reLockUntil?: number; error?: string };
+            const data = (await res.json()) as { status?: string; balance?: number; reLockUntil?: number; restored?: "free"; error?: string };
             if (!res.ok) {
                 setError(data.error === "already_refunded" || data.error === "ticket_pending" ? data.error : "generic");
                 return;
@@ -91,6 +95,7 @@ export function RefundSheet({
                 const next = data.balance ?? 0;
                 setBalance(next);
                 setReLockUntil(data.reLockUntil ?? null);
+                setRestoredFree(data.restored === "free");
                 onBalance(next); // the drawer pill updates instantly (R11 acceptance)
                 setStage("confirmed");
             } else {
@@ -205,7 +210,11 @@ export function RefundSheet({
             ) : (
                 <>
                     <h2 ref={headingRef} tabIndex={-1} className="tnum pr-10 font-display text-xl font-medium text-rsm-midnight outline-none">
-                        {stage === "confirmed" ? tpl(t.refund.confirmedTitle, { n: balance ?? 0 }) : t.refund.pendingTitle}
+                        {stage === "confirmed"
+                            ? restoredFree
+                                ? tpl(t.refund.confirmedFreeTitle, { n: balance ?? 0 })
+                                : tpl(t.refund.confirmedTitle, { n: balance ?? 0 })
+                            : t.refund.pendingTitle}
                     </h2>
                     {/* Balance change announced politely (§11). */}
                     <span aria-live="polite" className="sr-only">
@@ -215,7 +224,9 @@ export function RefundSheet({
                         {stage === "confirmed" ? (
                             <>
                                 {reason === "misread" && note.trim() ? t.refund.confirmedNoteTeam : null}
-                                {tpl(t.refund.confirmedBody, { date: reLockUntil ? formatDate(new Date(reLockUntil).toISOString(), lang) : "" })}
+                                {restoredFree
+                                    ? tpl(t.refund.confirmedFreeBody, { date: reLockUntil ? formatDate(new Date(reLockUntil).toISOString(), lang) : "" })
+                                    : tpl(t.refund.confirmedBody, { date: reLockUntil ? formatDate(new Date(reLockUntil).toISOString(), lang) : "" })}
                             </>
                         ) : (
                             t.refund.pendingBody

@@ -18,7 +18,8 @@ export async function GET(request: Request) {
     if (accountId) {
         deleted = deleteAccount(accountId, token).ok;
     }
-    const response = NextResponse.redirect(new URL(deleted ? "/account/data?deleted=1" : "/account/data", url.origin), 303);
+    // Failure surfaces a notice on the data page (same pattern as /signin?error=link).
+    const response = NextResponse.redirect(new URL(deleted ? "/account/data?deleted=1" : "/account/data?error=link", url.origin), 303);
     if (deleted) {
         response.cookies.set(ACCOUNT_COOKIE, "", { ...ACCOUNT_COOKIE_OPTS, maxAge: 0 });
     }

@@ -77,6 +77,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
                 reportCount={listAccountReports(account.id).length}
                 unusedCredits={preview.unusedCredits}
                 refundAmountEur={preview.refundAmountEur}
+                linkError={sp.error === "link"}
             />
         </LangProvider>
     );

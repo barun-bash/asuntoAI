@@ -45,7 +45,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     }
     return NextResponse.json(
         result.target === "credit"
-            ? { status: "refunded", target: "credit", balance: result.balance, reLockUntil: result.reLockUntil }
+            ? { status: "refunded", target: "credit", balance: result.balance, reLockUntil: result.reLockUntil, restored: result.restored }
             : { status: "pending", target: "card" },
     );
 }

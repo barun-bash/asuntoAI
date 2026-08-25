@@ -47,12 +47,18 @@ export function ReportsView({
         return true;
     });
 
-    const watchSummary = watch ? `${watch.district}, ${t.watch.types[watch.type]}, ≤ ${formatEUR(watch.maxPrice, lang)}` : "";
+    const watchSummary = watch
+        ? watch.maxPrice != null
+            ? `${watch.district}, ${t.watch.types[watch.type]}, ≤ ${formatEUR(watch.maxPrice, lang)}`
+            : `${watch.district}, ${t.watch.types[watch.type]}`
+        : "";
 
-    const FILTERS: { key: Filter; label: string; mobile: boolean }[] = [
+    /* Filter labels: the R10-1 desktop rail reads "Passing my policy"; the
+       R10-4/R10-7 frames use the short "Passing" below 1280 px. */
+    const FILTERS: { key: Filter; label: string; shortLabel?: string; mobile: boolean }[] = [
         { key: "all", label: t.reports.filterAll, mobile: true },
         { key: "unlocked", label: t.reports.filterUnlocked, mobile: true },
-        { key: "passing", label: t.reports.filterPassing, mobile: true },
+        { key: "passing", label: t.reports.filterPassing, shortLabel: t.reports.filterPassingShort, mobile: true },
         { key: "watching", label: t.reports.filterWatching, mobile: false },
     ];
 
@@ -81,7 +87,14 @@ export function ReportsView({
                                     : "text-rsm-midnight shadow-[inset_0_0_0_1px_var(--color-rsm-hairline)] hover:shadow-[inset_0_0_0_1px_var(--color-rsm-steel)]",
                             )}
                         >
-                            {f.label}
+                            {f.shortLabel ? (
+                                <>
+                                    <span className="xl:hidden">{f.shortLabel}</span>
+                                    <span className="max-xl:hidden">{f.label}</span>
+                                </>
+                            ) : (
+                                f.label
+                            )}
                         </button>
                     ))}
                 </div>

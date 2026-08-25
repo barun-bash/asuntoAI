@@ -615,6 +615,7 @@ export const dict = {
             filterAll: "Kaikki",
             filterUnlocked: "Avatut",
             filterPassing: "Läpäisevät",
+            filterPassingShort: "Läpäisevät",
             filterWatching: "Vahdissa",
             colListing: "Kohde",
             colYields: "Brutto → todellinen",
@@ -628,7 +629,6 @@ export const dict = {
             statusSummary: "Vain yhteenveto",
             statusEnded: "Ilmoitus päättyi",
             metaLine: "{type} · {m2} m² · analysoitu {date}",
-            unlockedLine: "Avattu {date} · 1 krediitti",
             tabletLiability: "korjausvastuu {amount}",
             tabletFlags: "{n} lippua",
             tabletFlagsHigh: "{n} vakava",
@@ -686,6 +686,11 @@ export const dict = {
             confirmedTitle: "Krediitti palautettu — saldo {n}",
             confirmedNoteTeam: "Huomautuksesi meni poimintatiimille. ",
             confirmedBody: "Raportti pysyy auki, ja tämä kohde voidaan avata krediitillä uudelleen {date} alkaen. Vahvistus on sähköpostissasi.",
+            /* Free-unlock refund (no spend → no credit minted; the claim is
+               restored instead). Composed — flagged for FI review. */
+            confirmedFreeTitle: "Maksuton raporttioikeutesi on palautettu — saldo {n}",
+            confirmedFreeBody:
+                "Tämä avaus oli maksuton, joten krediittiä ei luotu. Raportti pysyy auki, ja tämä kohde voidaan avata uudelleen {date} alkaen. Vahvistus on sähköpostissasi.",
             backToReports: "Takaisin Omiin raportteihin",
             moneyBack: "Haluatko sittenkin 79 € takaisin? Yksi klikkaus tässä",
             pendingTitle: "Rahanpalautus pyydetty",
@@ -774,6 +779,8 @@ export const dict = {
             sentBodyZero:
                 "Poistolinkki lähti osoitteeseen {email} ja on voimassa 15 minuuttia. Sitä klikkaamalla tili poistetaan. Siihen asti mikään ei ole muuttunut.",
             changedMind: "Muutitko mielesi? Jätä viesti huomiotta.",
+            errorGeneric: "Jokin ei mennyt läpi — yritä hetken kuluttua uudelleen.",
+            errorLink: "Tuo poistolinkki ei toiminut — se saattoi vanhentua tai olla jo käytetty. Aloita poisto tarvittaessa uudelleen.",
             devComplete: "Dev-mock — sähköpostitse lähtevä linkki:",
             goodbyeTitle: "Tili poistettu.",
             goodbyeBody: "Vientitarjous ja hyvityskuitti ovat sähköpostissasi — viimeinen viesti, jonka saamme lähettää. Näkemiin.",
@@ -1372,6 +1379,7 @@ export const dict = {
             filterAll: "All",
             filterUnlocked: "Unlocked",
             filterPassing: "Passing my policy",
+            filterPassingShort: "Passing",
             filterWatching: "Watching",
             colListing: "Listing",
             colYields: "Gross → real",
@@ -1385,7 +1393,6 @@ export const dict = {
             statusSummary: "Summary only",
             statusEnded: "Listing ended",
             metaLine: "{type} · {m2} m² · analysed {date}",
-            unlockedLine: "Unlocked {date} · 1 credit",
             tabletLiability: "liability {amount}",
             tabletFlags: "{n} flags",
             tabletFlagsHigh: "{n} high",
@@ -1442,6 +1449,11 @@ export const dict = {
             confirmedTitle: "Credit returned — balance {n}",
             confirmedNoteTeam: "Your note went to the extraction team. ",
             confirmedBody: "The report stays open, and this listing can be re-unlocked with a credit again from {date}. Confirmation is in your email.",
+            /* Free-unlock refund (no spend → no credit minted; the claim is
+               restored instead). */
+            confirmedFreeTitle: "Your free report claim is back — balance {n}",
+            confirmedFreeBody:
+                "This unlock was free, so no credit was minted. The report stays open, and this listing can be re-unlocked again from {date}. Confirmation is in your email.",
             backToReports: "Back to My reports",
             moneyBack: "Rather have the 79 € back? One click here",
             pendingTitle: "Money-back requested",
@@ -1521,6 +1533,8 @@ export const dict = {
                 "The deletion link went to {email} and is valid 15 minutes. Clicking it refunds the {n} unused credits ({amount}), then deletes the account. Until then, nothing has changed.",
             sentBodyZero: "The deletion link went to {email} and is valid 15 minutes. Clicking it deletes the account. Until then, nothing has changed.",
             changedMind: "Changed your mind? Just ignore the email",
+            errorGeneric: "Something didn’t go through — try again in a moment.",
+            errorLink: "That deletion link didn’t work — it may have expired or been used already. Start the deletion again if you still want to leave.",
             devComplete: "Dev mock — the emailed link:",
             goodbyeTitle: "Account deleted.",
             goodbyeBody: "The export offer and the refund receipt are in your email — the final message we’re allowed to send. Goodbye.",

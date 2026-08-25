@@ -603,12 +603,17 @@ export function getWatch(accountId: string): Watch | undefined {
     return store.watches.get(accountId);
 }
 
-export function saveWatch(accountId: string, input: { district: string; type: string; maxPrice: number; policyFilter: boolean }): Watch | undefined {
+export function saveWatch(accountId: string, input: { district: string; type: string; maxPrice: number | null; policyFilter: boolean }): Watch | undefined {
     const district = input.district.trim().slice(0, 80);
     if (!district) return undefined;
     if (input.type !== "yksio" && input.type !== "2h" && input.type !== "3h+") return undefined;
-    const maxPrice = Math.round(Number(input.maxPrice));
-    if (!Number.isFinite(maxPrice) || maxPrice < 0) return undefined;
+    // Max price is optional in the R10-5 frame — null means no cap; when
+    // present it must be a non-negative integer euro amount.
+    let maxPrice: number | null = null;
+    if (input.maxPrice !== null) {
+        maxPrice = Math.round(Number(input.maxPrice));
+        if (!Number.isFinite(maxPrice) || maxPrice < 0) return undefined;
+    }
     const watch: Watch = { district, type: input.type, maxPrice, policyFilter: input.policyFilter === true, updatedAt: Date.now() };
     store.watches.set(accountId, watch);
     return watch;
@@ -636,7 +641,7 @@ export function isReLockBlocked(accountId: string, reportId: string): boolean {
 }
 
 export type RefundResult =
-    | { ok: true; target: "credit"; balance: number; reLockUntil: number }
+    | { ok: true; target: "credit"; balance: number; reLockUntil: number; restored?: "free" }
     | { ok: true; target: "card"; status: "pending" }
     | { ok: false; error: "not_unlocked" | "bad_reason" | "note_required" | "already_refunded" | "ticket_pending" };
 
@@ -666,9 +671,27 @@ export function refundReport(accountId: string, reportId: string, input: { reaso
         record.creditAt = Date.now();
         record.reLockUntil = Date.now() + RELOCK_WINDOW_MS;
         byReport.set(reportId, record);
-        // Synchronous restore; the unlock set is untouched — the report stays open.
-        appendLedger(accountId, { delta: +1, reason: "refund", reportId, ts: Date.now() });
-        return { ok: true, target: "credit", balance: balanceOf(accountId), reLockUntil: record.reLockUntil };
+
+        /* REGRESSION GUARD (credit-mint exploit): the +1 restore is legitimate
+           ONLY against an actual spend. A first-free unlock costs nothing
+           (ledger reason "free", delta 0), so refunding it used to mint a real
+           credit from thin air — and the cycle refund → spend → refund → …
+           across DIFFERENT listings (the 30-day re-lock guard binds only the
+           same listing) turned one free claim into unlimited unlocked reports.
+           Rule: no spend entry, no credit. A free unlock instead restores the
+           account's claim (freeClaimed) — the report still stays open, and
+           createCheckout's own "no prior full report" rule keeps the chain
+           closed. Unlocks in this store only ever come from spend/free
+           entries, so the absence of both is unreachable — still no mint. */
+        const entries = store.ledger.get(accountId) ?? [];
+        if (entries.some((e) => e.reportId === reportId && e.reason === "spend")) {
+            // Synchronous restore; the unlock set is untouched — the report stays open.
+            appendLedger(accountId, { delta: +1, reason: "refund", reportId, ts: Date.now() });
+            return { ok: true, target: "credit", balance: balanceOf(accountId), reLockUntil: record.reLockUntil };
+        }
+        const account = getAccount(accountId);
+        if (account && entries.some((e) => e.reportId === reportId && e.reason === "free")) account.freeClaimed = false;
+        return { ok: true, target: "credit", restored: "free", balance: balanceOf(accountId), reLockUntil: record.reLockUntil };
     }
 
     if (record.cardTicket?.status === "pending") return { ok: false, error: "ticket_pending" };

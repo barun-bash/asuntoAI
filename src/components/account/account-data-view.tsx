@@ -22,6 +22,7 @@ export function AccountDataView({
     reportCount,
     unusedCredits,
     refundAmountEur,
+    linkError,
 }: {
     email: string;
     balance: number;
@@ -30,6 +31,8 @@ export function AccountDataView({
     reportCount: number;
     unusedCredits: number;
     refundAmountEur: number;
+    /** ?error=link — the emailed deletion link failed (expired/used). */
+    linkError: boolean;
 }) {
     const { t, lang } = useLang();
     const [dialog, setDialog] = useState<"closed" | "confirm" | "sent">("closed");
@@ -82,6 +85,16 @@ export function AccountDataView({
             <main className="mx-auto w-full max-w-[704px] px-4 pt-4 pb-20">
                 <h1 className="font-display text-3xl font-medium text-rsm-midnight">{t.accountData.title}</h1>
                 <p className="mt-1.5 text-[13.5px] text-rsm-slate">{tpl(t.accountData.subline, { email: maskEmail(email), since })}</p>
+                {/* ?error=link — a dead deletion link lands back here (same
+                    pattern as /signin?error=link). */}
+                {linkError ? (
+                    <p
+                        role="alert"
+                        className="mt-4 rounded-rsm-tile border border-rsm-coral-25 bg-rsm-fail-wash px-3.5 py-2.5 text-[13.5px] leading-[1.5] font-medium wrap-anywhere text-rsm-coral-deep"
+                    >
+                        {t.accountData.errorLink}
+                    </p>
+                ) : null}
 
                 {/* Export — offered before deletion (acceptance §12). */}
                 <section className="mt-6 rounded-rsm-card border border-rsm-hairline bg-white p-5">
@@ -138,7 +151,7 @@ export function AccountDataView({
                         </p>
                         {error ? (
                             <p role="alert" className="mt-3 text-sm font-medium text-rsm-coral-deep">
-                                {error === "export_pending" ? t.accountData.exportPending : t.accountData.changedMind}
+                                {error === "export_pending" ? t.accountData.exportPending : t.accountData.errorGeneric}
                             </p>
                         ) : null}
                         <div className="mt-5 flex flex-col gap-2">

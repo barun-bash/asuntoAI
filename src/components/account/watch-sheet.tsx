@@ -30,7 +30,7 @@ export function WatchSheet({
     const { t } = useLang();
     const [district, setDistrict] = useState(watch?.district ?? "");
     const [type, setType] = useState<WatchType>(watch?.type ?? "2h");
-    const [maxPrice, setMaxPrice] = useState(watch ? String(watch.maxPrice) : "");
+    const [maxPrice, setMaxPrice] = useState(watch?.maxPrice != null ? String(watch.maxPrice) : "");
     const [policyFilter, setPolicyFilter] = useState(watch?.policyFilter ?? true);
     const [pending, setPending] = useState(false);
     const [error, setError] = useState(false);
@@ -39,7 +39,7 @@ export function WatchSheet({
         if (open) {
             setDistrict(watch?.district ?? "");
             setType(watch?.type ?? "2h");
-            setMaxPrice(watch ? String(watch.maxPrice) : "");
+            setMaxPrice(watch?.maxPrice != null ? String(watch.maxPrice) : "");
             setPolicyFilter(watch?.policyFilter ?? true);
             setError(false);
         }
@@ -51,13 +51,21 @@ export function WatchSheet({
             setError(true);
             return;
         }
+        // Max price is optional in the R10-5 frame — empty means no cap (null),
+        // never a silent 0 € ceiling.
+        const trimmed = maxPrice.trim();
+        const cap = trimmed === "" ? null : Number(trimmed);
+        if (cap !== null && (!Number.isFinite(cap) || cap < 0)) {
+            setError(true);
+            return;
+        }
         setPending(true);
         setError(false);
         try {
             const res = await fetch("/api/account/watch", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ district: district.trim(), type, maxPrice: Number(maxPrice) || 0, policyFilter }),
+                body: JSON.stringify({ district: district.trim(), type, maxPrice: cap, policyFilter }),
             });
             if (!res.ok) throw new Error(String(res.status));
             onSaved((await res.json()) as Watch);
