@@ -47,6 +47,20 @@
     --color-rsm-amber-50: var(--rsm-amber-50);
     --color-rsm-amber-25: var(--rsm-amber-25);
 
+    /* Verdict text/wash depths — NOT in the DS token files; lifted verbatim from
+       the boards (R2 policy frames + R5 component inventory): pill fg #1E7F4F /
+       #BE4437, banner washes #F4FAF8 / #FFF7F5, near-line margin #B98900,
+       failing-row 4 % coral wash rgba(255,111,97,.05). */
+    --color-rsm-seafoam-deep: #1e7f4f;
+    --color-rsm-coral-deep: #be4437;
+    --color-rsm-amber-deep: #b98900;
+    --color-rsm-pass-wash: #f4faf8;
+    --color-rsm-fail-wash: #fff7f5;
+    --color-rsm-coral-row: rgb(255 111 97 / 0.05);
+    /* Board row separator #F0EDE7 and slider-row background #FBFAF7 (R5-1/R5-2). */
+    --color-rsm-row-line: #f0ede7;
+    --color-rsm-editor-bg: #fbfaf7;
+
     /* Type */
     --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-body: "Satoshi Variable", "Satoshi", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -86,4 +100,16 @@ body {
 /* Long FI compounds wrap on meta/body only — never headings (spec §7). */
 .wrap-anywhere {
     overflow-wrap: anywhere;
+}
+
+/* Policy threshold editor (R5-2): the DS Slider ships Untitled brand purple;
+   spec §2 reserves Steel Blue for interaction — recolor within this scope only. */
+.policy-slider .bg-brand-solid {
+    background-color: var(--rsm-steel-blue);
+}
+.policy-slider .bg-quaternary {
+    background-color: var(--rsm-misty-blue-25);
+}
+.policy-slider .ring-slider-handle-border {
+    --tw-ring-color: var(--rsm-steel-blue);
 }

@@ -4,11 +4,272 @@
  * Every figure is engine-authored here; the UI formats but never computes (§6.2).
  * Locked flags exist ONLY in redacted form — there is no hidden content to leak (§6.4).
  */
-import type { Analysis } from "@/lib/types";
+import type { Analysis, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
 
 export const CANONICAL_SLUG = "tuomiokirkonkatu-23-b-14-tampere";
 export const REFUSED_SLUG = "rautatienkatu-18-c-44-tampere";
 export const WITHDRAWN_SLUG = "kalevanpuisto-4-a-9-tampere";
+
+/* ── Policy test set (R5-1…R5-5) ─────────────────────────────────────────────
+   Every figure below is engine-authored. The Balanced set is transcribed
+   verbatim from the R2 board script (testsBalanced); Conservative and
+   Yield-seeking follow the board notes (R5-4 "tightens five lines"; R5-2
+   partial spec). Actuals describe the same canonical deal across presets.
+   Grade ranks: E=0 D=1 C=2 B=3 A=4 (comparison only; display stays letters). */
+
+export const policyTests: PolicyTestDef[] = [
+    {
+        key: "grossYield",
+        label: "Gross yield, minimum",
+        labelFi: "Bruttotuotto, vähintään",
+        term: "bruttotuotto",
+        op: "gte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 1,
+        edit: { min: 0, max: 15, step: 0.5 },
+    },
+    {
+        key: "netYield",
+        label: "Net yield after hoitovastike, minimum",
+        labelFi: "Nettotuotto hoitovastikkeen jälkeen, vähintään",
+        term: "nettotuotto",
+        op: "gte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 1,
+        edit: { min: 0, max: 12, step: 0.5 },
+    },
+    {
+        key: "cashFlowBase",
+        label: "Cash flow at base rate 3.45 %",
+        labelFi: "Kassavirta 3,45 % korolla",
+        term: "kassavirta peruskorolla",
+        termNote: "fixable: price ≤ 101 700 € or rent ≥ 859 €",
+        termNoteFi: "korjattavissa: hinta ≤ 101 700 € tai vuokra ≥ 859 €",
+        op: "gte",
+        unit: "eurMonth",
+        editable: true,
+        lineDecimals: 0,
+        showPlus: true,
+        edit: { min: -500, max: 500, step: 5 },
+        explanation: { fixablePrice: 101700, fixablePricePct: { en: "−2.7 %", fi: "−2,7 %" }, fixableRent: 859 },
+    },
+    {
+        key: "cashFlowStress",
+        label: "Cash flow at stress rate 5.5 %",
+        labelFi: "Kassavirta stressikorolla 5,5 %",
+        term: "kassavirta stressikorolla",
+        op: "gte",
+        unit: "eurMonth",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: -800, max: 200, step: 5 },
+    },
+    {
+        key: "liabilityShare",
+        label: "Renovation liability, share of debt-free price",
+        labelFi: "Korjausvastuu / velaton hinta",
+        term: "korjausvastuu / velaton hinta",
+        termNote: "not fixable by price — the share is the building’s",
+        termNoteFi: "ei korjattavissa hinnalla — osuus on taloyhtiön",
+        op: "lte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 80, step: 5 },
+        explanation: {
+            fixable: false,
+            reason: "building",
+            blurb: { en: "a 49 % liability share", fi: "49 %:n korjausvastuuosuutta" },
+        },
+    },
+    {
+        key: "companyGrade",
+        label: "Housing company grade, minimum",
+        labelFi: "Taloyhtiön arvosana, vähintään",
+        term: "taloyhtiön arvosana",
+        termNote: "not fixable by price",
+        termNoteFi: "ei korjattavissa hinnalla",
+        op: "gte",
+        unit: "grade",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 4, step: 1 },
+        explanation: {
+            fixable: false,
+            reason: "building",
+            blurb: { en: "a C-grade company", fi: "C-arvosanaa" },
+        },
+    },
+    {
+        key: "municipalityGrade",
+        label: "Municipality grade, minimum",
+        labelFi: "Sijaintikunnan arvosana, vähintään",
+        term: "sijaintikunnan arvosana",
+        op: "gte",
+        unit: "grade",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 4, step: 1 },
+    },
+    {
+        key: "priceVsMedian",
+        label: "Price vs district median €/m²",
+        labelFi: "Hinta vs. alueen mediaani €/m²",
+        term: "hinta vs. alueen mediaani",
+        op: "lte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 0,
+        showPlus: true,
+        edit: { min: -50, max: 50, step: 1 },
+    },
+    {
+        key: "ltv",
+        label: "Loan-to-value at purchase",
+        labelFi: "Luototusaste",
+        term: "luototusaste",
+        op: "lte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 100, step: 5 },
+    },
+    {
+        key: "cashNeeded",
+        label: "Cash needed, maximum",
+        labelFi: "Oma pääoma + varainsiirtovero, enintään",
+        term: "oma pääoma + varainsiirtovero",
+        op: "lte",
+        unit: "eur",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 200000, step: 500 },
+    },
+    {
+        key: "p10Covers",
+        label: "P10 rent covers charges + interest",
+        labelFi: "P10-vuokra kattaa vastikkeet ja korot",
+        term: "P10-vuokra kattaa vastikkeet ja korot",
+        op: "gte",
+        unit: "eurMonth",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: -300, max: 300, step: 5 },
+    },
+    {
+        key: "hoitovastike",
+        label: "Hoitovastike per m², maximum",
+        labelFi: "Hoitovastike €/m², enintään",
+        term: "hoitovastike €/m²",
+        op: "lte",
+        unit: "eurSqm",
+        editable: true,
+        lineDecimals: 2,
+        edit: { min: 0, max: 12, step: 0.25 },
+    },
+    {
+        key: "companyLoanShare",
+        label: "Company loan share of debt-free price",
+        labelFi: "Yhtiölainaosuus velattomasta hinnasta",
+        term: "yhtiölainaosuus",
+        op: "lte",
+        unit: "percent",
+        editable: true,
+        lineDecimals: 0,
+        edit: { min: 0, max: 60, step: 1 },
+    },
+    {
+        key: "noUnfundedProject",
+        label: "No decided, unfunded project inside 3 years",
+        labelFi: "Ei päätettyä rahoittamatonta hanketta 3 vuoden sisällä",
+        term: "ei päätettyä rahoittamatonta hanketta",
+        termNote: "survey signals 4–7 y — flagged, not failed",
+        termNoteFi: "kuntotutkimus signaaloi 4–7 v — liputettu, ei hylätty",
+        op: "eq",
+        unit: "flag",
+        editable: true, // board contract marks all 14 editable; a boolean test has no slider, so the UI offers no editor for it
+        lineDecimals: 0,
+    },
+];
+
+export const policyActuals: PolicyActual[] = [
+    { key: "grossYield", value: 8.6, display: "8.6 %", displayFi: "8,6 %" },
+    { key: "netYield", value: 5.6, display: "5.6 %", displayFi: "5,6 %" },
+    { key: "cashFlowBase", value: -14, display: "−14 €/mo", displayFi: "−14 €/kk" },
+    { key: "cashFlowStress", value: -103, display: "−103 €/mo", displayFi: "−103 €/kk" },
+    { key: "liabilityShare", value: 49.3, display: "49.3 %", displayFi: "49,3 %" },
+    { key: "companyGrade", value: 2, display: "C", displayFi: "C" },
+    { key: "municipalityGrade", value: 4, display: "A", displayFi: "A" },
+    { key: "priceVsMedian", value: -15.6, display: "−15.6 %", displayFi: "−15,6 %" },
+    { key: "ltv", value: 73, display: "73 %", displayFi: "73 %" },
+    { key: "cashNeeded", value: 31800, display: "31 800 €", displayFi: "31 800 €" },
+    { key: "p10Covers", value: 81, display: "+81 €/mo", displayFi: "+81 €/kk" },
+    { key: "hoitovastike", value: 5.5, display: "5.50 €", displayFi: "5,50 €" },
+    { key: "companyLoanShare", value: 11.4, display: "11.4 %", displayFi: "11,4 %" },
+    { key: "noUnfundedProject", value: 0, display: "none", displayFi: "ei ole" },
+];
+
+export const policyPresets: Record<PolicyPresetKey, Record<string, number>> = {
+    // R5-1 / testsBalanced — verbatim from the board script.
+    balanced: {
+        grossYield: 6.0,
+        netYield: 4.0,
+        cashFlowBase: 0,
+        cashFlowStress: -150,
+        liabilityShare: 25,
+        companyGrade: 3, // ≥ B
+        municipalityGrade: 3, // ≥ B
+        priceVsMedian: 10,
+        ltv: 75,
+        cashNeeded: 95000,
+        p10Covers: 0,
+        hoitovastike: 6.0,
+        companyLoanShare: 30,
+        noUnfundedProject: 0, // required
+    },
+    // R5-4: "Conservative tightens five lines" — the other nine stay Balanced.
+    conservative: {
+        grossYield: 6.0,
+        netYield: 4.0,
+        cashFlowBase: 50,
+        cashFlowStress: 0,
+        liabilityShare: 15,
+        companyGrade: 3,
+        municipalityGrade: 3,
+        priceVsMedian: 10,
+        ltv: 70,
+        cashNeeded: 95000,
+        p10Covers: 0,
+        hoitovastike: 5.0,
+        companyLoanShare: 30,
+        noUnfundedProject: 0,
+    },
+    // Yield-seeking is only partially board-specified (R5-2 shows Anne's Custom
+    // edits "dirty on 2 thresholds" from it). This derivation is defensible but
+    // NOT verbatim — flagged in the PR. Under it this deal fails 1 of 14
+    // (company grade C < B), so R5-2's exact 14/14 pass needs a grade-line edit
+    // too — board ambiguity, flagged.
+    yield: {
+        grossYield: 7.0,
+        netYield: 4.0,
+        cashFlowBase: -50,
+        cashFlowStress: -250,
+        liabilityShare: 50,
+        companyGrade: 3,
+        municipalityGrade: 3,
+        priceVsMedian: 10,
+        ltv: 85,
+        cashNeeded: 95000,
+        p10Covers: 0,
+        hoitovastike: 7.0,
+        companyLoanShare: 30,
+        noUnfundedProject: 0,
+    },
+};
+
+export const policyData: PolicyData = { tests: policyTests, presets: policyPresets, actuals: policyActuals };
 
 export const canonicalAnalysis: Analysis = {
     id: "ana_2026_1187",
@@ -143,6 +404,7 @@ export const canonicalAnalysis: Analysis = {
             { id: "flag-locked-3", severity: "caution", locked: true, costRange: "5–9 K€", costRangeFi: "5–9 t€" },
         ],
     },
+    policy: policyData,
 };
 
 export const refusedAnalysis: Analysis = {

@@ -112,6 +112,7 @@ export interface Analysis {
     steps: AnalysisStep[];
     listing?: Listing;
     verdict?: Verdict;
+    policy?: PolicyData;
     /** Refusal / withdrawn particulars (engine-authored prose). */
     refusal?: {
         heading: string;
@@ -122,4 +123,67 @@ export interface Analysis {
         unlock: string;
         unlockFi: string;
     };
+}
+
+/* ── Policy (R5-*) — board contract, handoff-notes "Policy data" ────────────
+   Policy {preset, tests[14]{key,label,labelFi,op,threshold,unit,editable:true}}
+   + engine-published actuals[14]. Verdict re-run is PURE CLIENT evaluation over
+   these actuals (spec-sanctioned exception to §6.2); no network on preset tap. */
+
+export type PolicyPresetKey = "conservative" | "balanced" | "yield";
+
+/** Units decide line/margin formatting. grade = rank on the A–E scale. */
+export type PolicyUnit = "percent" | "eurMonth" | "eur" | "eurSqm" | "grade" | "flag";
+
+export type PolicyOp = "gte" | "lte" | "eq";
+
+/** Engine-emitted explanation fields — banner copy is assembled from these, never free prose. */
+export interface PolicyExplanation {
+    /** Cash-flow style fix: price at/below which the test flips (engine-computed). */
+    fixablePrice?: number;
+    /** Engine-published display of the price delta vs asking, e.g. "−2.7 %". */
+    fixablePricePct?: { en: string; fi: string };
+    /** Rent at/above which the test flips (engine-computed). */
+    fixableRent?: number;
+    /** fixable:false → reason:"building" — no offer moves this test. */
+    fixable?: false;
+    reason?: "building";
+    /** Short engine fragment naming the failing figure, e.g. "a 49 % liability share". */
+    blurb?: { en: string; fi: string };
+}
+
+export interface PolicyTestDef {
+    key: string;
+    label: string;
+    labelFi: string;
+    /** Finnish domain term shown as the desktop subline (board R5-1 row anatomy). */
+    term: string;
+    /** Optional engine note appended to the subline (fixable / not-fixable context). */
+    termNote?: string;
+    termNoteFi?: string;
+    op: PolicyOp;
+    unit: PolicyUnit;
+    editable: true;
+    /** Decimals used when displaying the "your line" value. */
+    lineDecimals: number;
+    /** Show an explicit "+" on positive line values (board: "≤ +10 %", "≥ +50 €"). */
+    showPlus?: boolean;
+    /** Engine-published editing bounds. Absent → no meaningful editor (boolean test). */
+    edit?: { min: number; max: number; step: number };
+    explanation?: PolicyExplanation;
+}
+
+export interface PolicyActual {
+    key: string;
+    /** Numeric value for client evaluation (grade = A–E rank). Never re-derived in UI. */
+    value: number;
+    /** Engine-published display strings per language ("8.6 %" / "8,6 %"). */
+    display: string;
+    displayFi: string;
+}
+
+export interface PolicyData {
+    tests: PolicyTestDef[];
+    presets: Record<PolicyPresetKey, Record<string, number>>;
+    actuals: PolicyActual[];
 }
