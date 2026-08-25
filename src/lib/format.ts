@@ -81,13 +81,13 @@ export function formatEURPerReport(value: number, lang: Lang, decimals = 2): str
     return `${formatEUR(value, lang, decimals)}/${lang === "fi" ? "raportti" : "report"}`;
 }
 
-/** ISO → EN "28.07.2026 13:41" · FI "28.7.2026 13.41". */
+/** ISO → EN "28.07.2026 13:41" · FI "28.7.2026 13.41" (FI hours unpadded: "8.12", R7-5 FI). */
 export function formatDateTime(iso: string, lang: Lang): string {
     const d = new Date(iso);
     const dd = String(d.getDate()).padStart(lang === "fi" ? 1 : 2, "0");
     const mm = String(d.getMonth() + 1).padStart(lang === "fi" ? 1 : 2, "0");
     const yyyy = d.getFullYear();
-    const hh = String(d.getHours()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(lang === "fi" ? 1 : 2, "0");
     const min = String(d.getMinutes()).padStart(2, "0");
     return lang === "fi" ? `${dd}.${mm}.${yyyy} ${hh}.${min}` : `${dd}.${mm}.${yyyy} ${hh}:${min}`;
 }

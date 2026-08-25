@@ -411,11 +411,252 @@ export const canonicalAnalysis: Analysis = {
                     },
                 ],
             },
-            { id: "flag-locked-2", severity: "caution", locked: true, costRange: "5–9 K€", costRangeFi: "5–9 t€" },
-            { id: "flag-locked-3", severity: "caution", locked: true, costRange: "5–9 K€", costRangeFi: "5–9 t€" },
+            /* Flags 2–3 carry their full engine content here (R7-1 verbatim).
+               The free tier never sees it: the store redacts locked flags to
+               {severity, costRange, locked:true} at the boundary (§6.4); an
+               unlocked account receives them whole (R7 slice). */
+            {
+                id: "flag-leased-plot",
+                severity: "caution",
+                locked: true,
+                title: "The plot is leased from the city — the lease ends 31.12.2031",
+                // FI composed from board vocabulary (P1 "vuokratontti (Tampereen kaupunki, päättyy 2031)") — flagged in the PR.
+                titleFi: "Tontti on vuokrattu Tampereen kaupungilta — maanvuokra päättyy 31.12.2031",
+                body: "Ground rent resets when the lease is renegotiated. Tampere’s 2024–25 resets in this district raised charges by 0.60–1.10 €/m²/mo. For 54 m², that is 32–59 €/mo onto the hoitovastike from 2032 — on top of the renovation financing that will already be running.",
+                // FI translated from the EN board copy — flagged in the PR.
+                bodyFi: "Maanvuokra tarkistetaan sopimusta uusittaessa. Tampereen 2024–25 tarkistukset tällä alueella nostivat maksuja 0,60–1,10 €/m²/kk. 54 m²:lle se on 32–59 €/kk hoitovastikkeen päälle vuodesta 2032 — sen lisäksi, kun remontin rahoitusvastike on jo käynnissä.",
+                costRange: "5–9 K€",
+                costRangeFi: "5–9 t€",
+                costNote: "COST AT RESET",
+                // FI translated ("cost at reset") — flagged in the PR.
+                costNoteFi: "KUSTANNUS TARKISTUKSESSA",
+                strongs: [{ en: "32–59 €/mo", fi: "32–59 €/kk" }],
+                quotes: [
+                    {
+                        text: "”Tontti on vuokrattu Tampereen kaupungilta, maanvuokrasopimus voimassa 31.12.2031 saakka.”",
+                        source: "Listing text · Oikotie 21966412",
+                        sourceFi: "Ilmoitusteksti · Oikotie 21966412",
+                        translation: "“The plot is leased from the City of Tampere; the ground lease runs to 31 Dec 2031.”",
+                    },
+                ],
+                note: {
+                    text: {
+                        en: "Reset range from 11 Tampere ground-lease renewals 2023–2026",
+                        // FI translated from the EN board line — flagged in the PR.
+                        fi: "Tarkistushaarukka 11 Tampereen maanvuokrasopimuksen uusinnasta 2023–2026",
+                    },
+                    basis: "MODELLED",
+                },
+            },
+            {
+                id: "flag-original-windows",
+                severity: "caution",
+                locked: true,
+                title: "Windows and balcony doors are original, 1962",
+                // FI composed from board vocabulary (P1 "Ikkunat alkuperäiset 1962") — flagged in the PR.
+                titleFi: "Ikkunat ja parvekeovet ovat alkuperäiset, 1962",
+                body: "Inside the LVIS scope they cost this apartment a 5 200 € share (§3). Done standalone they run 5 000–9 000 €. Until then, 1962 glazing suppresses winter comfort and sits visibly in the P10 rent — two of the 27 comparables with original windows let 6–9 % under the median.",
+                // FI translated from the EN board copy — flagged in the PR.
+                bodyFi: "LVIS-kokonaisuuden sisällä niiden osuus tästä asunnosta on 5 200 € (§3). Erillisenä urakkana ne maksaisivat 5 000–9 000 €. Siihen asti vuoden 1962 lasitus heikentää talvimukavuutta ja näkyy P10-vuokrassa — kaksi 27 verrokista alkuperäisikkunoineen vuokrattiin 6–9 % mediaanin alle.",
+                costRange: "5–9 K€",
+                costRangeFi: "5–9 t€",
+                costNote: "5 000–9 000 €",
+                costNoteFi: "5 000–9 000 €",
+                quotes: [
+                    {
+                        text: "”Ikkunat ja parvekeovet ovat alkuperäiset.”",
+                        source: "Listing text · Oikotie 21966412",
+                        sourceFi: "Ilmoitusteksti · Oikotie 21966412",
+                        translation: "“Windows and balcony doors are original.”",
+                    },
+                ],
+            },
         ],
     },
     policy: policyData,
+    /* ── Full report (R7-1…R7-8) — engine-authored document data ─────────────
+       §3/§6 rows verbatim from the R3 board script (liabilityRows / yearRows);
+       §1 prose verbatim from R7-1 (EN) and R7-6 (FI); §4/§5 from R7-2; chat
+       answers from R7-2/R7-4/R7-8 (FI where the board gives it). FI strings
+       without a board row are translated from EN board copy using the boards'
+       own FI vocabulary (P4/P1) — each marked inline, collected in the PR. */
+    report: {
+        prose: {
+            en: "The listing’s 8.6 % is real arithmetic on a real rent — and it is not the yield you would own. Priced 15.6 % under the district median, this apartment carries the district’s largest un-executed renovation programme. Two of the three failing tests are properties of the building; no offer price repairs them.",
+            fi: "Ilmoituksen 8,6 % on oikeaa laskentaa oikealla vuokralla — mutta se ei ole tuotto, jonka omistaisit. Asunto on hinnoiteltu 15,6 % alle alueen mediaanin, ja se kantaa alueen suurimman toteuttamattoman korjausohjelman. Kaksi kolmesta hylkäävästä testistä on rakennuksen ominaisuuksia; mikään tarjoushinta ei korjaa niitä.",
+        },
+        proseNote: {
+            en: "Prose is the model reading the engine’s numbers — it can phrase, it cannot originate a figure. §§3–7 show every input.",
+            // R7-6 verbatim — the FI frame carries no "§§3–7" tail.
+            fi: "Proosa on kielimallin luentaa moottorin luvuista — se voi muotoilla, ei koskaan keksiä lukua.",
+        },
+        liabilityRows: [
+            {
+                name: { en: "Piping renovation (linjasaneeraus)", fi: "Linjasaneeraus (putkiremontti)" },
+                note: { en: "water + drains + electrics risers, bathrooms to code", fi: "vesi + viemärit + sähkösten nousut, märkätilat määräysten mukaan" },
+                basis: { en: "54 m² × 890 €/m² median", fi: "54 m² × 890 €/m² mediaani" },
+                amount: "48 100 €",
+                chip: "MODELLED",
+            },
+            {
+                name: { en: "Roof, apartment’s share", fi: "Katto, asunnon osuus" },
+                note: { en: "felt roof renewed 1998 — at end of cycle within the window", fi: "huopakatto uusittu 1998 — käyttöikänsä päässä ikkunan sisällä" },
+                basis: { en: "company est. ÷ share ratio", fi: "yhtiön arvio ÷ osuussuhde" },
+                amount: "4 900 €",
+                chip: "ESTIMATED",
+            },
+            {
+                name: { en: "Windows & balcony doors, share", fi: "Ikkunat & parvekeovet, osuus" },
+                note: { en: "original 1962 — inside the LVIS scope (flag 3)", fi: "alkuperäiset 1962 — LVIS-kokonaisuudessa (lippu 3)" },
+                basis: { en: "company est. ÷ share ratio", fi: "yhtiön arvio ÷ osuussuhde" },
+                amount: "5 200 €",
+                chip: "ESTIMATED",
+            },
+        ],
+        liabilityBasis: {
+            en: "Basis: 27 completed linjasaneeraus contracts, Pirkanmaa 2019–2026 — median 890 €/m², P80 1 040 €/m². At P80 the piping line alone is 56 200 € and the total 66 300 €. Timing from the observed sequence: survey 2024 → project planning → decision (typ. +1–2 y) → execution (+2–4 y).",
+            fi: "Peruste: 27 valmistunutta linjasaneerausurakkaa, Pirkanmaa 2019–2026 — mediaani 890 €/m², P80 1 040 €/m². P80:lla pelkkä putkilinja on 56 200 € ja kokonaisuus 66 300 €. Ajoitus havaitusta ketjusta: kuntotutkimus 2024 → hankesuunnittelu → päätös (tyyp. +1–2 v) → toteutus (+2–4 v).",
+        },
+        liabilityBasisStrongs: [{ en: "66 300 €", fi: "66 300 €" }],
+        rent: {
+            p10: "780 €",
+            p10Note: { en: "every cash-flow figure uses this", fi: "jokainen kassavirtaluku käyttää tätä" },
+            p50: "845 €",
+            p50Note: { en: "the listing’s implied rent", fi: "ilmoituksen implisiittinen vuokra" },
+            p90: "910 €",
+            p90Note: { en: "renovated-kitchen ceiling", fi: "remontoidun keittiön katto" },
+            source: {
+                en: "27 lettings, Tampere keskusta 45–60 m², 24 months, unrenovated kitchens weighted",
+                fi: "27 vuokrailmoitusta, Tampere keskusta 45–60 m², 24 kk, remontoimattomat keittiöt painotettu",
+            },
+            tenancy: { en: "current tenancy 845 €/mo, open-ended", fi: "voimassa oleva vuokrasuhde 845 €/kk, toistaiseksi" },
+            tenancyQuote: {
+                text: "”Hyvä vuokralainen, vuokrasopimus toistaiseksi voimassa, vuokra 845,00 €/kk.”",
+                source: "Listing text · Oikotie 21966412",
+                sourceFi: "Ilmoitusteksti · Oikotie 21966412",
+                translation: "“Good tenant, open-ended tenancy, rent 845.00 €/month.”",
+            },
+        },
+        financing: {
+            equity: "30 000 €",
+            loan: "76 400 €",
+            rate: { en: "3.45 %", fi: "3,45 %" },
+            term: { en: "25 y", fi: "25 v" },
+            payment: { en: "380 €/mo", fi: "380 €/kk" },
+            transferTaxRate: { en: "1.5 %", fi: "1,5 %" },
+            transferTax: "1 770 €",
+            cashNeeded: "31 800 €",
+        },
+        yearRows: [
+            { y: "Y1", rent: "9 360 €", charges: "5 750 €", debtService: "4 560 €", cf: "−950 €", cum: "−950 €", negative: true },
+            { y: "Y2", rent: "9 500 €", charges: "5 920 €", debtService: "4 560 €", cf: "−980 €", cum: "−1 930 €", negative: true },
+            { y: "Y3", rent: "9 640 €", charges: "6 100 €", debtService: "4 560 €", cf: "−1 020 €", cum: "−2 950 €", negative: true },
+            { y: "Y4", rent: "9 790 €", charges: "6 280 €", debtService: "4 560 €", cf: "−1 050 €", cum: "−4 000 €", negative: true },
+            { y: "Y5", rent: "9 930 €", charges: "10 190 €", debtService: "4 560 €", cf: "−4 820 €", cum: "−8 820 €", negative: true, highlight: true },
+            { y: "Y10", rent: "11 550 €", charges: "11 220 €", debtService: "4 560 €", cf: "−4 230 €", cum: "−30 500 €", negative: true },
+        ],
+        yearAssumptions: [
+            {
+                text: { en: "Y5: renovation financing enters at +310 €/mo", fi: "Y5: remontin rahoitusvastike +310 €/kk" },
+                basis: "MODELLED",
+            },
+            {
+                text: { en: "Y6→ rent uplift +8 % post-renovation", fi: "Y6→ vuokrankorotus +8 % remontin jälkeen" },
+                basis: "MODELLED",
+            },
+        ],
+        yearGrowth: { en: "rent growth 1.5 %/y, charge growth 3.0 %/y.", fi: "vuokrankasvu 1,5 %/v, vastikkeen kasvu 3,0 %/v." },
+        /* R7-5 mock diff (real diffs come from tracking, slice 8). */
+        listingChange: { now: "98 600 €", was: "104 600 €", seenAt: "2026-07-29T08:12:00+03:00" },
+        chat: {
+            answers: [
+                {
+                    // R7-2 — "How did you get 58 200 €?"
+                    match: ["58 200", "58200", "how did you get", "miten saitte", "mistä luku"],
+                    answer: {
+                        en: "Three parts. Piping: 54 m² × 890 €/m² = 48 100 € — the median of 27 Pirkanmaa contracts. Roof share 4 900 € and windows share 5 200 € from the same survey scope. It’s a modelled median, not a quote: the P80 case is 66 300 €.",
+                        fi: "Kolme osaa. Putkisto: 54 m² × 890 €/m² = 48 100 € — 27 pirkanmaalaisen urakan mediaani. Katto-osuus 4 900 € ja ikkunaosuus 5 200 € samasta kuntotutkimuksesta. Kyseessä on mallinnettu mediaani, ei tarjous: P80-tapaus on 66 300 €.",
+                    },
+                    strongs: [
+                        { en: "48 100 €", fi: "48 100 €" },
+                        { en: "4 900 €", fi: "4 900 €" },
+                        { en: "5 200 €", fi: "5 200 €" },
+                        { en: "66 300 €", fi: "66 300 €" },
+                    ],
+                    citations: [
+                        { section: { en: "§3 Liability", fi: "§3 Korjausvastuu" }, anchor: "s3" },
+                        { section: { en: "quote: kuntotutkimus 2024", fi: "lainaus: kuntotutkimus 2024" }, anchor: "s2-flag-1" },
+                    ],
+                },
+                {
+                    // R7-2 — "What if the rent is 900 €?" The 9.2 % / +41 € figures are
+                    // engine-published here; a what-if re-runs the engine, never the LLM (§6.2).
+                    match: ["900"],
+                    answer: {
+                        en: "At 900 € gross yield is 9.2 % and base cash flow turns +41 €/mo. But 900 € sits above P75 of the comparables, so underwriting stays at P10 = 780 €. Your verdict doesn’t change — the liability share (49.3 %) and company grade (C) fail at any rent.",
+                        fi: "900 €:lla bruttotuotto on 9,2 % ja kassavirta peruskorolla kääntyy lukemaan +41 €/kk. Mutta 900 € on verrokkien P75:n yläpuolella, joten laskenta pysyy P10:ssa = 780 €. Päätelmäsi ei muutu — korjausvastuuosuus (49,3 %) ja taloyhtiön arvosana (C) hylkäävät millä vuokralla tahansa.",
+                    },
+                    strongs: [
+                        { en: "9.2 %", fi: "9,2 %" },
+                        { en: "+41 €/mo", fi: "+41 €/kk" },
+                    ],
+                    citations: [
+                        { section: { en: "§4 Rent", fi: "§4 Vuokra" }, anchor: "s4" },
+                        { section: { en: "§7 Tests", fi: "§7 Testit" }, anchor: "s7" },
+                    ],
+                    yourFigure: {
+                        display: "900 €",
+                        note: { en: "above P75 of 27 comparables", fi: "27 verrokin P75:n yläpuolella" },
+                    },
+                },
+                {
+                    // R7-8 — "Is 845 € a safe rent to assume?" (FI verbatim from R7-8 FI frame).
+                    match: ["845", "safe rent", "turvallinen vuokra"],
+                    answer: {
+                        en: "845 € is the sitting tenancy — real and observed. For underwriting we still use P10 = 780 €: if the tenant leaves, that’s the re-let floor among 27 comparables with this kitchen condition.",
+                        fi: "845 € on istuva vuokrasuhde — todellinen ja havaittu. Laskenta käyttää silti P10:tä = 780 €: jos vuokralainen lähtee, se on uudelleenvuokrauksen lattia 27 verrokin joukossa.",
+                    },
+                    strongs: [{ en: "780 €", fi: "780 €" }],
+                    citations: [{ section: { en: "§4 Rent", fi: "§4 Vuokra" }, anchor: "s4" }],
+                },
+                {
+                    // R7-4 — "And if the lease reset lands at the top of the range?"
+                    match: ["lease reset", "top of the range", "maanvuokra", "yläpää", "tarkistus"],
+                    answer: {
+                        en: "At +1.10 €/m²/mo the charge rises 59 €/mo from 2032 — real yield drifts to 5.5 %. Your verdict doesn’t move; the failing tests fail either way.",
+                        fi: "+1,10 €/m²/kk tarkistuksessa vastike nousee 59 €/kk vuodesta 2032 — todellinen tuotto liukuu lukemaan 5,5 %. Päätelmäsi ei liiku; hylkäävät testit hylkäävät joka tapauksessa.",
+                    },
+                    strongs: [{ en: "5.5 %", fi: "5,5 %" }],
+                    citations: [{ section: { en: "§2 Flag 2", fi: "§2 Lippu 2" }, anchor: "s2-flag-2" }],
+                },
+                {
+                    // "Why did it fail my policy?" — composed from engine explanation fields
+                    // (not a board frame; same content as the R5-1 banner) — flagged in the PR.
+                    match: ["fail my policy", "why did it fail", "miksei läpäise", "miksi ei läpäise", "politiikka"],
+                    answer: {
+                        en: "Three tests fail: cash flow at the base rate (−14 €/mo against your 0 € line), the liability share (49.3 % against 25 %), and the company grade (C against B). The last two are the building’s — no offer price repairs them.",
+                        fi: "Kolme testiä hylkää: kassavirta peruskorolla (−14 €/kk, rajasi 0 €), korjausvastuuosuus (49,3 %, raja 25 %) ja taloyhtiön arvosana (C, raja B). Kaksi viimeistä ovat taloyhtiön ominaisuuksia — mikään tarjoushinta ei korjaa niitä.",
+                    },
+                    citations: [{ section: { en: "§7 Tests", fi: "§7 Testit" }, anchor: "s7" }],
+                },
+                {
+                    // "What should I ask the agent?" — DECISION: the checklist ships with a
+                    // later slice (R7-11), so the chip gets a short honest canned answer that
+                    // points at §2's flags (each names its source sentence) — commented in the PR.
+                    match: ["ask the agent", "välittäjä"],
+                    answer: {
+                        en: "A ready-made agent checklist ships with a later slice. Until then, ask about the three flags in §2 — each one names the listing sentence it came from.",
+                        fi: "Valmis välittäjän kysymyslista julkaistaan myöhemmässä vaiheessa. Siihen asti kysy §2:n kolmesta lipusta — jokainen nimee ilmoituksen lähdelauseensa.",
+                    },
+                    citations: [{ section: { en: "§2 Flags", fi: "§2 Riskiliput" }, anchor: "s2" }],
+                },
+            ],
+            refusal: {
+                en: "That’s not in this report’s data — I only answer from this deal’s figures, quotes and your policy.",
+                fi: "Se ei ole tämän raportin datassa — vastaan vain tämän kohteen luvuista, lainauksista ja politiikastasi.",
+            },
+        },
+    },
 };
 
 export const refusedAnalysis: Analysis = {

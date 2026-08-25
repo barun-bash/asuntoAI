@@ -206,7 +206,20 @@ function BannerBody({
     );
 }
 
-export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy: PolicyData; addr: string; flagCount: number; seamAnchorId: string }) {
+export function PolicyPanel({
+    policy,
+    addr,
+    flagCount,
+    seamAnchorId,
+    showUnlockStrip = true,
+}: {
+    policy: PolicyData;
+    addr: string;
+    flagCount: number;
+    seamAnchorId: string;
+    /** The full report (R7) has no seam — the mobile unlock strip stays off there. */
+    showUnlockStrip?: boolean;
+}) {
     const { lang, t } = useLang();
     const [basePreset, setBasePreset] = useState<PolicyPresetKey>("balanced");
     const [thresholds, setThresholds] = useState<Record<string, number>>({ ...policy.presets.balanced });
@@ -468,19 +481,22 @@ export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy:
                 </div>
             </div>
 
-            {/* R5-3 — unlock strip below the panel on mobile, link to the seam. */}
-            <div className="flex items-center gap-3 rounded-rsm-card border border-rsm-hairline bg-white p-4 shadow-rsm-sm md:hidden">
-                <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-bold text-rsm-midnight">{t.policy.unlockStripTitle}</p>
-                    <p className="tnum mt-0.5 text-[11px] text-rsm-misty">{tpl(t.policy.unlockStripMeta, { n: flagCount })}</p>
+            {/* R5-3 — unlock strip below the panel on mobile, link to the seam.
+               Suppressed on the full report (nothing left to unlock there). */}
+            {showUnlockStrip ? (
+                <div className="flex items-center gap-3 rounded-rsm-card border border-rsm-hairline bg-white p-4 shadow-rsm-sm md:hidden">
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-bold text-rsm-midnight">{t.policy.unlockStripTitle}</p>
+                        <p className="tnum mt-0.5 text-[11px] text-rsm-misty">{tpl(t.policy.unlockStripMeta, { n: flagCount })}</p>
+                    </div>
+                    <a
+                        href={`#${seamAnchorId}`}
+                        className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-rsm-lime px-5 text-sm font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75"
+                    >
+                        {t.policy.unlock}
+                    </a>
                 </div>
-                <a
-                    href={`#${seamAnchorId}`}
-                    className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-rsm-lime px-5 text-sm font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75"
-                >
-                    {t.policy.unlock}
-                </a>
-            </div>
+            ) : null}
 
             {/* R5-3 — mobile bottom sheet: threshold stepper + slider. */}
             {activeTest?.edit ? (
