@@ -12,8 +12,10 @@
  * the screens. The mock completes every intent synchronously (the real flow
  * is Stripe confirm → webhook; handoff-notes "Purchase").
  */
+import type { Lang } from "@/lib/i18n";
 import { isSupportedListingUrl } from "@/lib/listing-url";
-import type { Account, Analysis, ClientFlag, DeclineCode, FlagFull, InvoiceRecord, LedgerEntry, Pack, PackId, PaymentIntent } from "@/lib/types";
+import type { Account, Analysis, ChatResponse, ClientFlag, DeclineCode, FlagFull, InvoiceRecord, LedgerEntry, Pack, PackId, PaymentIntent } from "@/lib/types";
+import { CHAT_TURN_CAP } from "@/lib/types";
 import { canonicalAnalysis, fixtures, packs } from "@/mocks/fixtures";
 
 export { isSupportedListingUrl };
@@ -42,6 +44,9 @@ interface StoreShape {
     intents: Map<string, PaymentIntent>;
     invoices: Map<string, InvoiceRecord>;
     sessions: Map<string, CheckoutSession>;
+    /** Chat turns used per account per report (R7) — the 15-turn cap is per
+       report per run and persists across devices (R7-4 annotation). */
+    chatTurns: Map<string, Map<string, number>>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -55,6 +60,7 @@ if (!globalStore.__asuntoStore) {
         intents: new Map(),
         invoices: new Map(),
         sessions: new Map(),
+        chatTurns: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
@@ -329,4 +335,79 @@ export function createInvoice(input: { packId: string; email: string; name?: str
     };
     store.invoices.set(invoice.id, invoice);
     return invoice;
+}
+
+/* ── Full report (R7) ────────────────────────────────────────────────────────
+   The unlocked account receives the whole analysis: locked flags open in
+   place (R7-1 "the seam unlocks in place"). The free tier continues to get
+   redactAnalysis() — full flag content exists only behind the unlock. */
+
+/** The analysis as an unlocked account sees it: all flags full and open. */
+export function unlockAnalysis(analysis: Analysis): Analysis {
+    return {
+        ...analysis,
+        verdict: analysis.verdict ? { ...analysis.verdict, flags: analysis.verdict.flags.map((f) => ({ ...(f as FlagFull), locked: false })) } : undefined,
+    };
+}
+
+/** When and how this report was unlocked (the "Unlocked 28.07.2026 · 5-pack"
+   strip, R7-1): ts = the spend/free ledger entry for this report; packId =
+   the purchase that funded it, if any (first-free has none). */
+export function getUnlockInfo(accountId: string, reportId: string): { ts: number; packId?: PackId } | undefined {
+    const entries = store.ledger.get(accountId) ?? [];
+    const unlockEntry = entries.find((e) => e.reportId === reportId && (e.reason === "spend" || e.reason === "free"));
+    if (!unlockEntry) return undefined;
+    const purchase = [...entries].reverse().find((e) => e.reason === "purchase" && e.ts <= unlockEntry.ts);
+    return { ts: unlockEntry.ts, packId: purchase?.packId };
+}
+
+/* ── Chat (R7) ───────────────────────────────────────────────────────────────
+   POST /r/:slug/chat {q} → {answer, citations[{section,anchor}], turnsLeft}.
+   Grounded canned answers, engine-authored in the fixture and keyword-matched
+   here — the mock stands in for the engine's grounding layer. What-if figures
+   (9.2 %, +41 €/mo) are engine-published in the fixture; nothing is computed
+   at answer time (§6.2). Hard cap 15 turns per report per run; at 0 the API
+   returns {turnsLeft:0} and the input disables ("Re-run the analysis to
+   reset."). DECISION: refusals also consume a turn — a turn is a question +
+   answer exchange, and the exhausted card counts questions ("That was the
+   fifteenth question") — flagged in the PR. */
+
+export function chatTurnsLeft(accountId: string, reportId: string): number {
+    const used = store.chatTurns.get(accountId)?.get(reportId) ?? 0;
+    return Math.max(0, CHAT_TURN_CAP - used);
+}
+
+export type ChatAskResult = { ok: true; response: ChatResponse } | { ok: false; error: "no_report_data" };
+
+export function askChat(accountId: string, analysis: Analysis, q: string, lang: Lang): ChatAskResult {
+    const report = analysis.report;
+    if (!report) return { ok: false, error: "no_report_data" };
+
+    const turnsLeft = chatTurnsLeft(accountId, analysis.id);
+    if (turnsLeft <= 0) return { ok: true, response: { turnsLeft: 0 } };
+
+    const needle = q.trim().toLowerCase();
+    const hit = report.chat.answers.find((a) => a.match.some((m) => needle.includes(m)));
+
+    // Count the turn (answer or refusal alike) — persisted per account per report.
+    let byReport = store.chatTurns.get(accountId);
+    if (!byReport) {
+        byReport = new Map();
+        store.chatTurns.set(accountId, byReport);
+    }
+    byReport.set(analysis.id, (byReport.get(analysis.id) ?? 0) + 1);
+
+    if (!hit) {
+        return { ok: true, response: { answer: report.chat.refusal[lang], citations: [], turnsLeft: turnsLeft - 1 } };
+    }
+    return {
+        ok: true,
+        response: {
+            answer: hit.answer[lang],
+            strongs: hit.strongs?.map((s) => s[lang]),
+            citations: hit.citations.map((c) => ({ section: c.section[lang], anchor: c.anchor })),
+            yourFigure: hit.yourFigure ? { display: hit.yourFigure.display, note: hit.yourFigure.note[lang] } : undefined,
+            turnsLeft: turnsLeft - 1,
+        },
+    };
 }

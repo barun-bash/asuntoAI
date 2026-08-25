@@ -26,6 +26,11 @@
     --color-rsm-soft-sky: var(--rsm-soft-sky);
     --color-rsm-hairline: var(--rsm-border-hairline);
     --color-rsm-slate: var(--rsm-slate-grey);
+    /* Slate tints — token values verbatim (slate-grey-75/50/25); the 50 step is
+       the boards' meta/placeholder grey #A2A8AE (R7-1 № line, chat input). */
+    --color-rsm-slate-75: var(--rsm-slate-grey-75);
+    --color-rsm-slate-50: var(--rsm-slate-grey-50);
+    --color-rsm-slate-25: var(--rsm-slate-grey-25);
     --color-rsm-steel: var(--rsm-steel-blue);
     --color-rsm-steel-75: var(--rsm-steel-blue-75);
     --color-rsm-steel-50: var(--rsm-steel-blue-50);

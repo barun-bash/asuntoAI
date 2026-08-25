@@ -60,6 +60,12 @@ export interface Grades {
     municipality: { grade: string; name: string; note: string; noteFi: string };
 }
 
+/** A display string published in both languages (engine formats; the UI picks, never reformats). */
+export interface LocalText {
+    en: string;
+    fi: string;
+}
+
 /** A flag as stored server-side. Locked flags are redacted before they ever reach the client. */
 export interface FlagFull {
     id: string;
@@ -70,8 +76,16 @@ export interface FlagFull {
     body: string;
     bodyFi: string;
     quotes: { text: string; source: string; sourceFi: string; translation?: string; readAt?: string }[];
+    /** Free-tier teaser range shown on the locked row (R1-6: "5–9 K€"). */
     costRange: string;
     costRangeFi: string;
+    /** Full-report cost meta (R7-1: "COST AT RESET" / "5 000–9 000 €") — shown once open. */
+    costNote?: string;
+    costNoteFi?: string;
+    /** Engine-published substrings the UI bolds inside the body (board bolds figures). */
+    strongs?: LocalText[];
+    /** Optional provenance note under the quotes (R7-1 flag 2 reset-range line). */
+    note?: { text: LocalText; basis: Provenance };
 }
 
 /** The only shape a locked flag may take on the client (rule §6.4). */
@@ -113,6 +127,9 @@ export interface Analysis {
     listing?: Listing;
     verdict?: Verdict;
     policy?: PolicyData;
+    /** Full-report document data (R7-*) — only meaningful for unlocked accounts;
+       the free tier never receives it (the page drops it before render, §6.4). */
+    report?: ReportDoc;
     /** Refusal / withdrawn particulars (engine-authored prose). */
     refusal?: {
         heading: string;
@@ -259,3 +276,123 @@ export interface InvoiceRecord {
     status: "sent";
     ts: number;
 }
+
+/* ── Full report (R7-*) — engine-authored document data ─────────────────────
+   Every figure below is published by the engine; the UI formats/picks a
+   language but never computes (§6.2). Display strings ("48 100 €") arrive
+   pre-formatted — € is fi-FI in both languages, so most carry no FI variant. */
+
+/** §3 component row (R7-1) — board script liabilityRows, verbatim. */
+export interface LiabilityRow {
+    name: LocalText;
+    note: LocalText;
+    basis: LocalText;
+    /** Engine-published display ("48 100 €"). */
+    amount: string;
+    chip: Provenance;
+}
+
+/** §6 year row (R7-2) — board script yearRows, verbatim. */
+export interface YearRow {
+    y: string;
+    rent: string;
+    charges: string;
+    /** Constant 4 560 € on the board — still engine-published per row. */
+    debtService: string;
+    cf: string;
+    cum: string;
+    /** Cash-flow column hue: every fixture row is negative on the board (coral). */
+    negative: boolean;
+    /** Y5 row wash rgba(255,179,0,.07) — board-lifted. */
+    highlight?: boolean;
+}
+
+/** §4 rent data (R7-2) — P10/P50/P90 tiles + comparables source + tenancy. */
+export interface ReportRent {
+    p10: string;
+    p10Note: LocalText;
+    p50: string;
+    p50Note: LocalText;
+    p90: string;
+    p90Note: LocalText;
+    /** Comparables source line ("27 lettings, … weighted") — MODELLED. */
+    source: LocalText;
+    /** "current tenancy 845 €/mo, open-ended" — OBSERVED. */
+    tenancy: LocalText;
+    tenancyQuote: { text: string; source: string; sourceFi: string; translation?: string };
+}
+
+/** §5 financing (R7-2) — MAPPED from the user's policy. */
+export interface ReportFinancing {
+    equity: string;
+    loan: string;
+    rate: LocalText; // "3.45 %" / "3,45 %"
+    term: LocalText; // "25 y" / "25 v"
+    payment: LocalText; // "380 €/mo" / "380 €/kk"
+    transferTaxRate: LocalText;
+    transferTax: string;
+    cashNeeded: string;
+}
+
+/** Chat citation chip: section label + document anchor id to scroll to. */
+export interface ChatCitation {
+    section: LocalText;
+    anchor: string;
+}
+
+/** A grounded canned answer (mock engine): keyword-matched, engine-authored. */
+export interface ChatAnswer {
+    /** Lowercase substrings that ground this answer (mock matching). */
+    match: string[];
+    answer: LocalText;
+    /** Engine-published substrings the UI bolds (the board bolds figures). */
+    strongs?: LocalText[];
+    citations: ChatCitation[];
+    /** What-if answers may publish the user's figure for §4's dashed card —
+       shown, never used (rule §6.5); the client persists it locally. */
+    yourFigure?: { display: string; note: LocalText };
+}
+
+/** R7-5 listing-changed banner figures (tracking diff — mock fixture). */
+export interface ListingChange {
+    now: string;
+    was: string;
+    /** ISO — formatted per language by the UI. */
+    seenAt: string;
+}
+
+/** The full report document payload (R7-1…R7-8). */
+export interface ReportDoc {
+    /** §1 engine prose (R7-1 EN / R7-6 FI verbatim) — originates no figure. */
+    prose: LocalText;
+    proseNote: LocalText;
+    liabilityRows: LiabilityRow[];
+    /** §3 basis paragraph (P80 case) with its bolded figure. */
+    liabilityBasis: LocalText;
+    liabilityBasisStrongs: LocalText[];
+    rent: ReportRent;
+    financing: ReportFinancing;
+    yearRows: YearRow[];
+    /** §6 assumption chips (Y5 renovation, Y6 uplift) — MODELLED. */
+    yearAssumptions: { text: LocalText; basis: Provenance }[];
+    yearGrowth: LocalText;
+    listingChange: ListingChange;
+    chat: {
+        answers: ChatAnswer[];
+        /** Out-of-scope refusal ("that's not in this report's data"). */
+        refusal: LocalText;
+    };
+}
+
+/** POST /r/:slug/chat response (handoff §5): cited answer + visible cap. */
+export interface ChatResponse {
+    answer?: string;
+    strongs?: string[];
+    citations?: { section: string; anchor: string }[];
+    turnsLeft: number;
+    yourFigure?: { display: string; note: string };
+}
+
+/** Hard chat cap per report per run (R7-4) — the count resets on re-run.
+   Lives with the contracts so client and store share one source. */
+export const CHAT_TURN_CAP = 15;
