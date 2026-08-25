@@ -32,6 +32,8 @@ export interface Listing {
     lift?: boolean;
     built: number;
     company?: string;
+    /** Plot tenure note (P1 cover meta: "vuokratontti (Tampereen kaupunki, päättyy 2031)"). */
+    tenure?: LocalText;
     askPrice: number;
     loanShare: number;
     debtFree: number;
@@ -86,6 +88,12 @@ export interface FlagFull {
     strongs?: LocalText[];
     /** Optional provenance note under the quotes (R7-1 flag 2 reset-range line). */
     note?: { text: LocalText; basis: Provenance };
+    /** Print variants (R7-P P1/P2) — engine-published, tighter than the screen copy:
+       printLine = P1 cover flag summary line; printMeta = P2 pill tail after the
+       severity label; printBody = P2's compressed claim paragraph. */
+    printLine?: LocalText;
+    printMeta?: LocalText;
+    printBody?: LocalText;
 }
 
 /** The only shape a locked flag may take on the client (rule §6.4). */
@@ -361,6 +369,50 @@ export interface ListingChange {
     seenAt: string;
 }
 
+/* ── P4 bank summary (R7-P) — engine-published bank-version figures ──────────
+   The one-pager always uses the CURRENT version's figures (P4 annotation: v2,
+   post price-drop, post documents); the loan need is re-derived by the engine
+   (112 000 + 1 680 − 30 000 = 83 680 €) and published here — the UI never
+   recomputes it (§6.2). */
+
+export interface BankSummaryRow {
+    label: LocalText;
+    /** Engine-published display ("112 000 €" / "pankin arvion mukaan"). */
+    value: LocalText;
+    bold?: boolean;
+}
+
+export interface BankSummary {
+    /** Version tag rendered with the № ("v2"). */
+    versionTag: string;
+    /** ISO — the version's read date (P4 header "29.7.2026"). */
+    readAt: string;
+    /** The full meta line under the address (board P4 verbatim per language). */
+    meta: LocalText;
+    /** §1 purchase → loan need, in the frame's two-column split. */
+    purchaseLeft: BankSummaryRow[];
+    purchaseRight: BankSummaryRow[];
+    service: {
+        baseHeader: LocalText;
+        stressHeader: LocalText;
+        rows: { label: LocalText; chip?: Provenance; base: string; stress: string }[];
+        totalLabel: LocalText;
+        baseTotal: string;
+        stressTotal: string;
+    };
+    /** The "deliberately conservative" note under the serviceability table. */
+    note: LocalText;
+    /** §3 disclosed-liabilities paragraph (coral-ruled card) with its bolds. */
+    liabilities: LocalText;
+    liabilitiesStrongs: LocalText[];
+    /** Provenance chip after the post-renovation uplift figure. */
+    liabilitiesChip: Provenance;
+    /** Sources + the fixed "not a loan offer" disclaimer; footerStrong is the
+       bolded disclaimer substring inside footer. */
+    footer: LocalText;
+    footerStrong: LocalText;
+}
+
 /** The full report document payload (R7-1…R7-8). */
 export interface ReportDoc {
     /** §1 engine prose (R7-1 EN / R7-6 FI verbatim) — originates no figure. */
@@ -377,6 +429,12 @@ export interface ReportDoc {
     yearAssumptions: { text: LocalText; basis: Provenance }[];
     yearGrowth: LocalText;
     listingChange: ListingChange;
+    /** P1 cover verdict explanation (R7-P FI verbatim / EN parity) — engine prose. */
+    coverVerdictBody: LocalText;
+    /** §3 basis line in the print document (P2) — tighter than the screen's. */
+    liabilityBasisPrint: LocalText;
+    /** P4 bank summary — engine-published current-version figures. */
+    bankSummary: BankSummary;
     chat: {
         answers: ChatAnswer[];
         /** Out-of-scope refusal ("that's not in this report's data"). */

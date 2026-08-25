@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { BankSummaryPrint } from "@/components/print/bank-summary-print";
 import { PrintToolbar } from "@/components/print/print-toolbar";
-import { ReportPrint } from "@/components/print/report-print";
 import { dict } from "@/i18n/dict";
 import { parseLang } from "@/lib/i18n";
 import { ACCOUNT_COOKIE, getAccount, getBySlug, isUnlocked, unlockAnalysis } from "@/lib/store";
 
 /**
- * /r/:slug/pdf — the A4 print document (R7-P P1–P3, handoff §10). Server-
- * rendered paginated sheets + @page stylesheet, so the browser's "Save as PDF"
- * yields the artifact. Gated exactly like the report route: full-report content
- * exists only for the unlocked account — everyone else redirects to /r/:slug
- * (locked data never reaches the client, §6.4). Appendices A (price history) +
- * B (rent history) + C (agent checklist) are NOT in this slice — their panels
- * ship in slice 8 and slot into the sheet array in report-print.tsx.
+ * /r/:slug/bank-summary.pdf?lang=fi|en — the P4 one-pager (R7-P, handoff §10):
+ * purchase → loan need → base+stress serviceability → liabilities disclosed →
+ * the fixed "not a loan offer" disclaimer. Uses the engine-published current-
+ * version figures (fixture bankSummary, v2 in the mock). Same A4 sheet/@page
+ * treatment and the same unlock gate as /r/:slug/pdf.
  */
 export default async function Page({
     params,
@@ -38,17 +36,16 @@ export default async function Page({
 
     return (
         <>
-            {/* Screen-only convenience chrome (hidden when printing) — the
-               artifact below is the whole printed output. */}
+            {/* Screen-only convenience chrome (hidden when printing). */}
             <PrintToolbar
-                basePath={`/r/${slug}/pdf`}
+                basePath={`/r/${slug}/bank-summary.pdf`}
                 backHref={`/r/${slug}${suffix}`}
                 lang={lang}
-                hint={t.print.toolbarHint.replace("{pages}", "3")}
+                hint={t.print.toolbarHint.replace("{pages}", "1")}
                 labels={{ back: t.print.toolbarBack, print: t.print.toolbarPrint }}
             />
             <main>
-                <ReportPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} />
+                <BankSummaryPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} />
             </main>
         </>
     );
@@ -58,8 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const analysis = getBySlug(slug);
     return {
-        title: analysis?.listing ? `${analysis.listing.addr}, ${analysis.listing.city} — A4 print` : "Report — A4 print",
-        // Print artifacts are private documents; the crawlable surface is /r/:slug.
+        title: analysis?.listing ? `${analysis.listing.addr}, ${analysis.listing.city} — bank summary` : "Bank summary",
         robots: { index: false, follow: false },
     };
 }

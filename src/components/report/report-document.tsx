@@ -770,6 +770,14 @@ export function ReportDocument({
                     >
                         {t.report.downloadPdf}
                     </Link>
+                    {/* P4 annotation: the bank summary's entry is "Bank summary
+                       (PDF)" in the report footer, next to Download PDF. */}
+                    <Link
+                        href={`/r/${analysis.slug}/bank-summary.pdf`}
+                        className="inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-medium text-rsm-steel underline-offset-4 hover:underline"
+                    >
+                        {t.print.bankSummaryLink}
+                    </Link>
                     {/* "Make page public" ships with the R8 slice (6); "Set up
                        listing alerts" with tracking (slice 8) — R7-2 shows both
                        beside this button on the board. */}
