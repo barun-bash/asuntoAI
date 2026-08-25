@@ -8,6 +8,7 @@ const ERROR_STATUS: Record<string, number> = {
     first_free_used: 409,
     no_credits: 409,
     already_unlocked: 409,
+    relock_guard: 409,
 };
 
 const COOKIE_OPTS = { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 365 * 5 } as const;

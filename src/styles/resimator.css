@@ -118,3 +118,13 @@ body {
 .policy-slider .ring-slider-handle-border {
     --tw-ring-color: var(--rsm-steel-blue);
 }
+
+/* R14 notification toggles: the Untitled Toggle ships brand purple; Steel Blue
+   is the product's interaction hue (spec §2) — recolor within this scope. */
+.rsm-toggle .bg-brand-solid,
+.rsm-toggle .bg-brand-solid_hover {
+    background-color: var(--rsm-steel-blue);
+}
+.rsm-toggle .bg-tertiary {
+    background-color: var(--rsm-slate-grey-25);
+}

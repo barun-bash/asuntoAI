@@ -500,3 +500,96 @@ export interface ChatResponse {
 /** Hard chat cap per report per run (R7-4) — the count resets on re-run.
    Lives with the contracts so client and store share one source. */
 export const CHAT_TURN_CAP = 15;
+
+/* ── Account drawer, refunds, notifications, data (R10/R11/R14/R16) ──────────
+   Board contracts: R10 handoff-notes "Account" (magic-link only, 15 min,
+   single use · watch = saved query), R11 handoff-notes "Contract/Guards",
+   R14 annotation (GET/PATCH shape), R16 "Contracts" card. */
+
+/** Watch — a saved query (§4). Matches auto-run the free tier only. */
+export type WatchType = "yksio" | "2h" | "3h+";
+
+export interface Watch {
+    district: string;
+    type: WatchType;
+    /** Debt-free maximum price (€). */
+    maxPrice: number;
+    /** "Only email me matches that could pass my policy on the free summary" (R10-5). */
+    policyFilter: boolean;
+    updatedAt: number;
+}
+
+/** Refund reasons (R11 contract: misread|wrong_listing|other). */
+export type RefundReason = "misread" | "wrong_listing" | "other";
+
+export type RefundTarget = "credit" | "card";
+
+/** One refund record per report per account (R11 guards). The credit path
+   resolves synchronously; the card path is a human-reviewed ticket. */
+export interface RefundRecord {
+    reason: RefundReason;
+    note?: string;
+    /** Set when the credit was returned (one credit refund per report). */
+    creditAt?: number;
+    /** Same listing re-lockable by this account from this ts (30 days, R11 guards). */
+    reLockUntil?: number;
+    /** Money-back path: human review ≤ 1 business day (mock: stays pending). */
+    cardTicket?: { status: "pending" | "refunded" | "kept"; at: number };
+}
+
+/** Notification preferences (R14 contract). Transactional mail (receipts,
+   refunds, sign-in links) has no prefs — always sent, stated plainly. */
+export type DigestMode = "daily" | "instant";
+
+export interface NotificationPrefs {
+    tracking: { on: boolean; digest: DigestMode };
+    watch: { on: boolean; digest: DigestMode };
+    analysisDone: boolean;
+    /** Off by default — "we don't market at people mid-purchase" (R14-1). */
+    productNews: boolean;
+}
+
+/** PATCH body: every key optional at every level — absent keeps the stored value. */
+export interface NotificationPrefsPatch {
+    tracking?: { on?: boolean; digest?: DigestMode };
+    watch?: { on?: boolean; digest?: DigestMode };
+    analysisDone?: boolean;
+    productNews?: boolean;
+}
+
+/** GDPR Article 20 export job (R16 contracts): the zip link arrives by email,
+   valid 48 h. A pending job blocks deletion until delivered or cancelled. */
+export interface ExportJob {
+    id: string;
+    status: "pending" | "delivered";
+    createdAt: number;
+    expiresAt: number;
+}
+
+/** A row of the My-reports drawer (R10-1), serialized for the client. */
+export interface AccountReportRow {
+    reportId: string;
+    slug: string;
+    number: string;
+    addr: string;
+    city: string;
+    type: string;
+    typeFi?: string;
+    m2: number;
+    /** ISO — the analysis read date ("analysed 28.07.2026"). */
+    analysedAt: string;
+    gross: number;
+    real: number;
+    liabilityTotal?: number;
+    /** Flag severities in order — the row's dots. */
+    dots: Severity[];
+    /** Policy pill against the account's current policy (mock: default Balanced
+       preset — see store.listAccountReports). */
+    policyPassing: boolean;
+    policyFails: number;
+    policyTotal: number;
+    /** Row status vocabulary (R10-1): unlocked · summary only · listing ended.
+       "Price dropped ↓" is a tracking state (R12, later slice). */
+    status: "unlocked" | "summary" | "ended";
+    unlockTs?: number;
+}
