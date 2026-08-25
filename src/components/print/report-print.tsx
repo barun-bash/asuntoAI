@@ -15,7 +15,7 @@ import type { Dict } from "@/i18n/dict";
 import { capFirst, formatDate, formatDateTime, formatEUR, formatPercent, numberWord } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { evaluatePolicy, formatPolicyLine } from "@/lib/policy";
-import type { Analysis, FlagFull, PriceHistory, RentHistory } from "@/lib/types";
+import type { Analysis, FlagFull, PinnedOffer, PriceHistory, RentHistory } from "@/lib/types";
 import { cx } from "@/utils/cx";
 
 /**
@@ -45,6 +45,9 @@ interface SheetProps {
     total: number;
     /** Appendix C's persisted ticks (server-side per account+report, R7-11). */
     checkedIds?: string[];
+    /** R5-6 pinned offer — the cover carries it ("your target: 98 500 €") and
+       appendix C's header repeats it (the R5-6 contract). */
+    pinned?: PinnedOffer | null;
 }
 
 function publicUrl(analysis: Analysis): string {
@@ -58,7 +61,7 @@ function fullFlags(analysis: Analysis): FlagFull[] {
 
 /* ── P1 · A4 cover (the board renders it in Finnish — the primary market's
    artifact; EN parity via ?lang=en) ── */
-function CoverSheet({ analysis, lang, t, page, total }: SheetProps) {
+function CoverSheet({ analysis, lang, t, page, total, pinned }: SheetProps) {
     const { listing, verdict, report, policy } = analysis;
     if (!listing || !verdict || !report || !policy) return null;
     const run = evaluatePolicy(policy, policy.presets.balanced);
@@ -125,6 +128,14 @@ function CoverSheet({ analysis, lang, t, page, total }: SheetProps) {
                 </div>
                 {run.passing ? null : <p className="p-verdict-body p-num">{report.coverVerdictBody[lang]}</p>}
             </div>
+
+            {/* R5-6 — the pinned offer on the cover ("your target: 98 500 €"),
+               with §1 and the checklist header. */}
+            {pinned ? (
+                <p className="p-pinned p-num">
+                    {tpl(t.print.pinnedLine, { price: formatEUR(pinned.offerPrice, lang), date: formatDate(new Date(pinned.pinnedAt).toISOString(), lang) })}
+                </p>
+            ) : null}
 
             <div className="p-tiles-3">
                 <div className="p-grade">
@@ -406,7 +417,7 @@ function HistorySheet({ analysis, lang, t, page, total }: SheetProps) {
 /* ── Appendix C · the agent checklist, the report's last page (handoff §10).
    Real checkbox squares (☐ empty / ☒ midnight + tick) reflecting the account's
    persisted state — "checkboxes are real print targets" (R7-11 annotation). ── */
-function ChecklistSheet({ analysis, lang, t, page, total, checkedIds }: SheetProps) {
+function ChecklistSheet({ analysis, lang, t, page, total, checkedIds, pinned }: SheetProps) {
     const { listing, report } = analysis;
     if (!listing || !report) return null;
     const checklist = report.agentChecklist;
@@ -420,6 +431,8 @@ function ChecklistSheet({ analysis, lang, t, page, total, checkedIds }: SheetPro
                 {tpl(t.checklist.eyebrow, { n: analysis.number })}
             </div>
             <SectionRow mark="C" title={checklist.title[lang]} marginTop={8} />
+            {/* R5-6 — the pinned offer rides the checklist header in print too. */}
+            {pinned ? <p className="p-pinned p-num">{tpl(t.checklist.pinnedLine, { price: formatEUR(pinned.offerPrice, lang) })}</p> : null}
             <div className="p-citems p-num">
                 {checklist.items.map((item) => {
                     const on = checked.has(item.id);
@@ -460,12 +473,24 @@ const SHEETS = [CoverSheet, FlagsSheet, NumbersSheet, HistorySheet, ChecklistShe
 
 export const REPORT_PRINT_PAGES = SHEETS.length;
 
-export function ReportPrint({ analysis, lang, t, checkedIds }: { analysis: Analysis; lang: Lang; t: Dict; checkedIds?: string[] }) {
+export function ReportPrint({
+    analysis,
+    lang,
+    t,
+    checkedIds,
+    pinned,
+}: {
+    analysis: Analysis;
+    lang: Lang;
+    t: Dict;
+    checkedIds?: string[];
+    pinned?: PinnedOffer | null;
+}) {
     const total = SHEETS.length;
     return (
         <div className="rsm-print">
             {SHEETS.map((Sheet, i) => (
-                <Sheet key={i} analysis={analysis} lang={lang} t={t} page={i + 1} total={total} checkedIds={checkedIds} />
+                <Sheet key={i} analysis={analysis} lang={lang} t={t} page={i + 1} total={total} checkedIds={checkedIds} pinned={pinned} />
             ))}
         </div>
     );

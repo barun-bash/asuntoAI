@@ -4,7 +4,7 @@
  * Every figure is engine-authored here; the UI formats but never computes (§6.2).
  * Locked flags exist ONLY in redacted form — there is no hidden content to leak (§6.4).
  */
-import type { Analysis, OgVariantData, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
+import type { Analysis, OgVariantData, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef, TrackingRecord } from "@/lib/types";
 
 export const CANONICAL_SLUG = "tuomiokirkonkatu-23-b-14-tampere";
 export const REFUSED_SLUG = "rautatienkatu-18-c-44-tampere";
@@ -524,6 +524,61 @@ export const canonicalAnalysis: Analysis = {
         ],
     },
     policy: policyData,
+    /* R5-6 offer calculator — engine-published panel prose. The market note is
+       MODELLED; the honesty paragraph is the frame's annotation verbatim (EN),
+       FI translated with the boards' vocabulary — flagged in the PR. The
+       recompute itself is the mock engine's published model (src/lib/store.ts,
+       "Offer calculator"); the slider's min/step come from the frame. */
+    offer: {
+        marketNote: {
+            en: "listed 34 days · accepted discounts in this district run 3–6 %",
+            fi: "markkinoilla 34 päivää · hyväksytyt alennukset tällä alueella 3–6 %",
+        },
+        honesty: {
+            en: "The calculator re-runs the same engine as the verdict — nothing here is client arithmetic. It will happily show you that a lower price makes the liability ratio worse: honesty over persuasion, even in the tool built for negotiating.",
+            fi: "Laskuri ajaa saman moottorin kuin päätelmä — mitään ei lasketa selaimessa. Se näyttää mielellään, että halvempi hinta pahentaa korjausvastuuosuutta: rehellisyys ennen myyntipuhetta, myös työkalussa, joka on tehty neuvotteluun.",
+        },
+        slider: { min: 90000, step: 500 },
+    },
+    /* R13-1 compare column — the canonical report frozen at v2 (post price-drop
+       re-run + documents: debt-free 112 000 €, liability 56 400 € @ 4–5 y).
+       Cell strings verbatim from the R13-1 frame (EN); FI number formats per
+       C12, FI words composed ("katto", "putket" style from the boards) —
+       flagged in the PR. The v1-era /r page data stays as-is; compare columns
+       are their own frozen engine payload. */
+    compare: {
+        versionTag: "v2",
+        readAt: "2026-07-29T09:00:00+03:00",
+        state: "price-dropped",
+        access: "unlocked",
+        meta: { en: "2h+kk · 54 m² · 1962", fi: "2h+kk · 54 m² · 1962" },
+        cells: {
+            debtFree: { en: "112 000 €", fi: "112 000 €" },
+            sqm: { en: "2 074 € · −20.0 %", fi: "2 074 € · −20,0 %" },
+            yield: { en: "9.1 → 6.1 %", fi: "9,1 → 6,1 %" },
+            yieldSub: { en: "−3.0", fi: "−3,0" },
+            liability: { en: "56 400 € · 4–5 y · 50.4 %", fi: "56 400 € · 4–5 v · 50,4 %" },
+            companyGrade: "C",
+            municipalityGrade: "A",
+            flags: { en: "1 high · 2 caution", fi: "1 vakava · 2 varoitusta" },
+            cashFlow: { en: "+21 €/mo", fi: "+21 €/kk" },
+            cashNeeded: { en: "29 900 €", fi: "29 900 €" },
+        },
+        verdictKind: "fail-building",
+        verdictN: 2,
+        sort: {
+            debtFree: 112000,
+            sqmVsMedian: -20.0,
+            realYield: 6.1,
+            liability: 56400,
+            companyRank: 2,
+            municipalityRank: 4,
+            highFlags: 1,
+            totalFlags: 3,
+            cashFlow: 21,
+            cashNeeded: 29900,
+        },
+    },
     /* ── Full report (R7-1…R7-8) — engine-authored document data ─────────────
        §3/§6 rows verbatim from the R3 board script (liabilityRows / yearRows);
        §1 prose verbatim from R7-1 (EN) and R7-6 (FI); §4/§5 from R7-2; chat
@@ -874,7 +929,7 @@ export const canonicalAnalysis: Analysis = {
             purchaseLeft: [
                 { label: { fi: "Myyntihinta", en: "Asking price" }, value: { fi: "98 600 €", en: "98 600 €" } },
                 { label: { fi: "Yhtiölainaosuus (maksetaan pois)", en: "Company loan share (paid off)" }, value: { fi: "13 400 €", en: "13 400 €" } },
-                { label: { fi: "Velaton hinta", en: "Debt-free price" }, value: { fi: "112 000 €", en: "112 000 €" }, bold: true },
+                { label: { fi: "Velaton hinta", en: "Debt-free price" }, value: { fi: "112 000 €", en: "112 000 €" }, bold: true },
                 { label: { fi: "Varainsiirtovero 1,5 %", en: "Transfer tax 1.5 %" }, value: { fi: "1 680 €", en: "1 680 €" } },
             ],
             purchaseRight: [
@@ -1134,10 +1189,276 @@ export const withdrawnAnalysis: Analysis = {
     },
 };
 
+/* ── Tracking template (R12-1) — seeded at unlock (store.seedTracking) ───────
+   The canonical report's published tracking record: price dropped 6 000 € the
+   morning after unlock → free re-run froze v2 → the checklist documents
+   tightened the liability. EN verbatim from the R12-1 frame; FI composed from
+   the frame's FI rows ("Hinta laski 6 000 €" verbatim) — flagged in the PR.
+   The daily check itself is the real backend's cron concern — the mock seeds
+   the record at unlock and never advances it (comment per the slice brief). */
+export const canonicalTrackingTemplate: Omit<TrackingRecord, "seededAt"> = {
+    listingStatus: "live",
+    checkedAt: "2026-07-29T10:40:00+03:00",
+    checkedNote: { en: "2 h ago", fi: "2 h sitten" },
+    priceAtRead: 104600,
+    priceNow: 98600,
+    domAtRead: 34,
+    domNow: 41,
+    domDistrictMedian: 52,
+    versions: [
+        { v: 1, at: "2026-07-28T13:41:00+03:00", fails: 3, trigger: { en: "Analysed and unlocked", fi: "Analysoitu ja avattu" } },
+        { v: 2, at: "2026-07-29T08:40:00+03:00", fails: 2, trigger: { en: "price dropped → free re-run", fi: "hinta laski → maksuton uudelleenajo" } },
+    ],
+    events: [
+        {
+            at: "2026-07-29T08:40:00+03:00",
+            title: { en: "Re-run → v2 · 0 credits", fi: "Uudelleenajo → v2 · 0 krediittiä" },
+            detail: {
+                en: "Cash flow @ 3.45 %: −14 → +21 €/mo (FAIL → PASS) · gross 8.6 → 9.1 % · liability share 49.3 → 52.0 % (stays fail) · chat reset to 15",
+                fi: "Kassavirta @ 3,45 %: −14 → +21 €/kk (HYLKÄÄ → LÄPÄISEE) · brutto 8,6 → 9,1 % · korjausvastuuosuus 49,3 → 52,0 % (jää hylätyksi) · keskustelulaskuri nollautui 15:een",
+            },
+        },
+        {
+            at: "2026-07-29T08:12:00+03:00",
+            title: { en: "Price dropped 6 000 € → 98 600 €", fi: "Hinta laski 6 000 € → 98 600 €" },
+            detail: { en: "Alert email sent · re-run offered free", fi: "Hälytyssähköposti lähetetty · uudelleenajo tarjottu maksutta" },
+        },
+        {
+            at: "2026-07-28T14:05:00+03:00",
+            title: {
+                en: "Checklist: isännöitsijäntodistus + PTS received — estimate tightened",
+                fi: "Tarkistuslista: isännöitsijäntodistus + PTS saapui — arvio tarkentui",
+            },
+            detail: {
+                en: "Liability 58 200 € → 56 400 € · window narrowed to 4–5 years · 4 of 7 questions answered",
+                fi: "Korjausvastuu 58 200 € → 56 400 € · ikkuna kaveni 4–5 vuoteen · 4 / 7 kysymystä vastattua",
+            },
+        },
+        {
+            at: "2026-07-28T13:41:00+03:00",
+            title: { en: "Analysed and unlocked · v1 · fails 3 of 14", fi: "Analysoitu ja avattu · v1 · hylkää 3 / 14" },
+            detail: { en: "5-pack purchased · 1 credit spent · PDF downloaded", fi: "5 kpl paketti ostettiin · 1 krediitti käytetty · PDF ladattu" },
+        },
+    ],
+    checklistProgress: { answered: 4, total: 7 },
+    verdictNote: { en: "was 3 in v1 · building tests unchanged", fi: "oli 3 v1:ssä · taloyhtiötestit muuttumattomat" },
+};
+
+/* ── Compare fixtures (R13-1) — two additional done analyses ─────────────────
+   These exist so /reports/compare renders 2–3 columns in the single-fixture
+   mock: distinct slugs/addresses, engine-authored, matching the R13-1 columns
+   and the R10 board script rows verbatim. They are COMPARE fixtures — kept out
+   of recentPublic, never replayed by createRun, and their compare.access
+   declares Anne's drawer state (the real engine derives unlocked per account).
+   Their verdict/flag data is the minimum for a valid public free summary —
+   one redacted locked flag each, no hidden content (§6.4). */
+
+export const PIRKANKATU_SLUG = "pirkankatu-8-a-3-tampere";
+export const HAMEENPUISTO_SLUG = "hameenpuisto-31-c-52-tampere";
+
+export const pirkankatuAnalysis: Analysis = {
+    id: "ana_2026_1185",
+    slug: PIRKANKATU_SLUG,
+    status: "done",
+    number: "2026-1185",
+    readAt: "2026-07-27T11:20:00+03:00",
+    steps: [],
+    listing: {
+        addr: "Pirkankatu 8 A 3",
+        city: "Tampere",
+        postalCode: "33200",
+        type: "yksiö",
+        typeFi: "yksiö",
+        m2: 29,
+        floor: "2/4",
+        lift: false,
+        built: 1968,
+        company: "As Oy Pirkankatu 8",
+        askPrice: 79000,
+        loanShare: 5000,
+        debtFree: 84000,
+        oikotieId: "21965500",
+        fetchedAt: "2026-07-27T11:19:00+03:00",
+    },
+    listingStatus: {
+        state: "live",
+        liveNote: {
+            en: "listing still live on Oikotie ✓ checked 1 h ago",
+            fi: "ilmoitus yhä voimassa Oikotiessa ✓ tarkistettu 1 h sitten",
+        },
+        endedNote: {
+            en: "This listing has ended on Oikotie. The analysis below reflects it as last read.",
+            fi: "Tämä ilmoitus on päättynyt Oikotiessa. Alla oleva analyysi kuvaa ilmoitusta viimeisimmän lukuhetken mukaisena.",
+        },
+    },
+    verdict: {
+        grossYield: {
+            value: 7.9,
+            basis: "MAPPED",
+            note: "P50 rent 555 € × 12 ÷ debt-free 84 000 €.",
+            noteFi: "Vuokra P50 555 € × 12 ÷ velaton hinta 84 000 €.",
+        },
+        realYield: {
+            value: 7.4,
+            basis: "MODELLED",
+            deltaPp: -0.5,
+            note: "Same rent against 90 100 € — price plus the 6 100 € liability.",
+            noteFi: "Sama vuokra hintaan 90 100 € — velaton hinta + korjausvastuu 6 100 €.",
+        },
+        liability: {
+            total: 6100,
+            window: "—",
+            windowFi: "—",
+            items: [{ label: "Balcony slab share", labelFi: "Parvekelaatan osuus", amount: 6100, basis: "ESTIMATED" }],
+        },
+        grades: {
+            company: { grade: "A", note: "Pipes done 2016, healthy finances", noteFi: "Putket tehty 2016, talous kunnossa" },
+            municipality: { grade: "B", name: "Tampere", note: "Population +1.1 %/y", noteFi: "Väestö +1,1 %/v" },
+        },
+        flagCount: { total: 1, high: 0, caution: 1 },
+        flags: [{ id: "flag-balcony-slab", severity: "caution", locked: true, costRange: "2–4 K€", costRangeFi: "2–4 t€" }],
+    },
+    compare: {
+        versionTag: "v1",
+        readAt: "2026-07-27T11:20:00+03:00",
+        state: "live",
+        access: "unlocked",
+        meta: { en: "yksiö · 29 m² · 1968", fi: "yksiö · 29 m² · 1968" },
+        cells: {
+            debtFree: { en: "84 000 €", fi: "84 000 €" },
+            sqm: { en: "2 897 € · −5.0 %", fi: "2 897 € · −5,0 %" },
+            yield: { en: "7.9 → 7.4 %", fi: "7,9 → 7,4 %" },
+            yieldSub: { en: "−0.5", fi: "−0,5" },
+            liability: { en: "6 100 € · pipes 2016", fi: "6 100 € · putket 2016" },
+            companyGrade: "A",
+            municipalityGrade: "B",
+            flags: { en: "1 caution", fi: "1 varoitus" },
+            cashFlow: { en: "+64 €/mo", fi: "+64 €/kk" },
+            cashNeeded: { en: "22 600 €", fi: "22 600 €" },
+        },
+        verdictKind: "pass",
+        sort: {
+            debtFree: 84000,
+            sqmVsMedian: -5.0,
+            realYield: 7.4,
+            liability: 6100,
+            companyRank: 4,
+            municipalityRank: 3,
+            highFlags: 0,
+            totalFlags: 1,
+            cashFlow: 64,
+            cashNeeded: 22600,
+        },
+    },
+};
+
+export const hameenpuistoAnalysis: Analysis = {
+    id: "ana_2026_1183",
+    slug: HAMEENPUISTO_SLUG,
+    status: "done",
+    number: "2026-1183",
+    readAt: "2026-07-25T09:15:00+03:00",
+    steps: [],
+    listing: {
+        addr: "Hämeenpuisto 31 C 52",
+        city: "Tampere",
+        postalCode: "33200",
+        type: "2h+k",
+        typeFi: "2h+k",
+        m2: 49,
+        floor: "5/6",
+        lift: true,
+        built: 1955,
+        company: "As Oy Hämeenpuisto 31",
+        askPrice: 119000,
+        loanShare: 8700,
+        debtFree: 127700,
+        oikotieId: "21965210",
+        fetchedAt: "2026-07-25T09:14:00+03:00",
+    },
+    listingStatus: {
+        state: "live",
+        liveNote: {
+            en: "listing still live on Oikotie ✓ checked 3 h ago",
+            fi: "ilmoitus yhä voimassa Oikotiessa ✓ tarkistettu 3 h sitten",
+        },
+        endedNote: {
+            en: "This listing has ended on Oikotie. The analysis below reflects it as last read.",
+            fi: "Tämä ilmoitus on päättynyt Oikotiessa. Alla oleva analyysi kuvaa ilmoitusta viimeisimmän lukuhetken mukaisena.",
+        },
+    },
+    verdict: {
+        grossYield: {
+            value: 6.8,
+            basis: "MAPPED",
+            note: "P50 rent 725 € × 12 ÷ debt-free 127 700 €.",
+            noteFi: "Vuokra P50 725 € × 12 ÷ velaton hinta 127 700 €.",
+        },
+        realYield: {
+            value: 6.1,
+            basis: "MODELLED",
+            deltaPp: -0.7,
+            note: "Same rent against 140 100 € — price plus the 12 400 € liability.",
+            noteFi: "Sama vuokra hintaan 140 100 € — velaton hinta + korjausvastuu 12 400 €.",
+        },
+        liability: {
+            total: 12400,
+            window: "2–4 YEARS",
+            windowFi: "2–4 V",
+            items: [{ label: "Roof share", labelFi: "Katto-osuus", amount: 12400, basis: "ESTIMATED" }],
+        },
+        grades: {
+            company: { grade: "B", note: "Roof due in 2–4 years, otherwise maintained", noteFi: "Katto edessä 2–4 vuodessa, muuten kunnossapidetty" },
+            municipality: { grade: "A", name: "Tampere", note: "Population +1.1 %/y", noteFi: "Väestö +1,1 %/v" },
+        },
+        flagCount: { total: 2, high: 0, caution: 2 },
+        flags: [
+            { id: "flag-roof-window", severity: "caution", locked: true, costRange: "12 400 €", costRangeFi: "12 400 €" },
+            { id: "flag-lift-age", severity: "caution", locked: true, costRange: "3–6 K€", costRangeFi: "3–6 t€" },
+        ],
+    },
+    compare: {
+        versionTag: "v1",
+        readAt: "2026-07-25T09:15:00+03:00",
+        state: "rerun-pending",
+        access: "unlocked",
+        meta: { en: "2h+k · 49 m² · 1955", fi: "2h+k · 49 m² · 1955" },
+        cells: {
+            debtFree: { en: "127 700 €", fi: "127 700 €" },
+            sqm: { en: "2 606 € · +0.6 %", fi: "2 606 € · +0,6 %" },
+            yield: { en: "6.8 → 6.1 %", fi: "6,8 → 6,1 %" },
+            yieldSub: { en: "−0.7", fi: "−0,7" },
+            liability: { en: "12 400 € · roof 2–4 y", fi: "12 400 € · katto 2–4 v" },
+            companyGrade: "B",
+            municipalityGrade: "A",
+            flags: { en: "2 caution", fi: "2 varoitusta" },
+            cashFlow: { en: "+5 €/mo", fi: "+5 €/kk" },
+            cashNeeded: { en: "33 400 €", fi: "33 400 €" },
+        },
+        verdictKind: "pass-near",
+        verdictN: 2,
+        sort: {
+            debtFree: 127700,
+            sqmVsMedian: 0.6,
+            realYield: 6.1,
+            liability: 12400,
+            companyRank: 3,
+            municipalityRank: 4,
+            highFlags: 0,
+            totalFlags: 2,
+            cashFlow: 5,
+            cashNeeded: 33400,
+        },
+    },
+};
+
 export const fixtures: Record<string, Analysis> = {
     [CANONICAL_SLUG]: canonicalAnalysis,
     [REFUSED_SLUG]: refusedAnalysis,
     [WITHDRAWN_SLUG]: withdrawnAnalysis,
+    /* Compare fixtures (R13) — see the comment above. Not in recentPublic. */
+    [PIRKANKATU_SLUG]: pirkankatuAnalysis,
+    [HAMEENPUISTO_SLUG]: hameenpuistoAnalysis,
 };
 
 /** Recent public analyses for the landing example rows (R1-1 marketing strip). */

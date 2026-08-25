@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChatPanel, type YourFigure, readYourFigure } from "@/components/report/chat-panel";
 import { LangToggle } from "@/components/report/lang-toggle";
+import type { OfferCalculatorProps } from "@/components/report/offer-calculator";
 import { ReportDocument } from "@/components/report/report-document";
 import { formatDate } from "@/lib/format";
-import type { Analysis, PackId } from "@/lib/types";
+import type { Analysis, PackId, PinnedOffer } from "@/lib/types";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
 
@@ -111,6 +112,8 @@ export function ReportView({
     unlockPackId,
     changed,
     initialPublic,
+    offer,
+    pinned,
 }: {
     analysis: Analysis;
     balance: number;
@@ -120,6 +123,10 @@ export function ReportView({
     changed: boolean;
     /** Owner visibility for the public page (R8) — the R7-2 footer toggle. */
     initialPublic: boolean;
+    /** R5-6 calculator payload (server-computed at the pinned offer or asking). */
+    offer?: OfferCalculatorProps;
+    /** The account's pinned offer (R5-6) — §1, PDF, checklist header. */
+    pinned: PinnedOffer | null;
 }) {
     const { lang, t } = useLang();
     // The dashed "your figure" card (§4) appears only after the user supplies a
@@ -149,6 +156,8 @@ export function ReportView({
                             unlockDate={unlockDate}
                             unlockOrigin={unlockOrigin}
                             initialPublic={initialPublic}
+                            offer={offer}
+                            pinned={pinned}
                         />
                     </div>
                     <ChatPanel slug={analysis.slug} initialTurnsLeft={initialTurnsLeft} onYourFigure={setYourFigure} />

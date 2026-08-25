@@ -162,13 +162,20 @@ function BannerBody({
                     <strong className="font-bold">{t.policy.bodyBuildingBold}</strong>
                     {tpl(t.policy.bodyBuildingB, { blurbs })}
                     {t.policy.bodyFixableLead}
-                    <strong className="font-bold">
-                        {tpl(t.policy.bodyFixableOffer, {
-                            price: fix.fixablePrice ? formatEUR(fix.fixablePrice, lang) : "",
-                            pct: fix.fixablePricePct?.[lang] ?? "",
-                            rent: fix.fixableRent ? formatEUR(fix.fixableRent, lang) : "",
-                        })}
-                    </strong>
+                    {/* R5-6 entry point (the frame: "the fail banner's fix line")
+                       — the fix offer links to the offer calculator (#offer). */}
+                    <a
+                        href="#offer"
+                        className="underline decoration-rsm-coral-deep/40 underline-offset-2 transition-colors duration-200 ease-rsm hover:decoration-rsm-coral-deep"
+                    >
+                        <strong className="font-bold">
+                            {tpl(t.policy.bodyFixableOffer, {
+                                price: fix.fixablePrice ? formatEUR(fix.fixablePrice, lang) : "",
+                                pct: fix.fixablePricePct?.[lang] ?? "",
+                                rent: fix.fixableRent ? formatEUR(fix.fixableRent, lang) : "",
+                            })}
+                        </strong>
+                    </a>
                 </>
             );
         }

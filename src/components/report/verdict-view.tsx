@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { FlagCard, LiabilityItemRow, LockedFlagRow } from "@/components/report/flag-card";
 import { GradeTile } from "@/components/report/grade-tile";
+import { OfferCalculator, type OfferCalculatorProps } from "@/components/report/offer-calculator";
 import { PaywallSeam, StickyUnlockBar } from "@/components/report/paywall-seam";
 import { PolicyPanel } from "@/components/report/policy-panel";
 import { ProvenanceChip } from "@/components/report/provenance-chip";
@@ -32,11 +33,16 @@ export function VerdictView({
     unlocked = false,
     visitor = false,
     ended = false,
+    offer,
 }: {
     analysis: Analysis;
     unlocked?: boolean;
     visitor?: boolean;
     ended?: boolean;
+    /** R5-6 calculator payload (server-computed at asking) — the unpaid panel
+       is locked at asking with the seam copy; absent when the engine publishes
+       no offer model for the analysis. */
+    offer?: OfferCalculatorProps;
 }) {
     const { lang, t } = useLang();
     const h1Ref = useRef<HTMLHeadingElement>(null);
@@ -190,6 +196,11 @@ export function VerdictView({
                     {analysis.policy ? (
                         <PolicyPanel policy={analysis.policy} addr={listing.addr} flagCount={verdict.flagCount.total} seamAnchorId={SEAM_ANCHOR} />
                     ) : null}
+
+                    {/* Offer calculator (R5-6) — visible on the free verdict but
+                       locked at asking with the unlock seam copy; it never
+                       POSTs until the report is unlocked. */}
+                    {offer ? <OfferCalculator {...offer} seamHref={`#${SEAM_ANCHOR}`} /> : null}
 
                     {/* Provenance legend (C1 definitions) + engine note */}
                     <footer className="flex flex-col gap-2 border-t border-rsm-hairline pt-5">

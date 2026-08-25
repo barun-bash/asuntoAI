@@ -12,6 +12,7 @@
  * the screens. The mock completes every intent synchronously (the real flow
  * is Stripe confirm → webhook; handoff-notes "Purchase").
  */
+import { formatEUR, formatPercent } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { isSupportedListingUrl } from "@/lib/listing-url";
 import { evaluatePolicy } from "@/lib/policy";
@@ -22,6 +23,9 @@ import type {
     Analysis,
     ChatResponse,
     ClientFlag,
+    CompareColumn,
+    CompareResponse,
+    CompareRowKey,
     DeclineCode,
     ExportJob,
     FlagFull,
@@ -29,18 +33,24 @@ import type {
     LedgerEntry,
     NotificationPrefs,
     NotificationPrefsPatch,
+    OfferFlip,
+    OfferResult,
     Pack,
     PackId,
     PaymentIntent,
+    PinnedOffer,
+    PolicyActual,
     PriceHistory,
     RefundReason,
     RefundRecord,
     RefundTarget,
     RentHistory,
+    TrackingPayload,
+    TrackingRecord,
     Watch,
 } from "@/lib/types";
-import { CHAT_TURN_CAP } from "@/lib/types";
-import { canonicalAnalysis, fixtures, packs } from "@/mocks/fixtures";
+import { CHAT_TURN_CAP, COMPARE_LOCKED_ROWS } from "@/lib/types";
+import { canonicalAnalysis, canonicalTrackingTemplate, fixtures, packs } from "@/mocks/fixtures";
 
 export { isSupportedListingUrl };
 
@@ -94,6 +104,13 @@ interface StoreShape {
        checked. Persists server-side per account+report (the R7-11 contract);
        GET merges it into the engine-published items. */
     checklist: Map<string, Map<string, Record<string, boolean>>>;
+    /** Pinned offers (R5-6): accountId → reportId → {offerPrice, pinnedAt}.
+       Renders in §1, the PDF and the checklist header (§4). */
+    pinnedOffers: Map<string, Map<string, PinnedOffer>>;
+    /** Tracking records (R12): accountId → reportId → record. Seeded at unlock
+       (auto-on, §4); the daily check is the real backend's cron — the mock
+       serves the seeded record. */
+    tracking: Map<string, Map<string, TrackingRecord>>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -116,6 +133,8 @@ if (!globalStore.__asuntoStore) {
         exports: new Map(),
         deletionTokens: new Map(),
         checklist: new Map(),
+        pinnedOffers: new Map(),
+        tracking: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
@@ -331,6 +350,7 @@ export function createCheckout(input: CheckoutInput): CheckoutResult {
         account.freeClaimed = true;
         appendLedger(account.id, { delta: 0, reason: "free", reportId: input.reportId, ts: Date.now() });
         store.unlocks.get(account.id)!.add(input.reportId!);
+        seedTracking(account.id, input.reportId!); // R12: tracking auto-on at unlock
         const intent: PaymentIntent = { ...base, id: intentId, status: "paid", accountId: account.id };
         store.intents.set(intent.id, intent);
         return { ok: true, intent, account };
@@ -343,6 +363,7 @@ export function createCheckout(input: CheckoutInput): CheckoutResult {
         /* atomic: spend ledger entry + unlock — no charge, no mint */
         appendLedger(account.id, { delta: -1, reason: "spend", reportId: input.reportId, ts: Date.now() });
         store.unlocks.get(account.id)!.add(input.reportId!);
+        seedTracking(account.id, input.reportId!); // R12: tracking auto-on at unlock
         const intent: PaymentIntent = { ...base, id: intentId, status: "paid", accountId: account.id, spent: 1 };
         store.intents.set(intent.id, intent);
         return { ok: true, intent, account };
@@ -366,6 +387,7 @@ export function createCheckout(input: CheckoutInput): CheckoutResult {
     if (input.reportId && !isUnlocked(account.id, input.reportId)) {
         appendLedger(account.id, { delta: -1, reason: "spend", reportId: input.reportId, ts: Date.now() });
         store.unlocks.get(account.id)!.add(input.reportId);
+        seedTracking(account.id, input.reportId); // R12: tracking auto-on at unlock
         spent = 1;
     }
     const intent: PaymentIntent = { ...base, id: intentId, status: "paid", accountId: account.id, creditsAdded: pack!.credits, spent };
@@ -527,6 +549,399 @@ export function setAgentChecklistItem(accountId: string, analysis: Analysis, id:
     return { ...item, checked };
 }
 
+/* ── Offer calculator (R5-6) — mock engine ───────────────────────────────────
+   POST /r/:slug/offer {price} → the full metric + test set at that price
+   (handoff §5). The real engine owns this recompute — the mock publishes its
+   model here, derived from the canonical fixture's own inputs (each constant
+   is traceable to a fixture figure). BOTH published checkpoints reproduce
+   exactly: asking 104 600 € (the v1 fixture actuals: payment 380 €/mo, cash
+   flow −14 €/mo, stress −103 €/mo, cash needed 31 800 €, LTV 73 %) and the
+   R5-6 frame's 98 500 € (debt-free 111 900 € · €/m² 2 072 · 20.0 % under
+   median · gross 9.1 % · real 6.1 % · cash flow +21 €/mo · cash needed
+   29 900 € · fails 2 of 14). The CLIENT never computes — this runs only
+   server-side (rule §6.2). */
+
+/** Engine inputs for the canonical deal — derived from the fixture:
+   loanShare/m2/rents/hoitovastike from listing+report.rent, the reserve from
+   the P4 service table, equity/tax/term from report.financing, the median
+   €/m² from report.priceHistory.medianNowDisplay, the liability from verdict. */
+const OFFER_MODEL = {
+    loanShare: 13400,
+    m2: 54,
+    medianSqm: 2590,
+    rentP50: 845,
+    rentP10: 780,
+    hoitovastikeMonth: 297, // 5.50 €/m² × 54 m²
+    reserveMonth: 117, // vacancy 1 mo/y + upkeep reserve (P4 "deliberately conservative")
+    equityAtAsk: 30000,
+    taxRate: 0.015,
+    baseRate: 0.0345,
+    stressRate: 0.055,
+    termMonths: 300,
+    liability: 58200,
+    /* Real yield = gross less the liability drag at the engine's long-run
+       renovation-financing rate 5.75 %. The naive rent ÷ (debt-free +
+       liability) matches asking (5.8 %) but contradicts the R5-6 frame at the
+       offer (6.1 %, not 6.0 %) — the drag form reproduces both published
+       points. Engine-owned; flagged in the PR. */
+    liabilityDragRate: 0.0575,
+    /* Offer cash-flow sensitivity: each euro off the price returns the 20-year
+       annuity service on it (3.45 %, 240 months ≈ 0.005774 €/mo per €). The
+       frame's two published points pin it (ask −14 €/mo · 98 500 € → +21
+       €/mo); a full funding-model recompute of the monthly figure does not
+       reproduce the frame's +21 (the board hand-set it), so the engine
+       publishes this sensitivity instead. The flip boundary 101 700 € stays
+       the engine's own published figure (policy explanation fixablePrice),
+       never derived from this line. */
+} as const;
+
+/** Monthly annuity service per euro borrowed at annualRate over months. */
+function annuityFactor(annualRate: number, months: number): number {
+    const i = annualRate / 12;
+    return i / (1 - Math.pow(1 + i, -months));
+}
+
+const round1 = (v: number): number => Math.round(v * 10) / 10;
+const round100 = (v: number): number => Math.round(v / 100) * 100;
+
+/** One recomputed metric set at an offer price (numeric — the API serializes
+   the numbers; formatting is the shared format.ts layer's, both sides of the
+   boundary). */
+function offerMetrics(price: number) {
+    const ask = canonicalAnalysis.listing!.askPrice;
+    const m = OFFER_MODEL;
+    const debtFree = price + m.loanShare;
+    /* The buyer's 30 k€ equity scales with the price (mock engine rule — this
+       is what makes the fixture's cash-needed reproduce at both endpoints:
+       30 000 + 1 770 → 31 800 at asking; 28 241 + 1 679 → 29 900 at 98 500). */
+    const equity = (m.equityAtAsk * price) / ask;
+    const tax = m.taxRate * debtFree;
+    const cashNeeded = round100(equity + tax);
+    const loan = price + tax - equity;
+    const loanAtAsk = ask + m.taxRate * (ask + m.loanShare) - m.equityAtAsk;
+
+    const paymentAtAsk = loanAtAsk * annuityFactor(m.baseRate, m.termMonths);
+    const stressPayment = loan * annuityFactor(m.stressRate, m.termMonths);
+
+    /* Cash flow at the base rate: the model's asking figure (−14.2, displayed
+       −14) plus the engine's published offer sensitivity (see OFFER_MODEL). */
+    const cfModelAsk = m.rentP10 - m.hoitovastikeMonth - m.reserveMonth - paymentAtAsk;
+    const cashFlowBase = Math.round(cfModelAsk + (ask - price) * annuityFactor(m.baseRate, 240));
+    const cashFlowStress = Math.round(m.rentP10 - m.hoitovastikeMonth - m.reserveMonth - stressPayment);
+
+    const gross = (m.rentP50 * 12 * 100) / debtFree;
+    const real = gross - (m.liability / debtFree) * 100 * m.liabilityDragRate;
+    const net = ((m.rentP50 - m.hoitovastikeMonth) * 12 * 100) / debtFree;
+    const sqmRaw = debtFree / m.m2;
+    /* P10-covers: the published actual (+81) plus the interest saved by the
+       smaller loan (engine adjustment rule — price moves this test only
+       through the interest line). */
+    const p10Covers = Math.round(81 + ((loanAtAsk - loan) * m.baseRate) / 12);
+
+    return {
+        debtFree,
+        sqm: Math.round(sqmRaw),
+        pctVsMedian: round1((sqmRaw / m.medianSqm - 1) * 100),
+        gross: round1(gross),
+        real: round1(real),
+        net: round1(net),
+        cashFlowBase,
+        cashFlowStress,
+        liabilityShare: round1((m.liability / debtFree) * 100),
+        priceVsMedian: round1((sqmRaw / m.medianSqm - 1) * 100),
+        ltv: Math.round((loan / price) * 100), // against the sale price — matches the published 73 %
+        cashNeeded,
+        p10Covers,
+        companyLoanShare: round1((m.loanShare / debtFree) * 100),
+    };
+}
+
+/** The 14 actuals at an offer price: price-dependent keys recomputed above,
+   price-independent keys verbatim from the fixture (grades, hoitovastike,
+   the unfunded-project flag). Display strings formatted at the boundary. */
+function offerActuals(price: number): PolicyActual[] {
+    const m = offerMetrics(price);
+    const base = canonicalAnalysis.policy!.actuals;
+    const override: Record<string, number> = {
+        grossYield: m.gross,
+        netYield: m.net,
+        cashFlowBase: m.cashFlowBase,
+        cashFlowStress: m.cashFlowStress,
+        liabilityShare: m.liabilityShare,
+        priceVsMedian: m.priceVsMedian,
+        ltv: m.ltv,
+        cashNeeded: m.cashNeeded,
+        p10Covers: m.p10Covers,
+        companyLoanShare: m.companyLoanShare,
+    };
+    return base.map((actual) => {
+        const value = override[actual.key];
+        if (value === undefined) return actual;
+        /* Keep the fixture's display grammar per key: % with FI comma, €/mo or
+           € with fi-FI grouping, U+2212 minus — formatPercent/formatEUR cover
+           both; the flag/grade keys never land here. */
+        const unit = canonicalAnalysis.policy!.tests.find((t) => t.key === actual.key)?.unit;
+        const display = unit === "percent" ? formatPercent(value, "en") : unit === "eurMonth" ? `${formatEUR(value, "en")}/mo` : formatEUR(value, "en");
+        const displayFi = unit === "percent" ? formatPercent(value, "fi") : unit === "eurMonth" ? `${formatEUR(value, "fi")}/kk` : formatEUR(value, "fi");
+        return { key: actual.key, value, display, displayFi };
+    });
+}
+
+/** POST /r/:slug/offer {price} — the full recomputed metric + test set. The
+   price is clamped into the slider's published bounds (typed exact figures
+   inside them are allowed — the 500 € grid is a slider concern, not a rule). */
+export function computeOffer(analysis: Analysis, price: number): OfferResult | undefined {
+    const offer = analysis.offer;
+    const listing = analysis.listing;
+    const policy = analysis.policy;
+    if (!offer || !listing || !policy || analysis.status !== "done") return undefined;
+
+    const ask = listing.askPrice;
+    const clamped = Math.min(ask, Math.max(offer.slider.min, Math.round(price)));
+    if (!Number.isFinite(clamped)) return undefined;
+
+    const metrics = offerMetrics(clamped);
+    const data = { ...policy, actuals: offerActuals(clamped) };
+    const runAtOffer = evaluatePolicy(data, policy.presets.balanced);
+    const runAtAsk = evaluatePolicy(policy, policy.presets.balanced);
+    const askMetrics = offerMetrics(ask);
+
+    /* Flip list: the tests that failed at asking, in test order — FAIL→PASS
+       seafoam when the offer flips one, STAYS FAIL coral with the reason
+       (building tests are price-independent; the tool never hides that). */
+    const flips: OfferFlip[] = [];
+    for (const atAsk of runAtAsk.results) {
+        if (atAsk.pass) continue;
+        const atOffer = runAtOffer.results.find((r) => r.test.key === atAsk.test.key);
+        const flip: OfferFlip = { key: atAsk.test.key, kind: atOffer?.pass ? "flip" : "stays" };
+        if (atAsk.test.key === "cashFlowBase") flip.fixablePrice = atAsk.test.explanation?.fixablePrice;
+        if (atAsk.test.key === "liabilityShare") {
+            flip.from = askMetrics.liabilityShare;
+            flip.to = metrics.liabilityShare;
+        }
+        flips.push(flip);
+    }
+
+    return {
+        price: clamped,
+        priceDisplay: formatEUR(clamped, "en"),
+        atAsking: clamped === ask,
+        vsAskingPct: round1((clamped / ask - 1) * 100),
+        debtFree: metrics.debtFree,
+        sqm: metrics.sqm,
+        pctVsMedian: metrics.pctVsMedian,
+        gross: { from: askMetrics.gross, to: metrics.gross },
+        real: { from: askMetrics.real, to: metrics.real },
+        cashFlow: { from: askMetrics.cashFlowBase, to: metrics.cashFlowBase },
+        cashNeeded: metrics.cashNeeded,
+        verdict: {
+            passing: runAtOffer.passing,
+            failCount: runAtOffer.failCount,
+            total: runAtOffer.total,
+            wasFailCount: runAtAsk.failCount,
+        },
+        flips,
+    };
+}
+
+/* ── Pinned offer (R5-6 §4) ──────────────────────────────────────────────────
+   {offerPrice, pinnedAt} persists server-side per account+report; renders in
+   §1, the PDF and the checklist header. Re-pinning overwrites (one pin per
+   report — the frame's single "Pin this offer" action). */
+
+export function getPinnedOffer(accountId: string, reportId: string): PinnedOffer | undefined {
+    return store.pinnedOffers.get(accountId)?.get(reportId);
+}
+
+/** Validates against the offer model's bounds — a pin never carries a price
+   the calculator couldn't have produced. */
+export function pinOffer(accountId: string, analysis: Analysis, price: number): PinnedOffer | undefined {
+    const offer = analysis.offer;
+    const listing = analysis.listing;
+    if (!offer || !listing || !Number.isFinite(price)) return undefined;
+    const offerPrice = Math.round(price);
+    if (offerPrice < offer.slider.min || offerPrice > listing.askPrice) return undefined;
+    const pinned: PinnedOffer = { offerPrice, pinnedAt: Date.now() };
+    let byReport = store.pinnedOffers.get(accountId);
+    if (!byReport) {
+        byReport = new Map();
+        store.pinnedOffers.set(accountId, byReport);
+    }
+    byReport.set(analysis.id, pinned);
+    return pinned;
+}
+
+/* ── Tracking (R12) ──────────────────────────────────────────────────────────
+   Auto-on at unlock (§4): seedTracking is called by every unlock path in
+   createCheckout. The canonical report seeds the published R12-1 record
+   (price drop → v2 re-run → checklist tightening); any other analysis seeds a
+   live v1 record. The daily check itself is the real backend's cron — the
+   mock serves the seeded record and never advances it (comment per the slice
+   brief). One listing, actual vs. read — NOT the platform's portfolio (the
+   R12 scope guard: it never asks about ownership). */
+
+function seedTracking(accountId: string, reportId: string): void {
+    const analysis = getAnalysisById(reportId);
+    if (!analysis?.listing) return;
+    let byReport = store.tracking.get(accountId);
+    if (!byReport) {
+        byReport = new Map();
+        store.tracking.set(accountId, byReport);
+    }
+    if (byReport.has(reportId)) return; // seeded once — at the unlock
+
+    if (reportId === canonicalAnalysis.id) {
+        byReport.set(reportId, { ...canonicalTrackingTemplate, seededAt: Date.now() });
+        return;
+    }
+    /* Generic live v1 record for any other unlocked analysis (never surfaces
+       in the single-fixture mock — only the canonical deal is unlockable). */
+    const fails = analysis.policy ? evaluatePolicy(analysis.policy, analysis.policy.presets.balanced).failCount : 0;
+    byReport.set(reportId, {
+        listingStatus: analysis.listingStatus?.state ?? "live",
+        checkedAt: new Date().toISOString(),
+        checkedNote: { en: "1 h ago", fi: "1 h sitten" },
+        priceAtRead: analysis.listing.askPrice,
+        priceNow: analysis.listing.askPrice,
+        domAtRead: 0,
+        domNow: 0,
+        domDistrictMedian: 0,
+        versions: [{ v: 1, at: analysis.readAt, fails, trigger: { en: "Analysed and unlocked", fi: "Analysoitu ja avattu" } }],
+        events: [
+            {
+                at: analysis.readAt,
+                title: { en: `Analysed and unlocked · v1 · fails ${fails} of 14`, fi: `Analysoitu ja avattu · v1 · hylkää ${fails} / 14` },
+            },
+        ],
+        checklistProgress: { answered: 0, total: analysis.report?.agentChecklist.items.length ?? 0 },
+        verdictNote: { en: "v1 · just read", fi: "v1 · juuri luettu" },
+        seededAt: Date.now(),
+    });
+}
+
+/** The tracking GET payload (§5 contract) — the record + the pinned offer. */
+export function getTrackingPayload(accountId: string, reportId: string): TrackingPayload | undefined {
+    const record = store.tracking.get(accountId)?.get(reportId);
+    if (!record) return undefined;
+    const { seededAt: _seededAt, stoppedAt, ...rest } = record;
+    void _seededAt;
+    const pinnedOffer = getPinnedOffer(accountId, reportId) ?? null;
+    /* The offer-vs-asking gap is engine work (§6.2): 0.1 = the offer sits
+       0.1 % under the current asking — the R12-1 "the drop closed your gap". */
+    const pinnedGapPct = pinnedOffer ? Math.round(((record.priceNow - pinnedOffer.offerPrice) / record.priceNow) * 1000) / 10 : null;
+    return { ...rest, pinnedOffer, pinnedGapPct, stopped: stoppedAt !== undefined };
+}
+
+/** The seededAt ts the dashboard's "since unlock" line needs. */
+export function getTrackingSeededAt(accountId: string, reportId: string): number | undefined {
+    return store.tracking.get(accountId)?.get(reportId)?.seededAt;
+}
+
+/** Per-object mute (R12 "Stop tracking" — the R14 note: per-object mutes live
+   on their objects). Stopping keeps the record; the timeline stays readable. */
+export function setTrackingStopped(accountId: string, reportId: string, stopped: boolean): boolean {
+    const record = store.tracking.get(accountId)?.get(reportId);
+    if (!record) return false;
+    if (stopped) record.stoppedAt = Date.now();
+    else delete record.stoppedAt;
+    return true;
+}
+
+/** Drives the R7-5 listing-changed banner (slice 4's ?state=changed stays as
+   the manual mock trigger): the banner shows when the tracking record saw the
+   listing change since the read. */
+export function hasTrackingChange(accountId: string, reportId: string): boolean {
+    const record = store.tracking.get(accountId)?.get(reportId);
+    return !!record && record.stoppedAt === undefined && (record.priceNow !== record.priceAtRead || record.listingStatus === "ended");
+}
+
+/* ── Compare (R13) ───────────────────────────────────────────────────────────
+   GET /reports/compare?ids= (2–4, selection order). Each column is the
+   report's engine metrics frozen at its own version; staleness rides the
+   column header with an inline free re-run. "best in row" marks facts only —
+   never the verdict row; ties are unmarked (a fact, not a recommendation).
+   Summary-only columns carry the free-tier rows + lock markers on the
+   §3/financing-derived lines: locked values never leave this boundary (§6.4). */
+
+export function compareReports(ids: string[], accountId: string | undefined): CompareResponse | undefined {
+    if (ids.length < 2 || ids.length > 4) return undefined;
+    /* Ids arrive as report ids from the /reports selection; slugs are accepted
+       too (direct links, the smoke test). */
+    const analyses = ids.map((id) => getAnalysisById(id) ?? fixtures[id]);
+    if (analyses.some((a) => !a?.compare || !a.listing)) return undefined;
+    const typed = analyses as Analysis[];
+
+    const columns: CompareColumn[] = typed.map((analysis) => {
+        const cf = analysis.compare!;
+        /* The canonical report's column is gated by the account's real unlock;
+           the compare fixtures declare Anne's drawer state themselves (the
+           real engine derives this per account — see fixtures.ts). */
+        const unlocked = analysis.id === canonicalAnalysis.id ? !!accountId && isUnlocked(accountId, analysis.id) : cf.access === "unlocked";
+        const lockedRows: CompareRowKey[] = unlocked ? [] : [...COMPARE_LOCKED_ROWS];
+        const cells: CompareColumn["cells"] = {
+            debtFree: cf.cells.debtFree,
+            sqm: cf.cells.sqm,
+            yield: cf.cells.yield,
+            yieldSub: cf.cells.yieldSub,
+            companyGrade: cf.cells.companyGrade,
+            municipalityGrade: cf.cells.municipalityGrade,
+            flags: cf.cells.flags,
+        };
+        if (unlocked) {
+            cells.liability = cf.cells.liability;
+            cells.cashFlow = cf.cells.cashFlow;
+            cells.cashNeeded = cf.cells.cashNeeded;
+        }
+        return {
+            id: analysis.id,
+            slug: analysis.slug,
+            addr: `${analysis.listing!.addr}, ${analysis.listing!.city}`,
+            meta: cf.meta,
+            versionTag: cf.versionTag,
+            readAt: cf.readAt,
+            state: cf.state,
+            unlocked,
+            cells,
+            lockedRows,
+            verdictKind: cf.verdictKind,
+            verdictN: cf.verdictN,
+        };
+    });
+
+    /* Best-in-row over the columns where the row is visible (a summary column
+       can't win a race its value never entered). Unique best only. */
+    const best: CompareResponse["best"] = {};
+    const consider = (row: CompareRowKey, key: (s: NonNullable<Analysis["compare"]>["sort"]) => number, dir: "min" | "max") => {
+        const eligible = typed.filter((a) => {
+            const col = columns.find((c) => c.id === a.id);
+            return col && !col.lockedRows.includes(row);
+        });
+        if (eligible.length < 2) return;
+        let bestValue = dir === "min" ? Infinity : -Infinity;
+        let winners: string[] = [];
+        for (const a of eligible) {
+            const value = key(a.compare!.sort);
+            if (dir === "min" ? value < bestValue : value > bestValue) {
+                bestValue = value;
+                winners = [a.id];
+            } else if (value === bestValue) {
+                winners.push(a.id);
+            }
+        }
+        if (winners.length === 1) best[row] = winners[0];
+    };
+    consider("debtFree", (s) => s.debtFree, "min");
+    consider("sqm", (s) => s.sqmVsMedian, "min"); // deepest under the median
+    consider("yield", (s) => s.realYield, "max");
+    consider("liability", (s) => s.liability, "min");
+    consider("grades", (s) => s.companyRank * 10 + s.municipalityRank, "max");
+    consider("flags", (s) => s.highFlags * 100 + s.totalFlags, "min");
+    consider("cashFlow", (s) => s.cashFlow, "max");
+    consider("cashNeeded", (s) => s.cashNeeded, "min");
+
+    return { columns, best, policyTotal: canonicalAnalysis.policy?.tests.length ?? 14 };
+}
+
 /* ── Public page & visibility (R8) ───────────────────────────────────────────
    /r/:slug is public by default — the free summary IS the public page
    (R8 header: "public = free summary, always"). The owner flip (R7-2 footer
@@ -607,6 +1022,11 @@ export function listAccountReports(accountId: string): AccountReportRow[] {
            until per-account policy persistence lands with the tracking slice. */
         const run = analysis.policy ? evaluatePolicy(analysis.policy, analysis.policy.presets.balanced) : undefined;
         const unlock = unlocked ? getUnlockInfo(accountId, reportId) : undefined;
+        /* R12: an unlocked row's status reflects its tracking record — a price
+           drop since the read flips it to "Price dropped ↓" (the R10 script's
+           amber state); the status links to the tracking dashboard (the R12
+           scope guard's "My-reports row status link"). */
+        const track = unlocked ? store.tracking.get(accountId)?.get(reportId) : undefined;
         rows.push({
             reportId,
             slug: analysis.slug,
@@ -624,7 +1044,14 @@ export function listAccountReports(accountId: string): AccountReportRow[] {
             policyPassing: run?.passing ?? false,
             policyFails: run?.failCount ?? 0,
             policyTotal: run?.total ?? 0,
-            status: analysis.listingStatus?.state === "ended" ? "ended" : unlocked ? "unlocked" : "summary",
+            status:
+                analysis.listingStatus?.state === "ended"
+                    ? "ended"
+                    : unlocked && track && track.stoppedAt === undefined && track.priceNow < track.priceAtRead
+                      ? "dropped"
+                      : unlocked
+                        ? "unlocked"
+                        : "summary",
             unlockTs: unlock?.ts,
         });
     };

@@ -5,7 +5,7 @@ import { PrintToolbar } from "@/components/print/print-toolbar";
 import { REPORT_PRINT_PAGES, ReportPrint } from "@/components/print/report-print";
 import { dict } from "@/i18n/dict";
 import { parseLang } from "@/lib/i18n";
-import { ACCOUNT_COOKIE, getAccount, getAgentChecklist, getBySlug, isUnlocked, unlockAnalysis } from "@/lib/store";
+import { ACCOUNT_COOKIE, getAccount, getAgentChecklist, getBySlug, getPinnedOffer, isUnlocked, unlockAnalysis } from "@/lib/store";
 
 /**
  * /r/:slug/pdf — the A4 print document (R7-P P1–P3 + appendices A/B/C, handoff
@@ -53,7 +53,8 @@ export default async function Page({
                 labels={{ back: t.print.toolbarBack, print: t.print.toolbarPrint }}
             />
             <main>
-                <ReportPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} checkedIds={checkedIds} />
+                {/* R5-6: the pinned offer prints on the cover + appendix C header. */}
+                <ReportPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} checkedIds={checkedIds} pinned={getPinnedOffer(account.id, analysis.id)} />
             </main>
         </>
     );

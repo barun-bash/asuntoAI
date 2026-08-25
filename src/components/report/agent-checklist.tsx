@@ -5,8 +5,9 @@ import { Check } from "@untitledui/icons";
 import { OPEN_CHAT_EVENT } from "@/components/report/chat-panel";
 import { DocChip } from "@/components/report/doc-chip";
 import { StrongText } from "@/components/report/strong-text";
+import { formatEUR } from "@/lib/format";
 import type { AgentChecklistItemState } from "@/lib/store";
-import type { AgentChecklist } from "@/lib/types";
+import type { AgentChecklist, PinnedOffer } from "@/lib/types";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
 
@@ -27,6 +28,7 @@ export function AgentChecklistSection({
     number,
     addr,
     checklist,
+    pinned,
 }: {
     slug: string;
     /** Report № for the eyebrow + the copy-all header. */
@@ -35,6 +37,8 @@ export function AgentChecklistSection({
     addr: string;
     /** Engine-published title/outro (items arrive from the GET, checked merged). */
     checklist: Pick<AgentChecklist, "title" | "outro" | "outroStrongs">;
+    /** R5-6 pinned offer — renders in the checklist header (with §1 + the PDF). */
+    pinned?: PinnedOffer | null;
 }) {
     const { lang, t } = useLang();
     const [items, setItems] = useState<AgentChecklistItemState[] | null>(null);
@@ -95,6 +99,13 @@ export function AgentChecklistSection({
                     <h2 id="agent-checklist-title" className="mt-1 font-display text-xl leading-[1.25] font-medium wrap-anywhere text-rsm-midnight">
                         {checklist.title[lang]}
                     </h2>
+                    {/* R5-6 — the pinned offer rides the checklist header (with
+                       §1 and the PDF cover). */}
+                    {pinned ? (
+                        <p className="tnum mt-1 text-[12px] leading-[1.5] font-medium text-rsm-steel">
+                            {tpl(t.checklist.pinnedLine, { price: formatEUR(pinned.offerPrice, lang) })}
+                        </p>
+                    ) : null}
                 </div>
                 <span className="ml-auto inline-flex flex-wrap items-center gap-2.5">
                     <button
