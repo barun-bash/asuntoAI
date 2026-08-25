@@ -1,0 +1,886 @@
+/* Resimator Report — print artifacts P1–P4 (handoff §10, R7-P frames).
+   Loaded globally via globals.css; everything is scoped under .rsm-print so the
+   app screens are untouched (the toolbar hides itself with Tailwind's print:).
+
+   TECHNIQUE — paginated sheets instead of flow pagination:
+   - Each .p-sheet is exactly one A4 page: 210×297 mm on screen (white sheet,
+     hairline + shadow on paper, like the board frames); in print the sheet's
+     own padding collapses to 0 and @page { size: A4; margin: 17mm } supplies
+     the mandated margins — so the content area is 176×263 mm per page and
+     break-after: page steps to the next sheet. Deterministic: one sheet can
+     never straddle two printed pages by accident (content is authored to fit).
+   - Running header (report № + address) is ordinary in-flow content rendered
+     at the top of sheets 2+; the footer (public URL + page x/y) is pinned to
+     each sheet's bottom with flex column + margin-top:auto.
+   - Page x/y is a hard per-sheet number, NOT a CSS counter: Chromium, Firefox
+     and Safari do not implement @page margin boxes, which are the only place
+     counter(page)/counter(pages) is legal; the position:fixed print pattern
+     repeats identical text on every page and cannot number them. Sheet-fixed
+     numbers are exact precisely because pagination is sheet-fixed.
+   - print-color-adjust:exact on the print root so verdict washes, quote fills
+     and the Y5 row wash actually print (browsers strip backgrounds otherwise).
+   - Grayscale-safe verdicts (§6.6, handoff-notes "Print"): severity is always
+     border-weight + text label (3–4 px left rules, uppercase pills, deep text)
+     — never colour alone. Print provenance chips are bordered text labels
+     (board script: obs = inset hairline + ink, mod = inset hairline + misty,
+     est = dashed + misty).
+   - Font sizes are the boards' 96-dpi px values verbatim (handoff-notes
+     "Print": "body ≥12 pt equivalents (values above are the 96-dpi px)"). */
+
+@page {
+    size: A4;
+    margin: 17mm;
+}
+
+/* ── Root + sheet geometry ─────────────────────────────────────────────────── */
+
+.rsm-print {
+    /* Screen preview: stacked sheets on the paper backdrop, horizontally
+       scrollable when the viewport is narrower than 210 mm. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 16px 72px;
+    overflow-x: auto;
+}
+
+.rsm-print,
+.rsm-print * {
+    /* Washes/fills survive printing (checked under @media print below). */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.p-sheet {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    width: 210mm;
+    min-width: 210mm;
+    min-height: 297mm;
+    /* 17 mm side margins = the boards' 64 px at 96 dpi; 15/13 mm top/bottom
+       approximates the frames' 48–56 px rhythm (print margins come from @page). */
+    padding: 15mm 17mm 13mm;
+    background: var(--color-white);
+    border: 1px solid var(--color-rsm-hairline);
+    box-shadow: var(--shadow-rsm-sm);
+    color: var(--color-rsm-midnight);
+    font-family: var(--font-body);
+}
+
+@media print {
+    html,
+    body {
+        background: var(--color-white) !important;
+    }
+
+    .rsm-print {
+        display: block;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .p-sheet {
+        width: auto;
+        min-width: 0;
+        /* 297 − 2×17 mm @page margins: the sheet fills exactly one page box. */
+        min-height: 263mm;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .p-sheet:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+}
+
+/* ── Shared primitives ─────────────────────────────────────────────────────── */
+
+.p-num {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Logo lockup (positive): glyph + wordmark — the DS Logo lockup variant;
+   only glyph SVGs ship in public/assets, so the wordmark is Space Grotesk. */
+.p-lockup {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+/* Document head (P1/P4): lockup left, artifact title + № right, 2 px rule. */
+.p-sheet-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--color-rsm-midnight);
+}
+
+.p-head-right {
+    margin-left: auto;
+    text-align: right;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-head-right strong {
+    color: var(--color-rsm-midnight);
+    font-weight: 700;
+}
+
+/* Running header (sheets 2+): № + address left, section tag right. */
+.p-running {
+    display: flex;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-rsm-hairline);
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-slate-50);
+}
+
+.p-running > :last-child {
+    margin-left: auto;
+}
+
+/* Bottom-pinned block: margin-top:auto pushes the whole foot block (legal line
+   and/or page footer) to the sheet's bottom edge. */
+.p-bottom {
+    margin-top: auto;
+}
+
+/* Page footer — left cell = public URL, right cell = page x/y. */
+.p-footer {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    padding-top: 12px;
+    font-size: 11.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-slate-50);
+}
+
+.p-footer > :last-child {
+    margin-left: auto;
+}
+
+.p-eyebrow {
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-rsm-steel);
+}
+
+.p-h1 {
+    margin: 12px 0 8px;
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-h1-sm {
+    margin: 22px 0 4px;
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-meta {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--color-rsm-slate);
+}
+
+.p-meta-sm {
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+/* § heading row: marker (Space Grotesk, slate-50) + title. */
+.p-h2-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.p-sec-mark {
+    font-family: var(--font-display);
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 700;
+    color: var(--color-rsm-slate-50);
+}
+
+.p-h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-h2-sm {
+    font-size: 17px;
+}
+
+/* Quote block — steel 3 px rule, soft-sky fill, italic Finnish + source line
+   (handoff §10 "Document rhythm"). */
+.p-quote {
+    margin: 8px 0 0;
+    padding: 7px 11px;
+    border-left: 3px solid var(--color-rsm-steel);
+    border-radius: 0 8px 8px 0;
+    background: var(--color-rsm-soft-sky);
+}
+
+.p-quote-text {
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--color-rsm-midnight);
+}
+
+.p-quote-src {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--color-rsm-misty);
+}
+
+/* Severity pill — wash + deep label (grayscale-safe). */
+.p-pill {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: 1000px;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.p-pill-high {
+    background: var(--color-rsm-coral-25);
+    color: var(--color-rsm-coral-deep);
+}
+
+.p-pill-caution {
+    background: var(--color-rsm-amber-25);
+    color: var(--color-rsm-amber-deep);
+}
+
+/* Print provenance chips (board script obs/mod/est — bordered text labels,
+   grayscale-safe by construction). MAPPED reuses the obs style: it is computed
+   from observed figures, so it reads as evidence-weight. */
+.p-chip {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 8.5px;
+    line-height: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.p-chip-obs,
+.p-chip-map {
+    box-shadow: inset 0 0 0 1px var(--color-rsm-hairline);
+    color: var(--color-rsm-midnight);
+}
+
+.p-chip-mod {
+    box-shadow: inset 0 0 0 1px var(--color-rsm-hairline);
+    color: var(--color-rsm-misty);
+}
+
+.p-chip-est {
+    border: 1px dashed var(--color-rsm-misty-50);
+    color: var(--color-rsm-misty);
+}
+
+/* ── P1 cover ──────────────────────────────────────────────────────────────── */
+
+.p-cover-eyebrow {
+    margin-top: 34px;
+}
+
+.p-tiles-2 {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.p-tile {
+    border: 1px solid var(--color-rsm-hairline);
+    border-radius: 14px;
+    padding: 18px 22px;
+    background: var(--color-white);
+}
+
+.p-tile-fill {
+    background: var(--color-rsm-editor-bg);
+}
+
+.p-tile-label {
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-rsm-misty);
+}
+
+.p-tile-value {
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-size: 38px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-tile-sub {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+/* Cover verdict banner — 4 px severity rule + wash + deep title + words. */
+.p-verdict {
+    margin-top: 12px;
+    border: 1px solid var(--color-rsm-hairline);
+    border-left: 4px solid var(--color-rsm-coral);
+    border-radius: 14px;
+    padding: 16px 22px;
+    background: var(--color-rsm-fail-wash);
+}
+
+.p-verdict-pass {
+    border-left-color: var(--color-rsm-seafoam);
+    background: var(--color-rsm-pass-wash);
+}
+
+.p-verdict-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.p-verdict-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 500;
+    color: var(--color-rsm-coral-deep);
+}
+
+.p-verdict-pass .p-verdict-title {
+    color: var(--color-rsm-seafoam-deep);
+}
+
+.p-verdict-meta {
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-slate);
+}
+
+.p-verdict-body {
+    margin-top: 6px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+}
+
+/* Grades + flag summary row. */
+.p-tiles-3 {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.p-grade {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--color-rsm-hairline);
+    border-radius: 14px;
+    padding: 14px 18px;
+    background: var(--color-white);
+}
+
+.p-grade-letter {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 40px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.p-wash-seafoam {
+    background: var(--color-rsm-seafoam-25);
+    color: var(--color-rsm-seafoam-deep);
+}
+
+.p-wash-amber {
+    background: var(--color-rsm-amber-25);
+    color: var(--color-rsm-amber-deep);
+}
+
+.p-wash-coral {
+    background: var(--color-rsm-coral-25);
+    color: var(--color-rsm-coral-deep);
+}
+
+.p-grade-label {
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-rsm-misty);
+}
+
+.p-flagstile {
+    flex: 1.4;
+    border: 1px solid var(--color-rsm-hairline);
+    border-radius: 14px;
+    padding: 14px 18px;
+    background: var(--color-white);
+}
+
+.p-flags-lines {
+    margin-top: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-flags-lines > span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.p-dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.p-dot-high {
+    background: var(--color-rsm-coral);
+}
+
+.p-dot-caution {
+    background: var(--color-rsm-amber);
+}
+
+/* Cover sources block (2×2 grid above the page footer). */
+.p-sources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-rsm-hairline);
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--color-rsm-slate);
+}
+
+.p-sources > :nth-child(even) {
+    text-align: right;
+}
+
+.p-sources-legal {
+    color: var(--color-rsm-misty);
+}
+
+/* ── P2 flags + liability ──────────────────────────────────────────────────── */
+
+.p-flags {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.p-flag {
+    border: 1px solid var(--color-rsm-hairline);
+    border-left: 3px solid var(--color-rsm-amber);
+    border-radius: 12px;
+    padding: 13px 17px;
+    background: var(--color-white);
+}
+
+.p-flag-high {
+    border-left-color: var(--color-rsm-coral);
+}
+
+.p-flag-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+}
+
+.p-flag-title {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-display);
+    font-size: 14.5px;
+    line-height: 1.3;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-flag-body {
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+}
+
+/* Tables (P2 §3, P3 §6, P4 §2) — grid columns set per table via .p-cols-*. */
+.p-thead {
+    display: grid;
+    gap: 0 12px;
+    padding: 0 2px 6px;
+    border-bottom: 1px solid var(--color-rsm-hairline);
+    font-size: 9.5px;
+    line-height: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-rsm-misty);
+}
+
+.p-trow {
+    display: grid;
+    gap: 0 12px;
+    align-items: baseline;
+    padding: 8px 2px;
+    border-bottom: 1px solid var(--color-rsm-row-line);
+}
+
+.p-trow-tight {
+    padding: 7px 2px;
+}
+
+.p-tfoot {
+    display: grid;
+    gap: 0 12px;
+    align-items: baseline;
+    padding: 9px 2px;
+    border-bottom: 2px solid var(--color-rsm-midnight);
+}
+
+/* §3 component table — board grid minmax(0,1fr) 170px 110px 100px. */
+.p-cols-liab {
+    grid-template-columns: minmax(0, 1fr) 170px 110px 100px;
+}
+
+/* §6 year table — board grid 56px + 5 columns. */
+.p-cols-years {
+    grid-template-columns: 56px repeat(5, minmax(0, 1fr));
+    gap: 0 10px;
+}
+
+/* P4 serviceability — board grid minmax(0,1fr) 150px 150px. */
+.p-cols-svc {
+    grid-template-columns: minmax(0, 1fr) 150px 150px;
+    gap: 0 14px;
+}
+
+.p-right {
+    text-align: right;
+}
+
+.p-cell-name {
+    font-size: 12.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-cell-basis {
+    font-size: 11.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-slate);
+}
+
+.p-cell-amt {
+    font-family: var(--font-display);
+    font-size: 13.5px;
+    line-height: 1.3;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-cell-amt-bold {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.p-cell-label-bold {
+    font-size: 12.5px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: var(--color-rsm-midnight);
+}
+
+.p-basis-line {
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+/* ── P3 numbers + tests ────────────────────────────────────────────────────── */
+
+.p-rent-tiles {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.p-rent {
+    flex: 1;
+    border: 1px solid var(--color-rsm-hairline);
+    border-radius: 12px;
+    padding: 12px 15px;
+    background: var(--color-white);
+}
+
+.p-rent-featured {
+    background: var(--color-rsm-editor-bg);
+    box-shadow: inset 0 0 0 1.5px var(--color-rsm-steel);
+}
+
+.p-rent-label {
+    font-size: 9.5px;
+    line-height: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-rsm-misty);
+}
+
+.p-rent-label-steel {
+    color: var(--color-rsm-steel);
+}
+
+.p-rent-value {
+    margin-top: 3px;
+    font-family: var(--font-display);
+    font-size: 21px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-rent-fin {
+    flex: 2.1;
+    font-size: 11.5px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-slate);
+}
+
+.p-year {
+    font-family: var(--font-display);
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-cell-num {
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+}
+
+.p-cell-neg {
+    color: var(--color-rsm-coral-deep);
+}
+
+.p-cell-pos {
+    color: var(--color-rsm-seafoam-deep);
+}
+
+.p-cell-neg-display {
+    font-family: var(--font-display);
+}
+
+/* Y5 renovation-year wash — board-lifted rgba(255,179,0,.07). */
+.p-row-highlight {
+    background: rgba(255, 179, 0, 0.07);
+}
+
+.p-assumptions {
+    margin-top: 7px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-tests {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 18px;
+}
+
+.p-test {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 2px;
+    border-bottom: 1px solid var(--color-rsm-row-line);
+}
+
+.p-test-mark {
+    flex: none;
+    width: 13px;
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.p-test-pass {
+    color: var(--color-rsm-seafoam-deep);
+}
+
+.p-test-fail {
+    color: var(--color-rsm-coral-deep);
+}
+
+.p-test-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 11.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-test-vals {
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-rsm-slate);
+}
+
+/* Legal block (P3) / sources + disclaimer (P4) — 2 px midnight rule. */
+.p-legal {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 2px solid var(--color-rsm-midnight);
+    font-size: 10.5px;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+/* ── P4 bank summary ───────────────────────────────────────────────────────── */
+
+.p-bank-cols {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 36px;
+}
+
+.p-kv {
+    display: flex;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--color-rsm-row-line);
+    font-size: 12.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+}
+
+.p-kv > :last-child {
+    margin-left: auto;
+    text-align: right;
+}
+
+.p-kv-bold {
+    font-weight: 700;
+    color: var(--color-rsm-midnight);
+}
+
+.p-liab {
+    margin-top: 10px;
+    border: 1px solid var(--color-rsm-hairline);
+    border-left: 3px solid var(--color-rsm-coral);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+    background: var(--color-white);
+}
+
+.p-liab strong {
+    font-weight: 700;
+    color: var(--color-rsm-midnight);
+}
+
+.p-legal strong {
+    font-weight: 700;
+}

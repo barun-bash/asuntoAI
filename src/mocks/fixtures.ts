@@ -350,6 +350,8 @@ export const canonicalAnalysis: Analysis = {
         lift: true,
         built: 1962,
         company: "As Oy Tampereen Tuomiokolmio",
+        // P1 cover meta line 2 (board P1 FI verbatim; EN composed — flagged in the PR).
+        tenure: { fi: "vuokratontti (Tampereen kaupunki, päättyy 2031)", en: "leased plot (City of Tampere, ends 2031)" },
         askPrice: 104600,
         loanShare: 13400,
         debtFree: 118000,
@@ -394,6 +396,15 @@ export const canonicalAnalysis: Analysis = {
                 titleFi: "Putkiremontti kartoitettu, mutta tekemättä",
                 body: "The building has commissioned a condition survey and started LVIS project planning. No pipe renovation has been carried out since 1962. Sequence-wise, that is the step a housing company takes 4–7 years before the work — and the cost lands on the shares, not the seller.",
                 bodyFi: "Kuntotutkimus on teetetty ja LVIS-hankesuunnittelu käynnistetty. Linjasaneerausta ei ole tehty vuoden 1962 jälkeen. Tämä on vaihe, jonka taloyhtiö tekee tyypillisesti 4–7 vuotta ennen urakkaa — kustannus jää osakkaalle, ei myyjälle.",
+                /* Print variants (R7-P): P1 cover line FI verbatim from the frame
+                   (EN composed); P2 pill tail + compressed body EN verbatim from the
+                   P2 frame (FI composed) — flagged in the PR. */
+                printLine: { fi: "Putkiremontti tekemättä · 58 200 €", en: "Pipe renovation not carried out · 58 200 €" },
+                printMeta: { fi: "58 200 € · 4–7 V", en: "58 200 € · 4–7 Y" },
+                printBody: {
+                    en: "Survey 2024, LVIS planning started, nothing executed since 1962. The classic pre-renovation sequence; cost falls on the buyer of the shares.",
+                    fi: "Kuntotutkimus 2024, LVIS-hankesuunnittelu käynnissä, mitään ei ole toteutettu vuoden 1962 jälkeen. Klassinen saneerausta edeltävä ketju; kustannus lankeaa osakkeiden ostajalle.",
+                },
                 costRange: "58 200 €",
                 costRangeFi: "58 200 €",
                 quotes: [
@@ -425,6 +436,18 @@ export const canonicalAnalysis: Analysis = {
                 body: "Ground rent resets when the lease is renegotiated. Tampere’s 2024–25 resets in this district raised charges by 0.60–1.10 €/m²/mo. For 54 m², that is 32–59 €/mo onto the hoitovastike from 2032 — on top of the renovation financing that will already be running.",
                 // FI translated from the EN board copy — flagged in the PR.
                 bodyFi: "Maanvuokra tarkistetaan sopimusta uusittaessa. Tampereen 2024–25 tarkistukset tällä alueella nostivat maksuja 0,60–1,10 €/m²/kk. 54 m²:lle se on 32–59 €/kk hoitovastikkeen päälle vuodesta 2032 — sen lisäksi, kun remontin rahoitusvastike on jo käynnissä.",
+                // P1 cover line FI verbatim (EN composed); P2 pill "RESET RISK" +
+                // compressed body EN verbatim from the P2 frame (FI composed).
+                printLine: { fi: "Vuokratontti päättyy 2031", en: "Leased plot ends 2031" },
+                printMeta: { fi: "TARKISTUSRISKI", en: "RESET RISK" },
+                printBody: {
+                    en: "District resets 2024–25 added 0.60–1.10 €/m²/mo → 32–59 €/mo for 54 m² from 2032, on top of renovation financing.",
+                    fi: "Alueen tarkistukset 2024–25 nostivat 0,60–1,10 €/m²/kk → 32–59 €/kk 54 m²:lle vuodesta 2032, remontin rahoituksen päälle.",
+                },
+                // P2's compressed card title — EN verbatim from the frame; FI in the
+                // same telegram style (composed) — flagged in the PR.
+                printTitle: "Plot leased from the city — lease ends 31.12.2031",
+                printTitleFi: "Tontti vuokrattu Tampereen kaupungilta — maanvuokra päättyy 31.12.2031",
                 costRange: "5–9 K€",
                 costRangeFi: "5–9 t€",
                 costNote: "COST AT RESET",
@@ -458,6 +481,18 @@ export const canonicalAnalysis: Analysis = {
                 body: "Inside the LVIS scope they cost this apartment a 5 200 € share (§3). Done standalone they run 5 000–9 000 €. Until then, 1962 glazing suppresses winter comfort and sits visibly in the P10 rent — two of the 27 comparables with original windows let 6–9 % under the median.",
                 // FI translated from the EN board copy — flagged in the PR.
                 bodyFi: "LVIS-kokonaisuuden sisällä niiden osuus tästä asunnosta on 5 200 € (§3). Erillisenä urakkana ne maksaisivat 5 000–9 000 €. Siihen asti vuoden 1962 lasitus heikentää talvimukavuutta ja näkyy P10-vuokrassa — kaksi 27 verrokista alkuperäisikkunoineen vuokrattiin 6–9 % mediaanin alle.",
+                // P1 cover line FI verbatim (EN composed); P2 compressed body EN
+                // verbatim from the P2 frame (FI composed); the pill reuses costNote.
+                printLine: { fi: "Ikkunat alkuperäiset 1962", en: "Windows original 1962" },
+                printMeta: { fi: "5 000–9 000 €", en: "5 000–9 000 €" },
+                printBody: {
+                    en: "5 200 € share inside the LVIS scope (§3); standalone 5 000–9 000 €. Original glazing visibly suppresses P10 rent among comparables.",
+                    fi: "LVIS-kokonaisuuden sisällä osuus 5 200 € (§3); erillisenä 5 000–9 000 €. Alkuperäinen lasitus painaa näkyvästi P10-vuokraa verrokkeihin nähden.",
+                },
+                // P2's compressed card title — EN verbatim from the frame; FI in the
+                // same telegram style (composed) — flagged in the PR.
+                printTitle: "Windows and balcony doors original, 1962",
+                printTitleFi: "Ikkunat ja parvekeovet alkuperäiset, 1962",
                 costRange: "5–9 K€",
                 costRangeFi: "5–9 t€",
                 costNote: "5 000–9 000 €",
@@ -568,6 +603,95 @@ export const canonicalAnalysis: Analysis = {
         yearGrowth: { en: "rent growth 1.5 %/y, charge growth 3.0 %/y.", fi: "vuokrankasvu 1,5 %/v, vastikkeen kasvu 3,0 %/v." },
         /* R7-5 mock diff (real diffs come from tracking, slice 8). */
         listingChange: { now: "98 600 €", was: "104 600 €", seenAt: "2026-07-29T08:12:00+03:00" },
+        /* R7-P P1 cover verdict explanation — FI verbatim from the frame; EN
+           composed from the same engine facts — flagged in the PR. */
+        coverVerdictBody: {
+            fi: "Kaksi kolmesta hylkäyksestä johtuu rakennuksesta, ei hinnasta. Korjausvastuu on 49,3 % velattomasta hinnasta — mikään tarjous ei korjaa sitä.",
+            en: "Two of the three failures come from the building, not the price. The liability is 49.3 % of the debt-free price — no offer repairs it.",
+        },
+        /* R7-P P2 §3 basis line — EN verbatim from the frame (a tightened form of
+           liabilityBasis); FI composed from liabilityBasis.fi — flagged in the PR. */
+        liabilityBasisPrint: {
+            en: "27 completed linjasaneeraus contracts, Pirkanmaa 2019–2026 · median 890 €/m², P80 1 040 €/m² · timing from the observed survey → planning → decision → execution sequence.",
+            fi: "27 valmistunutta linjasaneerausurakkaa, Pirkanmaa 2019–2026 · mediaani 890 €/m², P80 1 040 €/m² · ajoitus havaitusta ketjusta kuntotutkimus → hankesuunnittelu → päätös → toteutus.",
+        },
+        /* R7-P P4 bank summary — the bank's one-pager uses the CURRENT version's
+           figures (P4 annotation: v2, post price-drop 98 600 €, post documents):
+           asking 98 600 + loan share 13 400 → debt-free 112 000; loan need
+           re-derived by the engine: 112 000 + 1 680 − 30 000 = 83 680 €; liability
+           refined to 56 400 € @ 4–5 y once the isännöitsijäntodistus + PTS arrived.
+           FI verbatim from the frame; EN parity composed (the annotation fixes
+           "Financing summary for your bank" + "Deliberately conservative: P10 rent
+           underwritten") — flagged in the PR. */
+        bankSummary: {
+            versionTag: "v2",
+            readAt: "2026-07-29T09:00:00+03:00",
+            meta: {
+                fi: "2h+kk · 54 m² · 4/6 krs, hissi · 1962 · As Oy Tampereen Tuomiokolmio · vuokratontti (päättyy 2031) · Oikotie 21966412, luettu 29.7.2026",
+                en: "2h+kk · 54 m² · floor 4/6, lift · 1962 · As Oy Tampereen Tuomiokolmio · leased plot (ends 2031) · Oikotie 21966412, read 29.07.2026",
+            },
+            purchaseLeft: [
+                { label: { fi: "Myyntihinta", en: "Asking price" }, value: { fi: "98 600 €", en: "98 600 €" } },
+                { label: { fi: "Yhtiölainaosuus (maksetaan pois)", en: "Company loan share (paid off)" }, value: { fi: "13 400 €", en: "13 400 €" } },
+                { label: { fi: "Velaton hinta", en: "Debt-free price" }, value: { fi: "112 000 €", en: "112 000 €" }, bold: true },
+                { label: { fi: "Varainsiirtovero 1,5 %", en: "Transfer tax 1.5 %" }, value: { fi: "1 680 €", en: "1 680 €" } },
+            ],
+            purchaseRight: [
+                { label: { fi: "Oma pääoma", en: "Equity" }, value: { fi: "30 000 €", en: "30 000 €" } },
+                { label: { fi: "Haettava laina", en: "Loan applied for" }, value: { fi: "83 680 €", en: "83 680 €" }, bold: true },
+                { label: { fi: "Luototusaste velattomasta (LTV)", en: "Loan-to-value of debt-free (LTV)" }, value: { fi: "74,7 %", en: "74.7 %" } },
+                { label: { fi: "Kohde vakuutena", en: "The property as collateral" }, value: { fi: "pankin arvion mukaan", en: "per the bank’s appraisal" } },
+            ],
+            service: {
+                baseHeader: { fi: "Peruskorko 3,45 %", en: "Base rate 3.45 %" },
+                stressHeader: { fi: "Stressikorko 5,50 %", en: "Stress rate 5.50 %" },
+                rows: [
+                    {
+                        label: { fi: "Vuokratuotto — laskennassa P10, ei P50", en: "Rent income — P10 underwritten, not P50" },
+                        chip: "MODELLED",
+                        base: "+780 €",
+                        stress: "+780 €",
+                    },
+                    {
+                        label: { fi: "Hoitovastike 5,50 €/m²", en: "Hoitovastike 5.50 €/m²" },
+                        chip: "OBSERVED",
+                        base: "−297 €",
+                        stress: "−297 €",
+                    },
+                    {
+                        label: { fi: "Vajaakäyttö- ja ylläpitovaraus (1 kk/v + varaus)", en: "Vacancy & upkeep reserve (1 mo/y + reserve)" },
+                        base: "−117 €",
+                        stress: "−117 €",
+                    },
+                    {
+                        label: { fi: "Lainanhoito, annuiteetti 25 v (83 680 €)", en: "Debt service, annuity 25 y (83 680 €)" },
+                        base: "−416 €",
+                        stress: "−514 €",
+                    },
+                ],
+                totalLabel: { fi: "Kassavirta / kk", en: "Cash flow / mo" },
+                baseTotal: "−50 €",
+                stressTotal: "−148 €",
+            },
+            note: {
+                fi: "Laskelma tarkoituksella varovainen: vuokrana P10 (istuva vuokra 845 €/kk on havaittu; alueen mediaani 860 €/kk). P50-vuokralla kassavirta peruskorolla on +15 €/kk.",
+                en: "Deliberately conservative: P10 rent underwritten (the sitting 845 €/mo tenancy is observed; the district median is 860 €/mo). At P50 rent, base-rate cash flow is +15 €/mo.",
+            },
+            liabilities: {
+                fi: "Linjasaneeraus kartoitettu, ei toteutettu: osuus 56 400 €, ajoittuu 4–5 vuoteen (isännöitsijäntodistus + PTS saatu). Toteutuessaan rahoitusvastike ≈ +310 €/kk vuodesta 5 — vuokrankorotuspotentiaali remontin jälkeen +8 % {chip}. Vuokratontin maanvuokra tarkistetaan 2031 (arvio +32–59 €/kk).",
+                en: "Pipe renovation surveyed, not carried out: share 56 400 €, landing in 4–5 years (isännöitsijäntodistus + PTS delivered). When executed, the financing charge is ≈ +310 €/mo from year 5 — post-renovation rent uplift potential +8 % {chip}. The leased plot’s ground rent resets in 2031 (estimate +32–59 €/mo).",
+            },
+            liabilitiesStrongs: [
+                { fi: "56 400 €", en: "56 400 €" },
+                { fi: "+310 €/kk", en: "+310 €/mo" },
+            ],
+            liabilitiesChip: "MODELLED",
+            footer: {
+                fi: "Lähteet: Oikotie 21966412 (luettu 29.7.2026) · isännöitsijäntodistus & PTS (toimitettu 28.7.2026) · Pirkanmaan markkinadata Q2/2026 · laskentamoottori v2.3. Tämä on analyysi ostajan tueksi — ei lainatarjous eikä vakuusarvio. Resimator OY, Turku.",
+                en: "Sources: Oikotie 21966412 (read 29.07.2026) · isännöitsijäntodistus & PTS (delivered 28.07.2026) · Pirkanmaa market data Q2/2026 · engine v2.3. This is analysis to support the buyer — not a loan offer or a collateral valuation. Resimator OY, Turku.",
+            },
+            footerStrong: { fi: "ei lainatarjous eikä vakuusarvio", en: "not a loan offer or a collateral valuation" },
+        },
         chat: {
             answers: [
                 {
