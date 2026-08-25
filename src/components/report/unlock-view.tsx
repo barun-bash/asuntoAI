@@ -6,7 +6,6 @@ import Link from "next/link";
 import { LangToggle } from "@/components/report/lang-toggle";
 import { formatEUR, formatEURPerReport, numberWord } from "@/lib/format";
 import type { Pack, PackId } from "@/lib/types";
-import { packs } from "@/mocks/fixtures";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
 
@@ -135,6 +134,7 @@ function IconCoins({ className }: { className?: string }) {
 
 export function UnlockView({
     report,
+    packs,
     reasonCredits,
     hasAccount,
     balance,
@@ -143,6 +143,8 @@ export function UnlockView({
     alreadyUnlocked,
 }: {
     report?: UnlockReportContext;
+    /** Engine-authored pack figures — read through the store by the page (swap rule). */
+    packs: Pack[];
     reasonCredits: boolean;
     hasAccount: boolean;
     balance: number;
@@ -203,9 +205,8 @@ export function UnlockView({
     const packCopy = u[PACK_COPY[selectedPack.id]];
     const reportHref = report ? `/r/${report.slug}` : "/";
 
-    const showOutOfCredits = reasonCredits || (hasAccount && used > 0 && balance === 0 && !alreadyUnlocked);
+    const showOutOfCredits = !alreadyUnlocked && (reasonCredits || (hasAccount && used > 0 && balance === 0));
     const showUseCredit = hasAccount && balance > 0 && !!report && !alreadyUnlocked && !firstFreeVisible;
-    const invoicePackCopy = u[PACK_COPY[selectedPack.id]];
 
     async function postJSON(url: string, body: unknown): Promise<{ status: number; data: Record<string, unknown> }> {
         try {
@@ -478,7 +479,7 @@ export function UnlockView({
                         </span>
                         <span className="text-[13px] leading-relaxed text-rsm-midnight">
                             <span className="min-[601px]:hidden">
-                                <strong>{u.declinedTitle}</strong> {tpl(u.declinedBodyMobile, { code })}
+                                <strong>{u.declinedTitleShort}</strong> {tpl(u.declinedBodyMobile, { code })}
                             </span>
                             <span className="hidden min-[601px]:inline">
                                 <strong>{u.declinedTitle}</strong> {tpl(u.declinedBody, { code })}
@@ -523,7 +524,7 @@ export function UnlockView({
             <form onSubmit={submitInvoice} className="rounded-rsm-card border border-rsm-hairline bg-white p-5 shadow-rsm-sm md:p-6" noValidate>
                 <h2 className="font-display text-lg font-medium text-rsm-midnight">{u.invoiceTitle}</h2>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-rsm-charcoal">
-                    {tpl(u.invoiceBody, { pack: invoicePackCopy.name })}{" "}
+                    {tpl(u.invoiceBody, { pack: u.invoicePack[selectedPack.id] })}{" "}
                     <strong className="font-display font-medium text-rsm-midnight">{u.invoiceBodyNet}</strong>
                     {u.invoiceBodyTail}
                 </p>

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { UnlockView } from "@/components/report/unlock-view";
 import { parseLang } from "@/lib/i18n";
-import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, hasAnyUnlock, isUnlocked, redactAnalysis, usedOf } from "@/lib/store";
+import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, hasAnyUnlock, isUnlocked, packs, redactAnalysis, usedOf } from "@/lib/store";
 import { LangProvider } from "@/providers/lang";
 
 /**
@@ -44,6 +44,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
                         : undefined
                 }
                 reasonCredits={reasonCredits}
+                packs={packs}
                 hasAccount={!!account}
                 balance={balance}
                 used={used}

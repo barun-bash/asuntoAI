@@ -245,6 +245,7 @@ export const dict = {
             openReport: "Avaa koko raportti",
             myReports: "Raporttini & krediitit",
             declinedTitle: "Kortti hylättiin",
+            declinedTitleShort: "Kortti hylättiin",
             declinedBody:
                 "(liikkeeseenlaskijan koodi: {code}). Mitään ei veloitettu eivätkä krediitit liikkuneet. Kokeile toista korttia tai samaa rajan tarkistuksen jälkeen.",
             declinedBodyMobile: "— {code}. Mitään ei veloitettu, krediitit eivät liikkuneet.",
@@ -254,7 +255,10 @@ export const dict = {
             declineMeta: "Kolmas epäonnistuminen tarjoaa laskun sähköpostitse · hello@resimator.fi",
             declineMetaMobile: "Kolmas epäonnistuminen tarjoaa laskureitin.",
             invoiceTitle: "Maksa laskulla",
-            invoiceBody: "Kortti ei nyt taivu — lähetämme laskun paketista {pack}.",
+            invoiceBody: "Kortti ei nyt taivu — lähetämme laskun {pack}.",
+            /* Genitive pack forms for invoiceBody — "5 raportin paketista" is the
+               R2-FI board verbatim; single/20 derived from it (flagged in the PR). */
+            invoicePack: { single: "yksittäisestä raportista", five: "5 raportin paketista", twenty: "20 raportin paketista" },
             invoiceBodyNet: "14 pv netto",
             invoiceBodyTail: "; krediitit (ja tämä raportti avattuna) aktivoituvat, kun lasku on maksettu.",
             invoiceNameLabel: "Nimi laskulle",
@@ -544,6 +548,7 @@ export const dict = {
             openReport: "Open the full report",
             myReports: "My reports & credits",
             declinedTitle: "The card was declined",
+            declinedTitleShort: "Card declined",
             declinedBody: "(issuer code: {code}). Nothing was charged and no credits moved. Try another card, or the same one after checking the limit.",
             declinedBodyMobile: "— {code}. Nothing was charged, no credits moved.",
             declineCodes: { insufficient_funds: "insufficient funds", generic: "card declined" },
@@ -553,6 +558,7 @@ export const dict = {
             declineMetaMobile: "Third failure offers the invoice route.",
             invoiceTitle: "Pay by invoice instead",
             invoiceBody: "The card isn’t cooperating — we’ll email an invoice for the {pack}.",
+            invoicePack: { single: "the single", five: "the 5-pack", twenty: "the 20-pack" },
             invoiceBodyNet: "14 days net",
             invoiceBodyTail: ", and the credits (with this report unlocked) activate the moment it’s paid.",
             invoiceNameLabel: "Name on the invoice",

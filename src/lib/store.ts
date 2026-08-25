@@ -18,6 +18,10 @@ import { canonicalAnalysis, fixtures, packs } from "@/mocks/fixtures";
 
 export { isSupportedListingUrl };
 
+/** Engine-authored pack figures (single 79 € · 5-pack 199 € · 20-pack 349 €,
+   VAT 25.5 % included) — screens read them here, at the boundary. */
+export { packs };
+
 interface RunRecord {
     id: string;
     slug: string;
