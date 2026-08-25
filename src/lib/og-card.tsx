@@ -9,6 +9,7 @@
  */
 import type { ReactNode } from "react";
 import { dict } from "@/i18n/dict";
+import { formatEUR } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { tpl } from "@/lib/tpl";
 import type { Analysis, OgVariantData } from "@/lib/types";
@@ -153,7 +154,7 @@ function VerdictCard({ analysis, lang }: { analysis: Analysis; lang: Lang }) {
                 {listing.addr}
             </div>
             <div style={{ position: "relative", marginTop: 8, fontFamily: "Satoshi", fontWeight: 500, fontSize: 25, lineHeight: 1.5, color: ON_DARK_MUTED }}>
-                {`${listing.type} · ${listing.m2} m² · ${listing.built} · ${lang === "fi" ? "velaton" : "debt-free"} ${formatEurPlain(listing.debtFree)}`}
+                {`${listing.type} · ${listing.m2} m² · ${listing.built} · ${lang === "fi" ? "velaton" : "debt-free"} ${formatEUR(listing.debtFree, "fi")}`}
             </div>
             <div style={{ position: "relative", marginTop: "auto", display: "flex", alignItems: "flex-end", gap: 52 }}>
                 <YieldBlock label={t.cardGross} value={gross} />
@@ -168,18 +169,12 @@ function VerdictCard({ analysis, lang }: { analysis: Analysis; lang: Lang }) {
                         </Pill>
                     ) : null}
                     <Pill bg={AMBER_WASH} color={AMBER_DEEP}>
-                        {tpl(t.cardLiability, { amount: formatEurPlain(verdict.liability.total) })}
+                        {tpl(t.cardLiability, { amount: formatEUR(verdict.liability.total, "fi") })}
                     </Pill>
                 </div>
             </div>
         </Frame>
     );
-}
-
-/* € figure for card surfaces — fi-FI grouping with NBSP, both languages (§7).
-   Display-only composition from an engine number; no arithmetic. */
-function formatEurPlain(value: number): string {
-    return `${String(value).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} €`;
 }
 
 /* R8-5a/b — the delta/pass variants (figures engine-published in fixtures). */
@@ -315,6 +310,10 @@ export function loadOgFonts(origin: string) {
             }),
         );
         fontCache.set(origin, cached);
+        // A failed font fetch must not poison the cache forever — evict on
+        // rejection so the next request retries (the origin may have been
+        // mid-boot).
+        cached.catch(() => fontCache.delete(origin));
     }
     return cached;
 }

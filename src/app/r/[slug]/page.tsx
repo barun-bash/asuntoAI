@@ -150,6 +150,9 @@ export async function generateMetadata({
     return {
         title: `${analysis.listing.addr}, ${analysis.listing.city} — risk analysis`,
         description: share.description,
+        // The R8-1 register is "indexed, canonical" — ?lang=/?state= previews
+        // must not duplicate the indexed page.
+        alternates: { canonical: `/r/${slug}` },
         robots: isPublic ? undefined : { index: false, follow: false },
         openGraph: {
             title: share.title,

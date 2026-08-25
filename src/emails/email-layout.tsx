@@ -152,12 +152,17 @@ export function EmailText({
     return <div style={{ marginTop, fontFamily: EMAIL_FONT, fontWeight: 400, fontSize, lineHeight: 1.65, color }}>{children}</div>;
 }
 
-/** The lime CTA as a padded <a> with bgcolor — the bulletproof button (§9). */
+/** The lime CTA as a padded <a> with bgcolor — the bulletproof button (§9:
+   "lime button as padded <a> bgcolor"). The legacy bgcolor attribute covers
+   clients that drop inline styles; React's anchor types don't know it, so it
+   arrives as a spread (rendered verbatim). */
 export function EmailButton({ href, children, fontSize = 14 }: { href: string; children: ReactNode; fontSize?: number }) {
+    const legacy = { bgcolor: "#E7FE4D" } as Record<string, string>;
     return (
         <div style={{ marginTop: 18, textAlign: "center" }}>
             <a
                 href={href}
+                {...legacy}
                 style={{
                     display: "inline-block",
                     backgroundColor: EMAIL_COLORS.lime,

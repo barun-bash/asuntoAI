@@ -457,7 +457,6 @@ export const dict = {
         publicPage: {
             bannerShared: "Joku jakoi tämän analyysin sinulle. Se on maksuton yhteenveto — sama, jonka jokainen vierailija näkee.",
             bannerCta: "Analysoi oma ilmoituksesi →",
-            liveBadgeAria: "Ilmoitus voimassa",
             seamTitle: "{n} lippua lisää, vastuulaskelma ja neljätoista testiä",
             seamBody: "Tämän jakanut henkilö osti koko raportin. Sinulle: ensimmäinen maksutta, sitten 79 €.",
             seamCta: "Analysoi oma ilmoituksesi — maksutta",
@@ -470,7 +469,6 @@ export const dict = {
             visibilityOn: "Julkinen — maksuton yhteenveto näkyy kaikille linkin saaneille",
             visibilityOff: "Yksityinen — vain sinä näet tämän sivun",
             visibilityError: "Tallennus ei onnistunut — yritä uudelleen",
-            stickyBarText: "Maksuton yhteenveto jokaisesta ilmoituksesta",
         },
         /* R8-2/R8-4/R8-5 — OG card + share-metadata strings. og:title /
            description FI verbatim from R8-4 FI; card labels + alt texts
@@ -1017,7 +1015,6 @@ export const dict = {
         publicPage: {
             bannerShared: "Someone shared this analysis with you. It’s the free summary — the same one every visitor sees.",
             bannerCta: "Analyse your own listing →",
-            liveBadgeAria: "Listing live",
             seamTitle: "{n} more flags, the liability math, and the fourteen tests",
             seamBody: "The person who shared this bought the full report. Yours: first one free, then 79 €.",
             seamCta: "Analyse your own — free",
@@ -1030,7 +1027,6 @@ export const dict = {
             visibilityOn: "Public — the free summary is visible to anyone with the link",
             visibilityOff: "Private — only you see this page",
             visibilityError: "Couldn’t save — try again",
-            stickyBarText: "Free summary for every listing",
         },
         /* R8-2/R8-4/R8-5 — OG card + share-metadata strings. og:title /
            description verbatim from the R8-4 frame; card labels verbatim from
