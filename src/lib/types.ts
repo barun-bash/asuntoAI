@@ -187,3 +187,75 @@ export interface PolicyData {
     presets: Record<PolicyPresetKey, Record<string, number>>;
     actuals: PolicyActual[];
 }
+
+/* ── Purchase (R6-*) — board contract, handoff-notes "Purchase" ─────────────
+   POST /checkout {packId, email, reportId} → intent; the mock completes it
+   synchronously (real flow: Stripe confirm → webhook mints {account, credits,
+   unlock} atomically). Every figure on a pack is engine-authored. */
+
+export type PackId = "single" | "five" | "twenty";
+
+/** Checkout kinds: a paid pack, the once-per-account first-free claim, or
+   spending an already-held credit on a report (no charge). */
+export type CheckoutKind = "pack" | "first-free" | "use-credit";
+
+export interface Pack {
+    id: PackId;
+    credits: number;
+    /** Total price, VAT 25.5 % included (engine-authored). */
+    priceEur: number;
+    /** Per-report price (engine-authored — the UI formats, never divides, §6.2). */
+    perReportEur: number;
+    /** The lime-on-Midnight featured card (the one sanctioned lime exception, §2). */
+    featured?: boolean;
+}
+
+export type LedgerReason = "purchase" | "spend" | "refund" | "free";
+
+/** Append-only credits ledger entry (§4). Credits never expire. */
+export interface LedgerEntry {
+    delta: number;
+    reason: LedgerReason;
+    reportId?: string;
+    packId?: PackId;
+    ts: number;
+}
+
+export interface Account {
+    id: string;
+    email: string;
+    createdAt: number;
+    /** First full unlock free per account — honored exactly once (§12). */
+    freeClaimed: boolean;
+}
+
+export type DeclineCode = "insufficient_funds" | "generic";
+
+export interface PaymentIntent {
+    id: string;
+    kind: CheckoutKind;
+    packId?: PackId;
+    email: string;
+    reportId?: string;
+    accountId?: string;
+    status: "processing" | "paid" | "declined";
+    declineCode?: DeclineCode;
+    /** Credits minted by this intent (0 for first-free / use-credit / declined). */
+    creditsAdded: number;
+    /** Credits this intent spent on the report (0 or 1). */
+    spent: number;
+    /** Declines so far in the same checkout session (3rd reveals the invoice route). */
+    declines: number;
+    ts: number;
+}
+
+/** Mock invoice (R6-7): activates nothing — credits land "when paid". */
+export interface InvoiceRecord {
+    id: string;
+    packId: PackId;
+    email: string;
+    name?: string;
+    company?: string;
+    status: "sent";
+    ts: number;
+}

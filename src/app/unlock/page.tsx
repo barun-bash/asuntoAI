@@ -1,21 +1,56 @@
-import Link from "next/link";
+import { cookies } from "next/headers";
+import { UnlockView } from "@/components/report/unlock-view";
+import { parseLang } from "@/lib/i18n";
+import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, hasAnyUnlock, isUnlocked, packs, redactAnalysis, usedOf } from "@/lib/store";
+import { LangProvider } from "@/providers/lang";
 
 /**
- * TODO(R6 slice): packs + payment states (R6-1…R6-10). Placeholder keeps the
- * verdict seam's CTA navigable until the checkout ships — no fake payment UI.
+ * /unlock — packs + payment, one screen (R6-1…R6-10). The paywall seam links
+ * here with ?report=<slug>; ?reason=credits opens the 0-credits state (R6-4).
+ * The account (if any) comes from the httpOnly asunto_account cookie; every
+ * figure on the page is engine/store-authored — the view only formats.
  */
-export default function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+    const sp = await searchParams;
+    const lang = parseLang(sp.lang);
+    const reportSlug = typeof sp.report === "string" ? sp.report : undefined;
+    const reasonCredits = sp.reason === "credits";
+
+    const analysis = reportSlug ? getBySlug(reportSlug) : undefined;
+    const redacted = analysis?.status === "done" ? redactAnalysis(analysis) : undefined;
+
+    const jar = await cookies();
+    const account = getAccount(jar.get(ACCOUNT_COOKIE)?.value);
+    const balance = account ? balanceOf(account.id) : 0;
+    const used = account ? usedOf(account.id) : 0;
+    const alreadyUnlocked = account && analysis ? isUnlocked(account.id, analysis.id) : false;
+
+    // R6-1 annotation: the banner renders only when the account has no prior
+    // full report (the view additionally checks the browser flag on mount).
+    const firstFreeEligible = !account || (!account.freeClaimed && !hasAnyUnlock(account.id));
+
     return (
-        <main className="mx-auto flex min-h-screen w-full max-w-[704px] flex-col items-start justify-center gap-4 px-4">
-            <p className="text-xs font-bold tracking-[0.08em] text-rsm-steel uppercase">Resimator Report</p>
-            <h1 className="font-display text-3xl font-medium text-rsm-midnight">Unlock full report · 79 €</h1>
-            <p className="text-sm text-rsm-misty">Checkout ships with the purchase slice (R6). Nothing is charged before a verdict exists.</p>
-            <Link
-                href="/"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-rsm-lime px-6 text-base font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75"
-            >
-                Back to start
-            </Link>
-        </main>
+        <LangProvider initialLang={lang}>
+            <UnlockView
+                report={
+                    redacted?.listing && redacted.verdict
+                        ? {
+                              id: redacted.id,
+                              slug: redacted.slug,
+                              addr: redacted.listing.addr,
+                              lockedFlags: redacted.verdict.flags.filter((f) => f.locked).length,
+                              tests: redacted.policy?.tests.length ?? 14,
+                          }
+                        : undefined
+                }
+                reasonCredits={reasonCredits}
+                packs={packs}
+                hasAccount={!!account}
+                balance={balance}
+                used={used}
+                firstFreeEligible={firstFreeEligible && !!redacted}
+                alreadyUnlocked={alreadyUnlocked}
+            />
+        </LangProvider>
     );
 }
