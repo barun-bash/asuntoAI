@@ -110,6 +110,7 @@ export function ReportView({
     unlockTs,
     unlockPackId,
     changed,
+    initialPublic,
 }: {
     analysis: Analysis;
     balance: number;
@@ -117,6 +118,8 @@ export function ReportView({
     unlockTs: number;
     unlockPackId?: PackId;
     changed: boolean;
+    /** Owner visibility for the public page (R8) — the R7-2 footer toggle. */
+    initialPublic: boolean;
 }) {
     const { lang, t } = useLang();
     // The dashed "your figure" card (§4) appears only after the user supplies a
@@ -139,7 +142,14 @@ export function ReportView({
             <main className="mx-auto w-full max-w-[800px] px-4 md:max-w-[704px] md:px-0 xl:max-w-none xl:px-12">
                 <div className="items-start justify-center pt-5 xl:flex xl:gap-6 xl:pt-9">
                     <div className="min-w-0 xl:w-[800px] xl:shrink-0">
-                        <ReportDocument analysis={analysis} yourFigure={yourFigure} changed={changed} unlockDate={unlockDate} unlockOrigin={unlockOrigin} />
+                        <ReportDocument
+                            analysis={analysis}
+                            yourFigure={yourFigure}
+                            changed={changed}
+                            unlockDate={unlockDate}
+                            unlockOrigin={unlockOrigin}
+                            initialPublic={initialPublic}
+                        />
                     </div>
                     <ChatPanel slug={analysis.slug} initialTurnsLeft={initialTurnsLeft} onYourFigure={setYourFigure} />
                 </div>

@@ -129,6 +129,18 @@ export interface Verdict {
     flagCount: { total: number; high: number; caution: number };
 }
 
+/** Public-page listing status (R8-1/R8-3) — the "still live" badge re-checks
+   daily; ended listings stay published with past-tense strings (R8 handoff
+   notes: "ended listings stay published with pastTense strings"). The display
+   lines are engine-published; the UI picks a language, never composes. */
+export interface ListingStatus {
+    state: "live" | "ended";
+    /** R8-1 meta-line badge ("listing still live on Oikotie ✓ checked 1 h ago"). */
+    liveNote: LocalText;
+    /** R8-3 banner ("This listing ended on Oikotie around 24.07.2026. …"). */
+    endedNote: LocalText;
+}
+
 export interface Analysis {
     id: string;
     slug: string;
@@ -137,6 +149,8 @@ export interface Analysis {
     readAt: string; // ISO
     steps: AnalysisStep[];
     listing?: Listing;
+    /** Public-page register marker (R8-1 live badge / R8-3 ended note). */
+    listingStatus?: ListingStatus;
     verdict?: Verdict;
     policy?: PolicyData;
     /** Full-report document data (R7-*) — only meaningful for unlocked accounts;
@@ -151,7 +165,35 @@ export interface Analysis {
         read: { text: string; textFi: string; basis: Provenance | "LOW_CONFIDENCE" }[];
         unlock: string;
         unlockFi: string;
+        /** R8-5c OG card sub-line under the address (engine-authored, per analysis). */
+        ogSub?: LocalText;
     };
+}
+
+/* ── Public page & OG (R8-*) — board contract, handoff-notes "Public page" ──
+   OG cards render server-side at 1200×630 from report state at share time
+   (R8-5 mapping). Variants: verdict (R8-2, the default), price-drop (R8-5a,
+   listing-changed links from R9-3), passes-policy (R8-5b, watch-match links
+   from R9-6), refused (R8-5c, grey never red), private-generic (R8-5d, zero
+   deal data + noindex). */
+
+export type OgVariant = "verdict" | "price-drop" | "passes-policy" | "refused" | "private";
+
+/** Engine-published card figures for the states the base analysis does not
+   carry (R8-5a re-run figures, R8-5b watch-match listing). The OG renderer
+   lays these out verbatim — no arithmetic at render time (§6.2). */
+export interface OgVariantData {
+    /** Header badge pill ("PRICE ↓ 6 000 €" / "PASSES BALANCED · 14/14"). */
+    badge: LocalText;
+    badgeTone: "amber" | "seafoam";
+    addr: string;
+    /** Line under the address ("now 98 600 € · was 104 600 €"). */
+    meta: LocalText;
+    gross: LocalText;
+    real: LocalText;
+    /** Bottom-right slot: plain text ("re-run 29.07.2026") or a pill ("1 CAUTION FLAG"). */
+    tail: LocalText;
+    tailTone: "plain" | "amber";
 }
 
 /* ── Policy (R5-*) — board contract, handoff-notes "Policy data" ────────────

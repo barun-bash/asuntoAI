@@ -4,7 +4,7 @@
  * Every figure is engine-authored here; the UI formats but never computes (§6.2).
  * Locked flags exist ONLY in redacted form — there is no hidden content to leak (§6.4).
  */
-import type { Analysis, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
+import type { Analysis, OgVariantData, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
 
 export const CANONICAL_SLUG = "tuomiokirkonkatu-23-b-14-tampere";
 export const REFUSED_SLUG = "rautatienkatu-18-c-44-tampere";
@@ -357,6 +357,21 @@ export const canonicalAnalysis: Analysis = {
         debtFree: 118000,
         oikotieId: "21966412",
         fetchedAt: "2026-07-28T13:40:00+03:00",
+    },
+    /* Public-page register (R8-1 live badge / R8-3 ended note). The board ships
+       the ended banner in EN only (R8-3); the FI is translated with the boards'
+       vocabulary — flagged in the PR. State flips to "ended" via tracking
+       (slice 8); the ?state=ended mock trigger previews it (page.tsx). */
+    listingStatus: {
+        state: "live",
+        liveNote: {
+            en: "listing still live on Oikotie ✓ checked 1 h ago",
+            fi: "ilmoitus yhä voimassa Oikotiessa ✓ tarkistettu 1 h sitten",
+        },
+        endedNote: {
+            en: "This listing ended on Oikotie around 24.07.2026. The analysis below reflects it as last read.",
+            fi: "Tämä ilmoitus päättyi Oikotiessa noin 24.7.2026. Alla oleva analyysi kuvaa ilmoitusta viimeisimmän lukuhetken mukaisena.",
+        },
     },
     verdict: {
         grossYield: {
@@ -817,7 +832,41 @@ export const refusedAnalysis: Analysis = {
         unlock: "Ask the agent for the isännöitsijäntodistus — it states the repair years unambiguously. Or the PTS (long-term plan), which prices what’s coming. Paste this link again once the listing text is fixed — the re-run is free.",
         unlockFi:
             "Pyydä välittäjältä isännöitsijäntodistus — siinä korjausvuodet käyvät yksiselitteisesti ilmi. Tai PTS (pitkän tähtäimen suunnitelma), joka hinnoittelee tulevan. Liitä sama linkki uudelleen, kun ilmoitusteksti on korjattu — uusi ajo on maksuton.",
+        /* R8-5c OG card sub-line (EN verbatim; FI translated — flagged in the PR). */
+        ogSub: {
+            en: "analysis refused — two extractions came back low-confidence",
+            fi: "analyysi hylätty — kaksi poimintaa palautui heikolla luottamuksella",
+        },
     },
+};
+
+/* R8-5a/b OG variant figures — engine-published card data for the two states
+   the base analyses don't carry (R8-5 mapping: R9-3 listing-changed → a,
+   R9-6 watch-match → b). a = the canonical report's post-drop re-run (v2);
+   b = the watch-match listing Aleksanterinkatu 31 B 7. EN verbatim from the
+   frames; FI number formats per "FI cards use FI number formats", FI badge
+   prose translated from the boards' FI pill vocabulary (LÄPÄISEE, R10-7/R13) —
+   flagged in the PR. */
+export const ogPriceDrop: OgVariantData = {
+    badge: { en: "PRICE ↓ 6 000 €", fi: "HINTA ↓ 6 000 €" },
+    badgeTone: "amber",
+    addr: "Tuomiokirkonkatu 23 B 14",
+    meta: { en: "now 98 600 € · was 104 600 €", fi: "nyt 98 600 € · oli 104 600 €" },
+    gross: { en: "9.1 %", fi: "9,1 %" },
+    real: { en: "6.2 %", fi: "6,2 %" },
+    tail: { en: "re-run 29.07.2026", fi: "uusintaajo 29.7.2026" },
+    tailTone: "plain",
+};
+
+export const ogPassesPolicy: OgVariantData = {
+    badge: { en: "PASSES BALANCED · 14/14", fi: "LÄPÄISEE TASAPAINOISEN · 14/14" },
+    badgeTone: "seafoam",
+    addr: "Aleksanterinkatu 31 B 7",
+    meta: { en: "2h+k · 47 m² · 1978 · debt-free 126 500 €", fi: "2h+k · 47 m² · 1978 · velaton 126 500 €" },
+    gross: { en: "7.8 %", fi: "7,8 %" },
+    real: { en: "7.5 %", fi: "7,5 %" },
+    tail: { en: "1 CAUTION FLAG", fi: "1 VAROITUSLIPPU" },
+    tailTone: "amber",
 };
 
 export const withdrawnAnalysis: Analysis = {

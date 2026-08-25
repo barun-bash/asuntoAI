@@ -3,6 +3,9 @@
 import { type ReactNode, createContext, useCallback, useContext, useMemo, useState } from "react";
 import { type Dict, dict } from "@/i18n/dict";
 import { DEFAULT_LANG, type Lang } from "@/lib/i18n";
+import { tpl } from "@/lib/tpl";
+
+export { tpl };
 
 interface LangContextValue {
     lang: Lang;
@@ -40,9 +43,4 @@ export function useLang(): LangContextValue {
     const ctx = useContext(LangContext);
     if (!ctx) throw new Error("useLang must be used inside <LangProvider>");
     return ctx;
-}
-
-/** Tiny template helper: tpl("{n} riskilippua", { n: 3 }). */
-export function tpl(template: string, vars: Record<string, string | number>): string {
-    return template.replace(/\{(\w+)\}/g, (_, key) => String(vars[key] ?? `{${key}}`));
 }

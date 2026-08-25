@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { UnlockView } from "@/components/report/unlock-view";
 import { parseLang } from "@/lib/i18n";
+import { PRIVATE_OG_IMAGE } from "@/lib/og";
 import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, hasAnyUnlock, isUnlocked, packs, redactAnalysis, usedOf } from "@/lib/store";
 import { LangProvider } from "@/providers/lang";
 
@@ -54,3 +56,12 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
         </LangProvider>
     );
 }
+
+/* R8-5d: checkout is a private route (payment state must never be indexed or
+   unfurled with deal data) — brand-only OG card, noindex. The receipt/refund
+   pages (account slice 7) inherit the same pattern. */
+export const metadata: Metadata = {
+    title: "Unlock the full report",
+    robots: { index: false, follow: false },
+    openGraph: { images: [{ url: PRIVATE_OG_IMAGE, width: 1200, height: 630 }] },
+};

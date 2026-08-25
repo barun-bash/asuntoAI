@@ -4,7 +4,21 @@ import { ReportView } from "@/components/report/report-view";
 import { NotFoundView, RefusalView } from "@/components/report/state-views";
 import { VerdictView } from "@/components/report/verdict-view";
 import { parseLang } from "@/lib/i18n";
-import { ACCOUNT_COOKIE, balanceOf, chatTurnsLeft, getAccount, getBySlug, getUnlockInfo, isUnlocked, redactAnalysis, unlockAnalysis } from "@/lib/store";
+import { PRIVATE_OG_IMAGE, ogShareText } from "@/lib/og";
+import {
+    ACCOUNT_COOKIE,
+    RUNNER_COOKIE,
+    balanceOf,
+    chatTurnsLeft,
+    getAccount,
+    getBySlug,
+    getUnlockInfo,
+    isPublicReport,
+    isUnlocked,
+    redactAnalysis,
+    unlockAnalysis,
+} from "@/lib/store";
+import type { Analysis, FlagFull } from "@/lib/types";
 import { LangProvider } from "@/providers/lang";
 
 /**
@@ -14,6 +28,13 @@ import { LangProvider } from "@/providers/lang";
  * An account that owns the report (asunto_account cookie) gets the full
  * document (R7-1…R7-8): §1–§7, the docked chat, and full flags — the report
  * payload opens only behind the unlock, the free tier keeps the redacted seam.
+ *
+ * R8 register: the free tier IS the public page. A shared-link visitor (no
+ * runner cookie, not the owner) gets the R8-1 banner and a visitor CTA that
+ * routes to / — never to /unlock (a visitor can't buy someone else's report).
+ * Ended listings stay published with past-tense strings (R8-3). Private pages
+ * (owner toggle, R7-2 footer) drop to noindex + the private-generic OG card
+ * (R8-5d) — see generateMetadata.
  */
 export default async function Page({
     params,
@@ -32,6 +53,13 @@ export default async function Page({
     const unlocked = !!account && !!analysis && isUnlocked(account.id, analysis.id);
     // Mock-only R7-5 trigger — the real banner is tracking-diff driven (slice 8).
     const changed = sp.state === "changed";
+    // Mock-only R8-3 trigger (?state=ended) — the real ended state arrives from
+    // the daily listing re-check (R8-1 annotation); fixture default is "live".
+    const ended = sp.state === "ended" || analysis?.listingStatus?.state === "ended";
+    // R8-1 visitor chrome: the analyst's browser carries RUNNER_COOKIE with
+    // this slug (stamped by POST /api/analyses); everyone else on the free
+    // tier is a shared-link visitor.
+    const visitor = !!analysis && !unlocked && jar.get(RUNNER_COOKIE)?.value !== slug;
 
     return (
         <LangProvider initialLang={lang}>
@@ -49,11 +77,15 @@ export default async function Page({
                                 unlockTs={unlock?.ts ?? Date.parse(analysis.readAt)}
                                 unlockPackId={unlock?.packId}
                                 changed={changed}
+                                initialPublic={isPublicReport(analysis.id)}
                             />
                         );
                     })()
                 ) : (
-                    <VerdictView analysis={redactAnalysis(analysis)} />
+                    <>
+                        <VerdictView analysis={redactAnalysis(analysis)} visitor={visitor} ended={ended} />
+                        {isPublicReport(analysis.id) ? <JsonLd analysis={redactAnalysis(analysis)} lang={lang} /> : null}
+                    </>
                 )
             ) : analysis.status === "refused" || analysis.status === "withdrawn" ? (
                 <RefusalView analysis={redactAnalysis(analysis)} />
@@ -64,15 +96,72 @@ export default async function Page({
     );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+/* JSON-LD Product + FAQPage from flag titles (R8 handoff notes). Built from
+   the REDACTED analysis — locked flag titles never leave the server, so the
+   schema can never leak the seam (§6.4). Public pages only. */
+function JsonLd({ analysis, lang }: { analysis: Analysis; lang: "fi" | "en" }) {
+    const { listing, verdict } = analysis;
+    if (!listing || !verdict) return null;
+    const openFlags = verdict.flags.filter((f): f is FlagFull => !f.locked);
+    const data = [
+        {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: `${lang === "fi" ? "Asunnon riskianalyysi" : "Apartment risk analysis"} — ${listing.addr}, ${listing.city}`,
+            description: `№ ${analysis.number} · resimator.fi/r/${analysis.slug}`,
+            brand: { "@type": "Organization", name: "Resimator OY" },
+        },
+        ...(openFlags.length
+            ? [
+                  {
+                      "@context": "https://schema.org",
+                      "@type": "FAQPage",
+                      mainEntity: openFlags.map((flag) => ({
+                          "@type": "Question",
+                          name: lang === "fi" ? flag.titleFi : flag.title,
+                          acceptedAnswer: { "@type": "Answer", text: flag.quotes[0]?.text ?? (lang === "fi" ? flag.bodyFi : flag.body) },
+                      })),
+                  },
+              ]
+            : []),
+    ];
+    return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
+export async function generateMetadata({
+    params,
+    searchParams,
+}: {
+    params: Promise<{ slug: string }>;
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
     const { slug } = await params;
+    const sp = await searchParams;
+    const lang = parseLang(sp.lang);
     const analysis = getBySlug(slug);
     if (!analysis?.listing) return { title: "Analysis" };
+
+    /* Share metadata per report state (R8-4 og:title/description; R8-5 mapping).
+       Private → noindex + the brand-only card, zero deal data (R8-5d). */
+    const isPublic = isPublicReport(analysis.id);
+    const share = ogShareText(analysis, lang, isPublic);
+    const imageUrl = isPublic ? `/r/${slug}/opengraph-image${lang === "en" ? "?lang=en" : ""}` : PRIVATE_OG_IMAGE;
+
     return {
         title: `${analysis.listing.addr}, ${analysis.listing.city} — risk analysis`,
-        description:
-            analysis.status === "refused"
-                ? "Analysis stopped — no verdict issued. No credit was spent."
-                : "Apartment risk analysis · free summary — every claim quoted from the source.",
+        description: share.description,
+        robots: isPublic ? undefined : { index: false, follow: false },
+        openGraph: {
+            title: share.title,
+            description: share.description,
+            type: "article",
+            images: [{ url: imageUrl, width: 1200, height: 630, alt: share.alt }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: share.title,
+            description: share.description,
+            images: [imageUrl],
+        },
     };
 }
