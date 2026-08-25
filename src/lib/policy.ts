@@ -69,14 +69,19 @@ function nearFor(test: PolicyTestDef, pass: boolean, margin: number): boolean {
 
 /** Re-runs the verdict over engine-published actuals. Pure client evaluation. */
 export function evaluatePolicy(data: PolicyData, thresholds: Record<string, number>): PolicyRun {
-    const results = data.tests.map((test) => {
+    const results: PolicyTestResult[] = [];
+    for (const test of data.tests) {
         const actual = data.actuals.find((a) => a.key === test.key);
-        if (!actual) throw new Error(`policy: missing actual for ${test.key}`);
+        if (!actual) {
+            // Engine payload incomplete — a verdict we can't compute is a failed
+            // run, never an exception thrown into the UI (refusal-over-error ethos).
+            return { results: [], passCount: 0, failCount: 0, nearCount: 0, total: 0, passing: false };
+        }
         const threshold = thresholds[test.key];
         const pass = passFor(test, actual.value, threshold);
         const margin = marginFor(test, actual.value, threshold);
-        return { test, actual, pass, margin, near: nearFor(test, pass, margin) };
-    });
+        results.push({ test, actual, pass, margin, near: nearFor(test, pass, margin) });
+    }
     const failCount = results.filter((r) => !r.pass).length;
     const nearCount = results.filter((r) => r.near).length;
     return {
@@ -102,8 +107,8 @@ function decimalCount(value: number): number {
 }
 
 /** "Your line" cell: "≥ 6.0 %" · "≤ 25 %" · "≥ +50 €" · "≤ 6,00 €" · "≥ B" · "required". */
-export function formatPolicyLine(test: PolicyTestDef, threshold: number, lang: Lang, flagLabel: string): string {
-    const op = test.op === "gte" ? "≥" : test.op === "lte" ? "≤" : "";
+export function formatPolicyLine(test: PolicyTestDef, threshold: number, lang: Lang, flagLabel: string, withOp = true): string {
+    const op = withOp ? (test.op === "gte" ? "≥" : test.op === "lte" ? "≤" : "") : "";
     let body: string;
     switch (test.unit) {
         case "percent": {

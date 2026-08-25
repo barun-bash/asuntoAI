@@ -100,4 +100,55 @@ export function formatTime(date: Date, lang: Lang): string {
     return lang === "fi" ? `${hh}.${mm}.${ss}` : `${hh}:${mm}:${ss}`;
 }
 
+/* Number words for the policy banner (the board spells small counts:
+   "Two of the three failures", "clears six failures", FI "Kuutta hylkäystä").
+   FI carries nominative (subject counts) and partitive ("{n} hylkäystä") forms. */
+const EN_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"];
+const FI_WORDS_NOM = [
+    "nolla",
+    "yksi",
+    "kaksi",
+    "kolme",
+    "neljä",
+    "viisi",
+    "kuusi",
+    "seitsemän",
+    "kahdeksan",
+    "yhdeksän",
+    "kymmenen",
+    "yksitoista",
+    "kaksitoista",
+    "kolmetoista",
+    "neljätoista",
+];
+const FI_WORDS_PART = [
+    "nollaa",
+    "yhtä",
+    "kahta",
+    "kolmea",
+    "neljää",
+    "viittä",
+    "kuutta",
+    "seitsemää",
+    "kahdeksaa",
+    "yhdeksää",
+    "kymmentä",
+    "yhtätoista",
+    "kahtatoista",
+    "kolmeatoista",
+    "neljätoista",
+];
+
+/** 2 → "two" (EN) · "kaksi" (FI nom) · "kahta" (FI part). Lowercase; falls back to the numeral outside 0–14. */
+export function numberWord(n: number, lang: Lang, fiCase: "nom" | "part" = "nom"): string {
+    if (n < 0 || n > 14) return String(n);
+    if (lang === "fi") return fiCase === "part" ? FI_WORDS_PART[n] : FI_WORDS_NOM[n];
+    return EN_WORDS[n];
+}
+
+/** Capitalizes the first letter — for sentence-initial number words. */
+export function capFirst(s: string): string {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export { MINUS, NBSP };

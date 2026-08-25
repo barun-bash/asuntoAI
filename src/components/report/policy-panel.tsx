@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/components/base/slider/slider";
 import type { Dict } from "@/i18n/dict";
-import { formatEUR, formatTime } from "@/lib/format";
+import { capFirst, formatEUR, formatTime, numberWord } from "@/lib/format";
 import {
     type PolicyRun,
     type PolicyTestResult,
@@ -48,6 +48,9 @@ function VerdictPill({ pass, t }: { pass: boolean; t: Dict }) {
 /* ── Threshold editor: ± steppers + DS Slider, commit on release, Esc cancels ── */
 function ThresholdEditor({ test, value, onCommit, onCancel }: { test: PolicyTestDef; value: number; onCommit: (value: number) => void; onCancel: () => void }) {
     const { lang, t } = useLang();
+    // Draft while dragging: the committed value only changes on release, so the
+    // thumb tracks a local draft via onChange; onChangeEnd commits and clears it.
+    const [draft, setDraft] = useState<number | null>(null);
     const cfg = test.edit;
     if (!cfg) return null;
     const name = lang === "fi" ? test.labelFi : test.label;
@@ -55,6 +58,7 @@ function ThresholdEditor({ test, value, onCommit, onCancel }: { test: PolicyTest
     // finer engine-published step in the fixture (flagged in the PR).
     const stepBy = (dir: 1 | -1) => {
         const next = Math.round((value + dir * cfg.step) * 100) / 100;
+        setDraft(null);
         onCommit(Math.min(cfg.max, Math.max(cfg.min, next)));
     };
 
@@ -65,6 +69,7 @@ function ThresholdEditor({ test, value, onCommit, onCancel }: { test: PolicyTest
             onKeyDown={(e) => {
                 if (e.key === "Escape") {
                     e.stopPropagation();
+                    setDraft(null);
                     onCancel();
                 }
             }}
@@ -84,8 +89,12 @@ function ThresholdEditor({ test, value, onCommit, onCancel }: { test: PolicyTest
                     minValue={cfg.min}
                     maxValue={cfg.max}
                     step={cfg.step}
-                    value={value}
-                    onChangeEnd={(v) => onCommit(Math.round((v as number) * 100) / 100)}
+                    value={draft ?? value}
+                    onChange={(v) => setDraft(v as number)}
+                    onChangeEnd={(v) => {
+                        setDraft(null);
+                        onCommit(Math.round((v as number) * 100) / 100);
+                    }}
                     formatOptions={{ style: "decimal", maximumFractionDigits: 2 }}
                     labelFormatter={(v) => formatPolicyLine(test, v, lang, t.policy.lineRequired)}
                 />
@@ -119,9 +128,12 @@ function BannerBody({
     if (!run.passing) {
         // R5-4 — Conservative preset, verbatim board body ("walk away, not negotiate").
         if (basePreset === "conservative" && !dirty) {
+            // Board spells the count ("six failures", FI "Kuutta hylkäystä");
+            // the FI word is sentence-initial here, hence capitalized.
+            const failsWord = numberWord(run.failCount, lang, "part");
             return (
                 <>
-                    {tpl(t.policy.bodyConservativeA, { fails: run.failCount })}
+                    {tpl(t.policy.bodyConservativeA, { failsWord: lang === "fi" ? capFirst(failsWord) : failsWord })}
                     <strong className="font-bold">{t.policy.bodyConservativeBold}</strong>
                     {t.policy.bodyConservativeB}
                 </>
@@ -136,9 +148,17 @@ function BannerBody({
                 .filter(Boolean)
                 .join(lang === "fi" ? " tai " : " or ");
             const fix = fixableFails[0].test.explanation ?? {};
+            // Board: "Two of the three failures are the building…" — sentence-initial word.
+            const buildingLead = capFirst(
+                tpl(t.policy.bodyBuildingA, {
+                    buildingCountWord: numberWord(buildingFails.length, lang),
+                    failCountWord: numberWord(run.failCount, lang),
+                    failCount: run.failCount,
+                }),
+            );
             return (
                 <>
-                    {tpl(t.policy.bodyBuildingA, { buildingCount: buildingFails.length, failCount: run.failCount })}
+                    {buildingLead}
                     <strong className="font-bold">{t.policy.bodyBuildingBold}</strong>
                     {tpl(t.policy.bodyBuildingB, { blurbs })}
                     {t.policy.bodyFixableLead}
@@ -172,8 +192,9 @@ function BannerBody({
         .map((r) =>
             tpl(t.policy.nearSentence, {
                 name: lang === "fi" ? r.test.labelFi : r.test.label,
-                line: formatPolicyLine(r.test, thresholds[r.test.key], lang, t.policy.lineRequired),
-                margin: formatPolicyMargin(r.test, r.margin, lang),
+                // Board: "clears your −100 € line by 86 €" — no op symbol, unsigned margin.
+                line: formatPolicyLine(r.test, thresholds[r.test.key], lang, t.policy.lineRequired, false),
+                margin: formatPolicyMarginAbs(r.test, r.margin, lang),
             }),
         )
         .join(" ");
@@ -244,6 +265,11 @@ export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy:
     const activePresetKey: PolicyPresetKey | "custom" = dirty ? "custom" : basePreset;
     const presetName = t.policy.presets[activePresetKey];
     const activeTest = activeKey ? (policy.tests.find((test) => test.key === activeKey) ?? null) : null;
+    // R5-4: clean Conservative drops the word "tests" from the summary ("fails 6 of 14 · Conservative").
+    const conservativeClean = basePreset === "conservative" && !dirty;
+    // Failing runs: failing tests sort first and passing collapse behind
+    // "Show the rest" — at ALL widths (R5-4 desktop annotation), not just mobile.
+    const failing = !run.passing;
 
     const selectPreset = (key: PolicyPresetKey) => {
         setBasePreset(key);
@@ -359,7 +385,11 @@ export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy:
                                     ? run.nearCount > 0
                                         ? tpl(t.policy.passSummary, { total: run.total, near: run.nearCount })
                                         : tpl(t.policy.passSummaryClean, { total: run.total })
-                                    : tpl(t.policy.failSummary, { n: run.failCount, total: run.total, preset: presetName })}
+                                    : tpl(conservativeClean ? t.policy.failSummaryNoTests : t.policy.failSummary, {
+                                          n: run.failCount,
+                                          total: run.total,
+                                          preset: presetName,
+                                      })}
                             </span>
                             <span className="tnum text-[12px] font-medium text-rsm-slate md:hidden">
                                 {run.passing
@@ -393,18 +423,19 @@ export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy:
                             result={r}
                             thresholds={thresholds}
                             active={activeKey === r.test.key}
-                            hiddenOnMobile={r.pass && !showRest}
+                            failing={failing}
+                            collapsed={failing && r.pass && !showRest}
                             showNear={run.passing}
                             onToggleEdit={() => setActiveKey(activeKey === r.test.key ? null : r.test.key)}
                             onCommit={(value) => commitThreshold(r.test.key, value)}
                             onCancelEdit={() => setActiveKey(null)}
                         />
                     ))}
-                    {run.passCount > 0 ? (
+                    {failing && run.passCount > 0 ? (
                         <button
                             type="button"
                             onClick={() => setShowRest((v) => !v)}
-                            className="flex min-h-11 items-center justify-center text-[12.5px] font-medium text-rsm-steel underline-offset-4 hover:underline md:hidden"
+                            className="flex min-h-11 items-center justify-center text-[12.5px] font-medium text-rsm-steel underline-offset-4 hover:underline"
                         >
                             {showRest ? t.policy.hideRest : t.policy.showRest}
                         </button>
@@ -429,7 +460,7 @@ export function PolicyPanel({ policy, addr, flagCount, seamAnchorId }: { policy:
                         <button
                             type="button"
                             onClick={() => selectPreset(basePreset)}
-                            className="ml-auto flex min-h-11 items-center font-medium text-rsm-steel underline-offset-4 hover:underline md:min-h-6"
+                            className="ml-auto flex min-h-11 items-center font-medium text-rsm-steel underline-offset-4 hover:underline"
                         >
                             {tpl(t.policy.resetTo, { preset: t.policy.presets[basePreset] })}
                         </button>
@@ -493,7 +524,8 @@ function PolicyRow({
     result,
     thresholds,
     active,
-    hiddenOnMobile,
+    failing,
+    collapsed,
     showNear,
     onToggleEdit,
     onCommit,
@@ -502,7 +534,10 @@ function PolicyRow({
     result: PolicyTestResult;
     thresholds: Record<string, number>;
     active: boolean;
-    hiddenOnMobile: boolean;
+    /** True when the run is failing — failing rows sort first at every width (R5-4). */
+    failing: boolean;
+    /** Passing row in a failing run, hidden behind "Show the rest" (all widths). */
+    collapsed: boolean;
     showNear: boolean;
     onToggleEdit: () => void;
     onCommit: (value: number) => void;
@@ -550,7 +585,7 @@ function PolicyRow({
     );
 
     return (
-        <div className={cx("flex flex-col", !pass && "max-xl:order-first", hiddenOnMobile && "max-md:hidden")}>
+        <div className={cx("flex flex-col", failing && !pass && "order-first", collapsed && "hidden")}>
             {/* ≤767 — the whole row is the tap target (opens the bottom sheet). */}
             {test.edit ? (
                 <button

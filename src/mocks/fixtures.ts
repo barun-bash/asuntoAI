@@ -247,17 +247,17 @@ export const policyPresets: Record<PolicyPresetKey, Record<string, number>> = {
         noUnfundedProject: 0,
     },
     // Yield-seeking is only partially board-specified (R5-2 shows Anne's Custom
-    // edits "dirty on 2 thresholds" from it). This derivation is defensible but
-    // NOT verbatim — flagged in the PR. Under it this deal fails 1 of 14
-    // (company grade C < B), so R5-2's exact 14/14 pass needs a grade-line edit
-    // too — board ambiguity, flagged.
+    // edits "dirty on 2 thresholds" from it: liability → 60 %, cash flow → −100 €).
+    // Gross 8.0 % and grade ≥ C are back-solved so exactly those 2 edits reproduce
+    // R5-2's 14/14 pass; the rest (stress −250 €, LTV 85 %, hoitovastike 7.00 €)
+    // remains a defensible derivation, NOT verbatim — flagged in the PR.
     yield: {
-        grossYield: 7.0,
+        grossYield: 8.0,
         netYield: 4.0,
         cashFlowBase: -50,
         cashFlowStress: -250,
         liabilityShare: 50,
-        companyGrade: 3,
+        companyGrade: 2, // ≥ C
         municipalityGrade: 3,
         priceVsMedian: 10,
         ltv: 85,
