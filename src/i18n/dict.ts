@@ -355,6 +355,30 @@ export const dict = {
             changedRerun: "Aja uudelleen — maksutta",
             changedKeep: "Pidä tämä versio",
         },
+        /* R7-9/R7-10 — history panel chrome. FI: "hintahistoria ▸"/"vuokrahistoria
+           ▸" links + eyebrows from the frames' FI rows; panel copy (titles, stats,
+           narratives) is engine-published in the fixture, not here. */
+        history: {
+            priceLink: "hintahistoria ▸",
+            rentLink: "vuokrahistoria ▸",
+            districtMedian: "alueen mediaani",
+            priceEyebrow: "Hintahistoria · liite numeroon {n}",
+            rentEyebrow: "Vuokrahistoria · liite B numeroon {n}",
+            loading: "Ladataan…",
+        },
+        /* R7-11 — agent checklist chrome. The H2 + items + outro are
+           engine-published in the fixture (the frame's FI row gives the H2
+           "Kysy välittäjältä — näyttöä varten"); FI chip labels composed —
+           flagged in the PR. */
+        checklist: {
+            eyebrow: "Liite C numeroon {n}",
+            copyAll: "Kopioi kaikki",
+            copied: "Kopioitu ✓",
+            printNote: "tulostuu raportin viimeisenä sivuna",
+            askInChat: "Kysy näitä keskustelussa →",
+            copyHeader: "{addr} — kysymykset välittäjälle (Resimator № {n})",
+            loading: "Ladataan…",
+        },
         /* R7-1…R7-8 — "Ask this report" chat. FI verbatim from R3-FI rows
            (title, placeholder, counts, exhausted card, limit) where present;
            intro/hint/suggestions translated from EN board copy — flagged in the PR. */
@@ -407,6 +431,11 @@ export const dict = {
             sourcesLegal: "Analyysi, ei sijoitusneuvontaa · Resimator OY",
             runningFlags: "Riskiliput ja korjausvastuu",
             runningTests: "Laskenta ja testit",
+            /* Appendices (R7-9/10/11 print forms): A+B share one sheet (§10),
+               C is the report's last page. FI composed from the frames' FI rows
+               ("Hintahistoria"/"Vuokrahistoria"/"Kysy välittäjältä") — flagged. */
+            runningHistory: "Liitteet A+B · hinta- ja vuokrahistoria",
+            runningChecklist: "Liite C · välittäjän kysymykset",
             s2Title: "Kolme riskilippua — väite, sitten sen lause",
             s3Title: "Korjausvastuu komponentti kerrallaan",
             colShare: "Osuus",
@@ -1129,6 +1158,27 @@ export const dict = {
             changedRerun: "Re-run — free",
             changedKeep: "Keep this version",
         },
+        /* R7-9/R7-10 — history panel chrome (EN verbatim from the frames). The
+           panel copy itself (titles, stats, narratives) is engine-published in
+           the fixture. */
+        history: {
+            priceLink: "price history ▸",
+            rentLink: "rent history ▸",
+            districtMedian: "district median",
+            priceEyebrow: "Price history · appendix to № {n}",
+            rentEyebrow: "Rent history · appendix B to № {n}",
+            loading: "Loading…",
+        },
+        /* R7-11 — agent checklist chrome (EN verbatim from the frame). */
+        checklist: {
+            eyebrow: "Take to the viewing · appendix C to № {n}",
+            copyAll: "Copy all",
+            copied: "Copied ✓",
+            printNote: "prints as the report’s last page",
+            askInChat: "Ask these in chat instead →",
+            copyHeader: "{addr} — questions for the agent (Resimator № {n})",
+            loading: "Loading…",
+        },
         /* R7-1…R7-8 — "Ask this report" chat. EN verbatim from the R3 frames. */
         chat: {
             title: "Ask this report",
@@ -1179,6 +1229,10 @@ export const dict = {
             sourcesLegal: "Analysis, not investment advice · Resimator OY",
             runningFlags: "Risk flags & liability",
             runningTests: "Underwriting & tests",
+            /* Appendices (R7-9/10/11 print forms): A+B share one sheet (§10),
+               C is the report's last page. */
+            runningHistory: "Appendices A+B · price & rent history",
+            runningChecklist: "Appendix C · agent checklist",
             s2Title: "The three flags — claim, then its sentence",
             s3Title: "Renovation liability, component by component",
             colShare: "Share",

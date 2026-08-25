@@ -415,6 +415,102 @@ export interface ListingChange {
     seenAt: string;
 }
 
+/* ── History panels + agent checklist (R7-9/10/11) — engine-published ────────
+   Contract shapes (handoff §5, board annotations): GET /r/:id/price-history
+   {series[{year, medianSqm, n}], dealSqm} · GET /r/:id/rent-history
+   {series[{year, medianRent, n}], tenancyRent} · GET /r/:id/agent-checklist
+   → items[{question, questionFi, basis:{flagId|gap}, answersWith, checked}].
+   The series are annual medians in NOMINAL € — stated plainly on the panel.
+   Every stat value and narrative figure is engine-published; the UI never
+   derives a number from the series (§6.2). */
+
+export interface PriceHistoryPoint {
+    year: string;
+    medianSqm: number;
+    /** Transactions behind the median (the frame names 2026's 214 in copy). */
+    n: number;
+}
+
+export interface RentHistoryPoint {
+    year: string;
+    medianRent: number;
+    n: number;
+}
+
+/** A stat tile beside the chart (R7-9/10 right rail): value + note per language. */
+export interface HistoryStat {
+    label: LocalText;
+    /** Engine-published display ("+1.9 %/y" / "+1,9 %/v"). */
+    value: LocalText;
+    note: LocalText;
+}
+
+interface HistoryBase {
+    /** Panel H2 — names the district + segment (R7-9/10 verbatim). */
+    title: LocalText;
+    /** The series' source note next to the MODELLED chip. */
+    sourceNote: LocalText;
+    /** Chart legend label for the bars ("district median €/m²"). */
+    seriesLabel: LocalText;
+    /** Chart legend label for the deal line ("this apartment, asking"); the
+       deal's display figure follows it in the legend row. */
+    dealLabel: LocalText;
+    /** Engine-published deal figure display ("2 185 €/m²" · "845 €/mo" / "845 €/kk"). */
+    dealDisplay: LocalText;
+    /** The two stat tiles beside the chart (10-y growth + from-2022). */
+    stats: [HistoryStat, HistoryStat];
+    /** Narrative paragraph (engine prose) with its bolded figure(s). */
+    narrative: LocalText;
+    narrativeStrongs: LocalText[];
+    /** The honesty line — "nominal figures, no inflation adjustment, said plainly". */
+    honesty: LocalText;
+}
+
+export interface PriceHistory extends HistoryBase {
+    series: PriceHistoryPoint[];
+    /** This apartment's asking €/m² — OBSERVED; the line is flat by definition. */
+    dealSqm: number;
+    /** Engine-published display of the current district median €/m² (the header
+       meta's "district median 2 590 €/m²"). */
+    medianNowDisplay: string;
+}
+
+export interface RentHistory extends HistoryBase {
+    series: RentHistoryPoint[];
+    /** The sitting tenancy's rent €/mo — OBSERVED; flat by definition. */
+    tenancyRent: number;
+}
+
+/** What earned a checklist item (§4 data model): a flag, or a missing-document
+   gap. The "why" line names it in words ("· flag 1", "· §4"). */
+export type ChecklistBasis = { flagId: string } | { gap: string };
+
+export interface AgentChecklistItem {
+    id: string;
+    question: LocalText;
+    /** Engine-published substrings the UI bolds (the board bolds the document phrase). */
+    questionStrongs: LocalText[];
+    /** The small "why" line naming the flag/§ that earned the question. */
+    why: LocalText;
+    basis: ChecklistBasis;
+    /** The document chip (C1 grammar): SOURCE DOCUMENT / MEETING MINUTES /
+       LEASE CONTRACT / PTS / MINUTES / TENANCY CONTRACT / NOT IN LISTING (+FI). */
+    answersWith: LocalText;
+    /** Dashed chip (the board's NOT IN LISTING — a listing gap, C1 dashed grammar). */
+    dashed?: boolean;
+}
+
+/** R7-11 — one item per flag + per missing-document gap; the LLM phrases,
+   never invents an item. `checked` persists server-side per account+report. */
+export interface AgentChecklist {
+    /** Panel H2 ("Seven questions for the agent — each one earned by this listing"). */
+    title: LocalText;
+    /** Outro line ("Every question names the flag or gap that earned it — …"). */
+    outro: LocalText;
+    outroStrongs: LocalText[];
+    items: AgentChecklistItem[];
+}
+
 /* ── P4 bank summary (R7-P) — engine-published bank-version figures ──────────
    The one-pager always uses the CURRENT version's figures (P4 annotation: v2,
    post price-drop, post documents); the loan need is re-derived by the engine
@@ -475,6 +571,13 @@ export interface ReportDoc {
     yearAssumptions: { text: LocalText; basis: Provenance }[];
     yearGrowth: LocalText;
     listingChange: ListingChange;
+    /** R7-9 price history (appendix A) — expands from the header meta's €/m² stat. */
+    priceHistory: PriceHistory;
+    /** R7-10 rent history (appendix B) — expands from §4's lettings source line. */
+    rentHistory: RentHistory;
+    /** R7-11 agent checklist (appendix C) — after §7; checked state persists
+       server-side per account+report (store merges it in at the boundary). */
+    agentChecklist: AgentChecklist;
     /** P1 cover verdict explanation (R7-P FI verbatim / EN parity) — engine prose. */
     coverVerdictBody: LocalText;
     /** §3 basis line in the print document (P2) — tighter than the screen's. */

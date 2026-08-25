@@ -618,6 +618,232 @@ export const canonicalAnalysis: Analysis = {
         yearGrowth: { en: "rent growth 1.5 %/y, charge growth 3.0 %/y.", fi: "vuokrankasvu 1,5 %/v, vastikkeen kasvu 3,0 %/v." },
         /* R7-5 mock diff (real diffs come from tracking, slice 8). */
         listingChange: { now: "98 600 €", was: "104 600 €", seenAt: "2026-07-29T08:12:00+03:00" },
+        /* R7-9 price history (appendix A) — EN verbatim from the frame; series
+           verbatim from the board script (priceHistory); deal 2 185 €/m² asking
+           is OBSERVED, the series MODELLED. FI title/legend/honesty verbatim
+           from the frame's FI row; FI narrative/stats composed — flagged in the PR.
+           Per-year n is engine fixture data (the board names only 2026's 214). */
+        priceHistory: {
+            series: [
+                { year: "2016", medianSqm: 2150, n: 388 },
+                { year: "2017", medianSqm: 2230, n: 402 },
+                { year: "2018", medianSqm: 2320, n: 415 },
+                { year: "2019", medianSqm: 2400, n: 431 },
+                { year: "2020", medianSqm: 2450, n: 376 },
+                { year: "2021", medianSqm: 2610, n: 452 },
+                { year: "2022", medianSqm: 2780, n: 468 },
+                { year: "2023", medianSqm: 2640, n: 391 },
+                { year: "2024", medianSqm: 2560, n: 402 },
+                { year: "2025", medianSqm: 2570, n: 428 },
+                { year: "2026", medianSqm: 2590, n: 214 },
+            ],
+            dealSqm: 2185,
+            dealDisplay: { en: "2 185 €/m²", fi: "2 185 €/m²" },
+            medianNowDisplay: "2 590 €/m²",
+            title: {
+                en: "Tampere keskusta — realised €/m², 2h apartments 45–60 m²",
+                fi: "Tampereen keskusta — toteutuneet €/m², 2h-asunnot 45–60 m²",
+            },
+            sourceNote: {
+                en: "annual medians · realised sales, Pirkanmaa data Q2/2026 · nominal €",
+                fi: "vuosimediaanit · toteutuneet kaupat, Pirkanmaan data Q2/2026 · nimelliset €",
+            },
+            seriesLabel: { en: "district median €/m²", fi: "alueen mediaani €/m²" },
+            dealLabel: { en: "this apartment, asking", fi: "tämä asunto, pyyntihinta" },
+            stats: [
+                {
+                    label: { en: "10-y growth", fi: "10 v kasvu" },
+                    value: { en: "+1.9 %/y", fi: "+1,9 %/v" },
+                    note: { en: "nominal CAGR 2016–2026", fi: "nimellinen CAGR 2016–2026" },
+                },
+                {
+                    label: { en: "From 2022 peak", fi: "Vuoden 2022 huipusta" },
+                    value: { en: "−6.8 %", fi: "−6,8 %" },
+                    note: { en: "2 780 → 2 590 €/m²", fi: "2 780 → 2 590 €/m²" },
+                },
+            ],
+            narrative: {
+                en: "This apartment asks 2 185 €/m² — 15.6 % under a median that has itself already corrected 6.8 % from its 2022 peak. The discount is real, not a peak-anchored illusion. The likeliest reason it exists is §2 flag 1: the market prices the un-executed pipe renovation the same way this report does.",
+                fi: "Tämä asunto pyytää 2 185 €/m² — 15,6 % alle mediaanin, joka on itse jo korjautunut 6,8 % vuoden 2022 huipusta. Alennus on todellinen, ei huippuun ankkuroitu harha. Todennäköisin syy on §2:n lippu 1: markkinat hinnoittelevat toteuttamattoman putkiremontin samoin kuin tämä raportti.",
+            },
+            narrativeStrongs: [{ en: "2 185 €/m²", fi: "2 185 €/m²" }],
+            honesty: {
+                en: "Medians are realised sales, not asking prices; 2026 covers H1 (214 transactions). Nominal figures — no inflation adjustment, said plainly.",
+                fi: "Mediaanit ovat toteutuneita kauppoja, eivät pyyntihintoja; 2026 kattaa alkuvuoden (214 kauppaa). Nimellishinnat — ei inflaatiokorjausta, suoraan sanottuna.",
+            },
+        },
+        /* R7-10 rent history (appendix B) — EN verbatim from the frame; series
+           verbatim from the board script (rentHistory); sitting tenancy 845 €/mo
+           OBSERVED, the series MODELLED. FI verbatim where the frame's FI row
+           gives it ("Vuokrahistoria — …", "tämä asunto, voimassa oleva vuokra",
+           "vuokrat eivät laskeneet hintojen mukana"); rest composed — flagged. */
+        rentHistory: {
+            series: [
+                { year: "2016", medianRent: 705, n: 296 },
+                { year: "2017", medianRent: 720, n: 304 },
+                { year: "2018", medianRent: 738, n: 318 },
+                { year: "2019", medianRent: 755, n: 327 },
+                { year: "2020", medianRent: 770, n: 289 },
+                { year: "2021", medianRent: 782, n: 341 },
+                { year: "2022", medianRent: 800, n: 356 },
+                { year: "2023", medianRent: 825, n: 332 },
+                { year: "2024", medianRent: 842, n: 347 },
+                { year: "2025", medianRent: 852, n: 351 },
+                { year: "2026", medianRent: 860, n: 176 },
+            ],
+            tenancyRent: 845,
+            dealDisplay: { en: "845 €/mo", fi: "845 €/kk" },
+            title: {
+                en: "Tampere keskusta — median rent €/mo, 2h apartments 45–60 m²",
+                fi: "Tampereen keskusta — mediaanivuokra €/kk, 2h-asunnot 45–60 m²",
+            },
+            sourceNote: {
+                en: "advertised lettings, 24-month rolling · Pirkanmaa data Q2/2026 · nominal €",
+                fi: "vuokrailmoitukset, 24 kk liukuva · Pirkanmaan data Q2/2026 · nimelliset €",
+            },
+            seriesLabel: { en: "district median rent €/mo", fi: "alueen mediaanivuokra €/kk" },
+            dealLabel: { en: "this apartment, sitting tenancy", fi: "tämä asunto, voimassa oleva vuokra" },
+            stats: [
+                {
+                    label: { en: "10-y growth", fi: "10 v kasvu" },
+                    value: { en: "+2.0 %/y", fi: "+2,0 %/v" },
+                    note: { en: "nominal CAGR 2016–2026", fi: "nimellinen CAGR 2016–2026" },
+                },
+                {
+                    label: { en: "Since the 2022 price peak", fi: "Vuoden 2022 hintahuipusta" },
+                    value: { en: "+7.5 %", fi: "+7,5 %" },
+                    note: { en: "800 → 860 €/mo — rents never corrected", fi: "800 → 860 €/kk — vuokrat eivät korjautuneet" },
+                },
+            ],
+            narrative: {
+                en: "Rents didn’t follow prices down. While €/m² corrected 6.8 % from 2022 (appendix A), the median 2h rent rose 7.5 % — that widening gap is why an 8.6 % gross yield exists at all. The sitting tenancy at 845 € sits 1.7 % under the 2026 median: market-rate, not a discount to fix. Underwriting still uses P10 = 780 €, not the trend line.",
+                fi: "Vuokrat eivät laskeneet hintojen mukana. Kun €/m² korjautui 6,8 % vuodesta 2022 (liite A), 2h-asuntojen mediaanivuokra nousi 7,5 % — tämä avautuva kuilu on syy, miksi 8,6 %:n bruttotuotto on ylipäänsä olemassa. Istuva vuokrasuhde 845 €:lla on 1,7 % vuoden 2026 mediaanin alla: markkinatasoa, ei korjattava alennus. Laskenta käyttää silti P10:ta = 780 €, ei trendiviivaa.",
+            },
+            narrativeStrongs: [{ en: "845 €", fi: "845 €" }],
+            honesty: {
+                en: "Advertised rents, not contracts; unrenovated-kitchen weighting as §4. Nominal figures — no inflation adjustment, said plainly.",
+                fi: "Ilmoitetut vuokrat, eivät sopimuksia; remontoimattomien keittiöiden painotus kuten §4:ssa. Nimellisluvut — ei inflaatiokorjausta, suoraan sanottuna.",
+            },
+        },
+        /* R7-11 agent checklist (appendix C) — EN verbatim from the frame. One
+           item per flag (1–3) + per missing-document gap (isännöitsijäntodistus,
+           PTS, tenancy terms, energy/heating) — the engine emits, the LLM only
+           phrases. FI: the frame's FI row gives "Kysy välittäjältä — näyttöä
+           varten" (the H2), "Pyydä isännöitsijäntodistus", "Onko yhtiökokous
+           päättänyt LVIS-hankkeesta?", "EI ILMOITUKSESSA" — the rest composed,
+           flagged in the PR. */
+        agentChecklist: {
+            title: {
+                en: "Seven questions for the agent — each one earned by this listing",
+                fi: "Kysy välittäjältä — näyttöä varten",
+            },
+            outro: {
+                en: "Every question names the flag or gap that earned it — nothing generic. Bring back any of these documents and the re-run is free; the estimate tightens, the credit stays spent once.",
+                fi: "Jokainen kysymys nimee lipun tai puutteen, joka sen ansioitsi — ei yleispätevää. Tuo jokin näistä dokumenteista, niin uudelleenajo on maksuton; arvio tarkentuu, krediitti pysyy käytettynä vain kerran.",
+            },
+            outroStrongs: [{ en: "re-run is free", fi: "uudelleenajo on maksuton" }],
+            items: [
+                {
+                    id: "mgr-cert",
+                    question: {
+                        en: "Ask for the isännöitsijäntodistus — it wasn’t provided with the listing.",
+                        fi: "Pyydä isännöitsijäntodistus — sitä ei toimitettu ilmoituksen mukana.",
+                    },
+                    questionStrongs: [{ en: "isännöitsijäntodistus", fi: "isännöitsijäntodistus" }],
+                    why: {
+                        en: "Settles the repair years and the company’s finances in one document · tightens flags 1–3 and the C grade · re-running this report with it is free",
+                        fi: "Ratkaisee korjausvuodet ja yhtiön talouden yhdellä dokumentilla · tarkentaa lippuja 1–3 ja C-arvosanaa · raportin ajo sillä uudelleen on maksuton",
+                    },
+                    basis: { gap: "isannöitsijäntodistus" },
+                    answersWith: { en: "SOURCE DOCUMENT", fi: "LÄHDEDOKUMENTTI" },
+                },
+                {
+                    id: "pts",
+                    question: {
+                        en: "Ask for the PTS — the 2026–2031 long-term plan.",
+                        fi: "Pyydä PTS — 2026–2031 pitkän tähtäimen suunnitelma.",
+                    },
+                    questionStrongs: [{ en: "PTS", fi: "PTS" }],
+                    why: {
+                        en: "Prices the pipe scope and timing the company itself expects · flag 1, §3 — could move the 58 200 € estimate either way",
+                        fi: "Hintaa putkiremontin laajuuden ja ajoituksen yhtiön itsensä odottamana · lippu 1, §3 — voi siirtää 58 200 € arviota kumpaankin suuntaan",
+                    },
+                    basis: { gap: "pts" },
+                    answersWith: { en: "SOURCE DOCUMENT", fi: "LÄHDEDOKUMENTTI" },
+                },
+                {
+                    id: "lvis-decision",
+                    question: {
+                        en: "Has the yhtiökokous decided anything on the LVIS project — or only planned?",
+                        fi: "Onko yhtiökokous päättänyt LVIS-hankkeesta jotain — vai vain suunnitellut?",
+                    },
+                    questionStrongs: [{ en: "yhtiökokous decided", fi: "yhtiökokous päättänyt" }],
+                    why: {
+                        en: "A decision date collapses the 4–7 year window and changes year-5 financing (§6) · flag 1",
+                        fi: "Päätöspäivä tiivistää 4–7 vuoden ikkunan ja muuttaa vuoden 5 rahoitusta (§6) · lippu 1",
+                    },
+                    basis: { flagId: "flag-pipe-renovation" },
+                    answersWith: { en: "MEETING MINUTES", fi: "PÖYTÄKIRJA" },
+                },
+                {
+                    id: "ground-lease",
+                    question: {
+                        en: "What are the ground-lease renewal terms for the 2031 reset — index, negotiation state?",
+                        fi: "Mitkä ovat maanvuokran uusimisehdot vuoden 2031 tarkistukseen — indeksi, neuvottelutilanne?",
+                    },
+                    questionStrongs: [{ en: "ground-lease renewal terms", fi: "maanvuokran uusimisehdot" }],
+                    why: {
+                        en: "Narrows the modelled +32–59 €/mo charge range · flag 2",
+                        fi: "Kaventaa mallinnettua +32–59 €/kk vastikehaarukkaa · lippu 2",
+                    },
+                    basis: { flagId: "flag-leased-plot" },
+                    answersWith: { en: "LEASE CONTRACT", fi: "MAANVUOKRASOPIMUS" },
+                },
+                {
+                    id: "windows-scope",
+                    question: {
+                        en: "Are the windows inside the LVIS scope, or a separate future project?",
+                        fi: "Kuuluvatko ikkunat LVIS-kokonaisuuteen, vai ovatko ne erillinen tuleva hanke?",
+                    },
+                    questionStrongs: [{ en: "windows inside the LVIS scope", fi: "ikkunat LVIS-kokonaisuuteen" }],
+                    why: {
+                        en: "Inside: 5 200 € share (§3) · standalone: 5 000–9 000 € on top · flag 3",
+                        fi: "Mukana: 5 200 € osuus (§3) · erillisenä: 5 000–9 000 € päälle · lippu 3",
+                    },
+                    basis: { flagId: "flag-original-windows" },
+                    answersWith: { en: "PTS / MINUTES", fi: "PTS / PÖYTÄKIRJA" },
+                },
+                {
+                    id: "rent-raised",
+                    question: {
+                        en: "When was the rent last raised, and on what index? Any notice given either way?",
+                        fi: "Milloin vuokraa on viimeksi korotettu, ja mihin indeksiin? Onko varoitusta annettu kumpaankaan suuntaan?",
+                    },
+                    questionStrongs: [{ en: "rent last raised", fi: "viimeksi korotettu" }],
+                    why: {
+                        en: "845 € is 1.7 % under median (appendix B) — the answer says whether it stays · §4",
+                        fi: "845 € on 1,7 % mediaanin alla (liite B) — vastaus kertoo, pysyykö se · §4",
+                    },
+                    basis: { gap: "tenancy-terms" },
+                    answersWith: { en: "TENANCY CONTRACT", fi: "VUOKRASOPIMUS" },
+                },
+                {
+                    id: "energy-heating",
+                    question: {
+                        en: "Energy certificate class and the heating system’s age?",
+                        fi: "Energiatodistuksen energialuokka ja lämmitysjärjestelmän ikä?",
+                    },
+                    questionStrongs: [{ en: "heating system’s age", fi: "lämmitysjärjestelmän ikä" }],
+                    why: {
+                        en: "Neither appears in the listing — the only two ordinary facts it omits",
+                        fi: "Kumpikaan ei näy ilmoituksessa — ainoat kaksi tavanomaista seikkaa, jotka siitä puuttuvat",
+                    },
+                    basis: { gap: "not-in-listing" },
+                    answersWith: { en: "NOT IN LISTING", fi: "EI ILMOITUKSESSA" },
+                    dashed: true,
+                },
+            ],
+        },
         /* R7-P P1 cover verdict explanation — FI verbatim from the frame; EN
            composed from the same engine facts — flagged in the PR. */
         coverVerdictBody: {
@@ -779,15 +1005,19 @@ export const canonicalAnalysis: Analysis = {
                     citations: [{ section: { en: "§7 Tests", fi: "§7 Testit" }, anchor: "s7" }],
                 },
                 {
-                    // "What should I ask the agent?" — DECISION: the checklist ships with a
-                    // later slice (R7-11), so the chip gets a short honest canned answer that
-                    // points at §2's flags (each names its source sentence) — commented in the PR.
+                    // R7-1 chip — "What should I ask the agent?" answers with the
+                    // R7-11 checklist and cites it (the checklist lives after §7,
+                    // anchor agent-checklist; slice-8 update of the slice-4 stub).
                     match: ["ask the agent", "välittäjä"],
                     answer: {
-                        en: "A ready-made agent checklist ships with a later slice. Until then, ask about the three flags in §2 — each one names the listing sentence it came from.",
-                        fi: "Valmis välittäjän kysymyslista julkaistaan myöhemmässä vaiheessa. Siihen asti kysy §2:n kolmesta lipusta — jokainen nimee ilmoituksen lähdelauseensa.",
+                        en: "Seven questions, each earned by this listing — ask for the isännöitsijäntodistus and the PTS first; together they settle the repair years, the company’s finances and the pipe scope. The full checklist sits after §7, keeps your ticks, and prints as appendix C — ready to take to the viewing.",
+                        fi: "Seitsemän kysymystä, jokaisen ansainnut tämä ilmoitus — pyydä ensin isännöitsijäntodistus ja PTS; ne ratkaisevat yhdessä korjausvuodet, yhtiön talouden ja putkiremontin laajuuden. Koko lista on §7:n jälkeen, säilyttää rastisi ja tulostuu liitteenä C — valmiina näyttöön.",
                     },
-                    citations: [{ section: { en: "§2 Flags", fi: "§2 Riskiliput" }, anchor: "s2" }],
+                    strongs: [
+                        { en: "isännöitsijäntodistus", fi: "isännöitsijäntodistus" },
+                        { en: "PTS", fi: "PTS" },
+                    ],
+                    citations: [{ section: { en: "Agent checklist", fi: "Välittäjän kysymykset" }, anchor: "agent-checklist" }],
                 },
             ],
             refusal: {

@@ -103,3 +103,38 @@ export function StrongPrint({ text, strongs }: { text: string; strongs?: string[
     }
     return <>{parts.map((part, i) => (typeof part === "string" ? <span key={i}>{part}</span> : <strong key={i}>{part.strong}</strong>))}</>;
 }
+
+/* Print twin of the screen's recharts HistoryChart (R7-9/10): the same data and
+   grammar — misty bars (#B6C2CF) = the MODELLED market series, a steel flat
+   line (#427AA1) = the OBSERVED deal figure, flat by definition. Recharts is a
+   client library, so the print artifact draws a static inline SVG instead.
+   Bar/line positions are chart LAYOUT geometry, never financial arithmetic —
+   the values themselves arrive engine-published (§6.2). */
+export function PrintBarLineChart({ points, deal, ariaLabel }: { points: { label: string; value: number }[]; deal: number; ariaLabel: string }) {
+    const W = 620;
+    const H = 132;
+    const PAD_TOP = 6;
+    const PAD_BOTTOM = 14;
+    const max = Math.max(...points.map((p) => p.value), deal) * 1.06;
+    const slot = W / points.length;
+    const barW = Math.min(26, slot * 0.52);
+    const y = (v: number) => PAD_TOP + (1 - v / max) * (H - PAD_TOP - PAD_BOTTOM);
+    const dealY = y(deal);
+
+    return (
+        <svg viewBox={`0 0 ${W} ${H}`} className="p-chart" role="img" aria-label={ariaLabel}>
+            {points.map((p, i) => {
+                const barY = y(p.value);
+                return (
+                    <g key={p.label}>
+                        <rect x={i * slot + (slot - barW) / 2} y={barY} width={barW} height={H - PAD_BOTTOM - barY} rx={2} fill="#B6C2CF" />
+                        <text x={i * slot + slot / 2} y={H - 3} textAnchor="middle" className="p-chart-tick">
+                            {p.label}
+                        </text>
+                    </g>
+                );
+            })}
+            <line x1={0} x2={W} y1={dealY} y2={dealY} stroke="#427AA1" strokeWidth={1.8} />
+        </svg>
+    );
+}

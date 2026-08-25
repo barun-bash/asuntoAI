@@ -18,6 +18,7 @@ import { evaluatePolicy } from "@/lib/policy";
 import type {
     Account,
     AccountReportRow,
+    AgentChecklistItem,
     Analysis,
     ChatResponse,
     ClientFlag,
@@ -31,9 +32,11 @@ import type {
     Pack,
     PackId,
     PaymentIntent,
+    PriceHistory,
     RefundReason,
     RefundRecord,
     RefundTarget,
+    RentHistory,
     Watch,
 } from "@/lib/types";
 import { CHAT_TURN_CAP } from "@/lib/types";
@@ -87,6 +90,10 @@ interface StoreShape {
     exports: Map<string, ExportJob[]>;
     /** Pending single-use deletion tokens (R16): token → {accountId, expiresAt}. */
     deletionTokens: Map<string, { accountId: string; expiresAt: number }>;
+    /** Agent checklist checked state (R7-11): accountId → reportId → itemId →
+       checked. Persists server-side per account+report (the R7-11 contract);
+       GET merges it into the engine-published items. */
+    checklist: Map<string, Map<string, Record<string, boolean>>>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -108,6 +115,7 @@ if (!globalStore.__asuntoStore) {
         notifications: new Map(),
         exports: new Map(),
         deletionTokens: new Map(),
+        checklist: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
@@ -480,6 +488,45 @@ export function askChat(accountId: string, analysis: Analysis, q: string, lang: 
     };
 }
 
+/* ── History panels + agent checklist (R7-9/10/11) ───────────────────────────
+   GET /r/:id/price-history · /rent-history serve the engine-published panel
+   payloads (series MODELLED, the deal figure OBSERVED — contract §5). The
+   checklist's checked state persists here per account per report (the R7-11
+   contract) — GET merges it into the engine's items; PATCH flips one item. */
+
+export function priceHistoryOf(analysis: Analysis): PriceHistory | undefined {
+    return analysis.report?.priceHistory;
+}
+
+export function rentHistoryOf(analysis: Analysis): RentHistory | undefined {
+    return analysis.report?.rentHistory;
+}
+
+/** Checklist item as served: engine content + this account's checked state. */
+export type AgentChecklistItemState = AgentChecklistItem & { checked: boolean };
+
+export function getAgentChecklist(accountId: string, analysis: Analysis): { items: AgentChecklistItemState[] } | undefined {
+    const checklist = analysis.report?.agentChecklist;
+    if (!checklist) return undefined;
+    const state = store.checklist.get(accountId)?.get(analysis.id) ?? {};
+    return { items: checklist.items.map((item) => ({ ...item, checked: state[item.id] === true })) };
+}
+
+/** PATCH semantics: unknown item ids are rejected (the engine emitted the set). */
+export function setAgentChecklistItem(accountId: string, analysis: Analysis, id: string, checked: boolean): AgentChecklistItemState | undefined {
+    const item = analysis.report?.agentChecklist.items.find((i) => i.id === id);
+    if (!item) return undefined;
+    let byReport = store.checklist.get(accountId);
+    if (!byReport) {
+        byReport = new Map();
+        store.checklist.set(accountId, byReport);
+    }
+    const state = byReport.get(analysis.id) ?? {};
+    state[id] = checked;
+    byReport.set(analysis.id, state);
+    return { ...item, checked };
+}
+
 /* ── Public page & visibility (R8) ───────────────────────────────────────────
    /r/:slug is public by default — the free summary IS the public page
    (R8 header: "public = free summary, always"). The owner flip (R7-2 footer
@@ -850,6 +897,7 @@ export function deleteAccount(accountId: string, token: string): DeleteAccountRe
     store.ledger.delete(accountId);
     store.unlocks.delete(accountId);
     store.chatTurns.delete(accountId);
+    store.checklist.delete(accountId);
     store.watches.delete(accountId);
     store.notifications.delete(accountId);
     store.refunds.delete(accountId);
