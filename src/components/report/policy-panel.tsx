@@ -485,17 +485,18 @@ export function PolicyPanel({
                     ) : null}
                 </div>
 
-                {/* Footer: edit hint (clean preset) / Custom-from marker (clean Custom) / dirty marker + Reset. */}
+                {/* Footer: edit hint (clean) / dirty marker + Reset. In clean Custom the
+                   from-marker PREPENDS the hint — selecting Custom must never hide the
+                   "how do I edit" instruction (the edit hint is the discoverability). */}
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12.5px] leading-relaxed text-rsm-misty">
                     {dirty ? (
                         <span className="inline-flex items-center gap-2">
                             <span aria-hidden className="size-1.5 rounded-full bg-rsm-lime ring-1 ring-rsm-midnight-25" />
                             {tpl(t.policy.customMarker, { preset: t.policy.presets[basePreset], n: dirtyCount })}
                         </span>
-                    ) : isCustom ? (
-                        <span>{tpl(t.policy.customFrom, { preset: t.policy.presets[basePreset] })}</span>
                     ) : (
                         <span>
+                            {isCustom ? <>{tpl(t.policy.customFrom, { preset: t.policy.presets[basePreset] })} · </> : null}
                             {t.policy.editHintA}
                             <strong className="font-bold">{t.policy.editHintBold}</strong>
                             {t.policy.editHintB}
@@ -684,7 +685,10 @@ function PolicyRow({
                             aria-label={tpl(t.policy.editLine, { name })}
                             className={cx(
                                 "tnum inline-flex min-h-11 items-center justify-end rounded-rsm-input px-2 text-[12px] font-medium whitespace-nowrap text-rsm-slate md:text-[12.5px]",
-                                "underline-offset-4 transition-colors duration-200 ease-rsm hover:text-rsm-steel hover:underline",
+                                /* Always dashed-underlined: the DS's editable grammar — a "your
+                                   line" value must look tappable, not just on hover. */
+                                "underline decoration-rsm-misty-50 decoration-dashed underline-offset-4 transition-colors duration-200 ease-rsm",
+                                "hover:text-rsm-steel hover:decoration-rsm-steel",
                                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rsm-steel",
                             )}
                         >
