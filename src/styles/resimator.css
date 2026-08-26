@@ -1,0 +1,329 @@
+/* Resimator Report — product theme layer.
+   Token VALUES come verbatim from design/_ds/…/tokens/ (imported below — do not edit those files).
+   This file maps them onto Tailwind v4 @theme so utilities resolve to DS values.
+   Colour discipline (spec §2): paper #F6F3EE, white sheets, hairline #DFE1E7;
+   Steel Blue = interaction + evidence; Seafoam/Amber/Coral = verdicts only;
+   Neon Lime = one primary action per screen. */
+
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/elevation.css";
+
+@theme {
+    /* Brand hues (+ published 75/50/25 tints) */
+    --color-rsm-midnight: var(--rsm-deep-midnight);
+    --color-rsm-midnight-75: var(--rsm-deep-midnight-75);
+    --color-rsm-midnight-50: var(--rsm-deep-midnight-50);
+    --color-rsm-midnight-25: var(--rsm-deep-midnight-25);
+    --color-rsm-lime: var(--rsm-neon-lime);
+    --color-rsm-lime-75: var(--rsm-neon-lime-75);
+    --color-rsm-lime-50: var(--rsm-neon-lime-50);
+    --color-rsm-lime-25: var(--rsm-neon-lime-25);
+    --color-rsm-charcoal: var(--rsm-warm-charcoal);
+    --color-rsm-paper: var(--rsm-off-white);
+    --color-rsm-soft-sky: var(--rsm-soft-sky);
+    --color-rsm-hairline: var(--rsm-border-hairline);
+    --color-rsm-slate: var(--rsm-slate-grey);
+    /* Slate tints — token values verbatim (slate-grey-75/50/25); the 50 step is
+       the boards' meta/placeholder grey #A2A8AE (R7-1 № line, chat input). */
+    --color-rsm-slate-75: var(--rsm-slate-grey-75);
+    --color-rsm-slate-50: var(--rsm-slate-grey-50);
+    --color-rsm-slate-25: var(--rsm-slate-grey-25);
+    --color-rsm-steel: var(--rsm-steel-blue);
+    --color-rsm-steel-75: var(--rsm-steel-blue-75);
+    --color-rsm-steel-50: var(--rsm-steel-blue-50);
+    --color-rsm-steel-25: var(--rsm-steel-blue-25);
+    --color-rsm-misty: var(--rsm-misty-blue);
+    --color-rsm-misty-75: var(--rsm-misty-blue-75);
+    --color-rsm-misty-50: var(--rsm-misty-blue-50);
+    --color-rsm-misty-25: var(--rsm-misty-blue-25);
+    --color-rsm-seafoam: var(--rsm-seafoam-green);
+    --color-rsm-seafoam-75: var(--rsm-seafoam-green-75);
+    --color-rsm-seafoam-50: var(--rsm-seafoam-green-50);
+    --color-rsm-seafoam-25: var(--rsm-seafoam-green-25);
+    --color-rsm-coral: var(--rsm-coral-red);
+    --color-rsm-coral-75: var(--rsm-coral-red-75);
+    --color-rsm-coral-50: var(--rsm-coral-red-50);
+    --color-rsm-coral-25: var(--rsm-coral-red-25);
+    --color-rsm-amber: var(--rsm-amber);
+    --color-rsm-amber-75: var(--rsm-amber-75);
+    --color-rsm-amber-50: var(--rsm-amber-50);
+    --color-rsm-amber-25: var(--rsm-amber-25);
+
+    /* Verdict text/wash depths — NOT in the DS token files; lifted verbatim from
+       the boards (R2 policy frames + R5 component inventory): pill fg #1E7F4F /
+       #BE4437, banner washes #F4FAF8 / #FFF7F5, near-line margin #B98900,
+       failing-row 4 % coral wash rgba(255,111,97,.05). */
+    --color-rsm-seafoam-deep: #1e7f4f;
+    --color-rsm-coral-deep: #be4437;
+    --color-rsm-amber-deep: #b98900;
+    --color-rsm-pass-wash: #f4faf8;
+    --color-rsm-fail-wash: #fff7f5;
+    --color-rsm-coral-row: rgb(255 111 97 / 0.05);
+    /* Board row separator #F0EDE7 and slider-row background #FBFAF7 (R5-1/R5-2). */
+    --color-rsm-row-line: #f0ede7;
+    --color-rsm-editor-bg: #fbfaf7;
+
+    /* Type */
+    --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Satoshi Variable", "Satoshi", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Radii (cards 20, tiles 14, inputs 12, buttons pill) */
+    --radius-rsm-card: var(--radius-card);
+    --radius-rsm-tile: var(--radius-icon);
+    --radius-rsm-input: var(--radius-xl);
+
+    /* Elevation */
+    --shadow-rsm-chip: var(--shadow-chip);
+    --shadow-rsm-sm: var(--shadow-sm);
+    --shadow-rsm-stack: var(--shadow-stack);
+
+    /* Motion (200–250 ms, cubic-bezier(.4,0,.2,1), no spring) */
+    --ease-rsm: var(--ease-standard);
+}
+
+/* next/font exposes Space Grotesk as --font-space-grotesk; re-point the DS token at it
+   (unlayered, after the token imports, so it wins over tokens/typography.css). */
+:root {
+    --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Product surface: white sheet on paper, document register (spec §2). */
+body {
+    background: var(--rsm-off-white);
+    color: var(--text-primary);
+}
+
+/* All numerals tabular (spec §2/§7). */
+.tnum,
+[data-num] {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Long FI compounds wrap on meta/body only — never headings (spec §7). */
+.wrap-anywhere {
+    overflow-wrap: anywhere;
+}
+
+/* Policy threshold editor (R5-2) and the marketing miss-cost slider (Landing
+   #cost): the DS Slider ships Untitled brand purple; spec §2 reserves Steel
+   Blue for interaction — recolor within these scopes only. */
+.policy-slider .bg-brand-solid,
+.marketing-slider .bg-brand-solid {
+    background-color: var(--rsm-steel-blue);
+}
+.policy-slider .bg-quaternary,
+.marketing-slider .bg-quaternary {
+    background-color: var(--rsm-misty-blue-25);
+}
+.policy-slider .ring-slider-handle-border,
+.marketing-slider .ring-slider-handle-border {
+    --tw-ring-color: var(--rsm-steel-blue);
+}
+
+/* R14 notification toggles: the Untitled Toggle ships brand purple; Steel Blue
+   is the product's interaction hue (spec §2) — recolor within this scope. */
+.rsm-toggle .bg-brand-solid,
+.rsm-toggle .bg-brand-solid_hover {
+    background-color: var(--rsm-steel-blue);
+}
+.rsm-toggle .bg-tertiary {
+    background-color: var(--rsm-slate-grey-25);
+}
+
+/* ── Marketing landing — how-it-works loop (Landing board) ───────────────────
+   CSS storyboard, keyframes verbatim from the board: 12 s, three beats
+   (paste → reads+prices live → verdict), steel loop line. The production swap
+   is a captioned screen-recording mp4/webm (muted, loop, playsinline,
+   poster = beat 3) — same three beats and timing; drop it in inside
+   LoopStoryboard and keep this reduced-motion poster path. */
+@keyframes lpS1 {
+    0%,
+    26% {
+        opacity: 1;
+    }
+    32%,
+    94% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpS2 {
+    0%,
+    26% {
+        opacity: 0;
+    }
+    32%,
+    60% {
+        opacity: 1;
+    }
+    66%,
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpS3 {
+    0%,
+    60% {
+        opacity: 0;
+    }
+    66%,
+    94% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpBar {
+    0%,
+    32% {
+        width: 6%;
+    }
+    60%,
+    100% {
+        width: 94%;
+    }
+}
+@keyframes lpT1 {
+    0%,
+    34% {
+        opacity: 0.3;
+    }
+    38%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpT2 {
+    0%,
+    42% {
+        opacity: 0.3;
+    }
+    46%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpT3 {
+    0%,
+    50% {
+        opacity: 0.3;
+    }
+    54%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpPop {
+    0%,
+    68% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    73%,
+    94% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpLoop {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+.lp-s1 {
+    animation: lpS1 12s linear infinite;
+}
+.lp-s2 {
+    animation: lpS2 12s linear infinite;
+}
+.lp-s3 {
+    animation: lpS3 12s linear infinite;
+}
+.lp-bar {
+    animation: lpBar 12s linear infinite;
+}
+.lp-t1 {
+    animation: lpT1 12s linear infinite;
+}
+.lp-t2 {
+    animation: lpT2 12s linear infinite;
+}
+.lp-t3 {
+    animation: lpT3 12s linear infinite;
+}
+.lp-pop {
+    animation: lpPop 12s linear infinite;
+}
+.lp-loop {
+    animation: lpLoop 12s linear infinite;
+}
+/* prefers-reduced-motion → static verdict beat (board media query, verbatim). */
+@media (prefers-reduced-motion: reduce) {
+    .lp-s1,
+    .lp-s2 {
+        animation: none !important;
+        opacity: 0 !important;
+    }
+    .lp-s3 {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+    .lp-bar,
+    .lp-t1,
+    .lp-t2,
+    .lp-t3,
+    .lp-pop,
+    .lp-loop {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .lp-bar {
+        width: 94% !important;
+    }
+    .lp-loop {
+        width: 100% !important;
+    }
+}
+
+/* ── R15-2/3 first-run onboarding ────────────────────────────────────────────
+   Not a modal: the page stays scrollable and readable — non-target sheet
+   sections dim to 45 %, the target keeps full opacity and gets a 3 px steel
+   halo. data-onboarding-step is set on [data-onboarding-sheet] by the
+   OnboardingTips component; targets carry data-onboarding anchors. */
+[data-onboarding-sheet][data-onboarding-step] > [data-slot] {
+    opacity: 0.45;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-onboarding-sheet][data-onboarding-step="provenance"] > [data-slot="yields"],
+[data-onboarding-sheet][data-onboarding-step="citation"] > [data-slot="flags"],
+[data-onboarding-sheet][data-onboarding-step="policy"] > [data-slot="policy"] {
+    opacity: 1;
+}
+.onboarding-halo {
+    position: relative;
+    z-index: 1;
+    border-radius: 10px;
+    /* R15-2: the 3 px steel halo renders at 22 % alpha (board value verbatim). */
+    box-shadow: 0 0 0 3px rgba(66, 122, 161, 0.22);
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* While the tips run (data-onboarding-active on <html>), the mobile bottom-docked
+   tip card owns the bottom edge — the StickyUnlockBar shares z-40 and is later
+   in DOM, so it would paint over the tip. It slides back once the sequence ends. */
+[data-onboarding-active] .rsm-sticky-unlock {
+    display: none;
+}
