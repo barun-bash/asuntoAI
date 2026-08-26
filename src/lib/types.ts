@@ -1023,8 +1023,9 @@ export interface PartnerDonePayload {
     grades: { company: string; municipality: string };
     engine: string;
     readAt: string;
-    /** The fairness rule, carried in-band: a verdict was issued, the pool paid. */
-    billed: true;
+    /** The fairness rule, carried in-band: true when the pool paid for this
+       analysis — live done runs only; the sandbox replay never bills. */
+    billed: boolean;
 }
 
 /** Refusal is a first-class state (§6.3), never an error — the failing

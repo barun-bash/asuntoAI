@@ -44,7 +44,8 @@ const EXAMPLE_REFUSED = `GET /v1/analyses/an_7d1q
 
 /* Error shapes follow the consumer API's {error} convention (the frame prints
    only the success shapes) — flagged in the PR. */
-const ERRORS = `401 {"error":"unauthorized"}      missing, revoked or expired key
+const ERRORS = `400 {"error":"bad_request"}       malformed JSON body
+401 {"error":"unauthorized"}      missing, revoked or expired key
 422 {"error":"unsupported_url"}   not an Oikotie/Etuovi sale listing
 422 {"error":"bad_webhook"}       the webhook override isn’t https
 429 {"error":"rate_limited"}      over 60 requests/min · Retry-After header set
@@ -111,6 +112,10 @@ export default function Page() {
                     </p>
                     <CodeBlock code={EXAMPLE_POST} label="queue" />
                     <CodeBlock code={EXAMPLE_GET} label="poll · excerpt — the live payload carries every figure and flag" />
+                    <p className="mt-2 text-[13px] leading-[1.55] wrap-anywhere text-rsm-slate">
+                        The example shows the analysis after its free re-run (the v2 figures — 0.091 gross, 56 400 € liability); the deterministic sandbox
+                        replays the base fixture as first read, so expect those figures to differ — the shape is identical.
+                    </p>
                 </section>
 
                 {/* Provenance */}

@@ -1598,7 +1598,7 @@ export function partnerAnalysisPayload(job: PartnerJob): PartnerAnalysisPayload 
         grades: { company: verdict.grades.company.grade, municipality: verdict.grades.municipality.grade },
         engine: ENGINE_VERSION,
         readAt: analysis.readAt,
-        billed: true, // a verdict was issued — the pool paid (carried in-band).
+        billed: job.billed, // live done runs billed the pool; the sandbox replay never does.
     };
 }
 
