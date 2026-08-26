@@ -158,6 +158,34 @@ if (!globalStore.__asuntoStore) {
         partnerRate: new Map(),
     };
 }
+/* Self-heal across dev HMR: a long-running dev server keeps the global from an
+   older module version, so fields added in later slices would be undefined
+   (the `seedPartnerOrg … .size` crash). Backfill any missing field idempotently. */
+{
+    const s = globalStore.__asuntoStore as Partial<StoreShape>;
+    s.runs ??= new Map();
+    s.accounts ??= new Map();
+    s.accountByEmail ??= new Map();
+    s.ledger ??= new Map();
+    s.unlocks ??= new Map();
+    s.intents ??= new Map();
+    s.invoices ??= new Map();
+    s.sessions ??= new Map();
+    s.chatTurns ??= new Map();
+    s.visibility ??= new Map();
+    s.magicLinks ??= new Map();
+    s.watches ??= new Map();
+    s.refunds ??= new Map();
+    s.notifications ??= new Map();
+    s.exports ??= new Map();
+    s.deletionTokens ??= new Map();
+    s.checklist ??= new Map();
+    s.pinnedOffers ??= new Map();
+    s.tracking ??= new Map();
+    s.partnerOrgs ??= new Map();
+    s.partnerJobs ??= new Map();
+    s.partnerRate ??= new Map();
+}
 const store = globalStore.__asuntoStore;
 
 /** Dev-only stand-in for the emailed single-use tokens (magic link, account
