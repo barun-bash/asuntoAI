@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import type { OfferCalculatorProps } from "@/components/report/offer-calculator";
 import { ReportView } from "@/components/report/report-view";
 import { NotFoundView, RefusalView } from "@/components/report/state-views";
 import { VerdictView } from "@/components/report/verdict-view";
@@ -10,9 +11,12 @@ import {
     RUNNER_COOKIE,
     balanceOf,
     chatTurnsLeft,
+    computeOffer,
     getAccount,
     getBySlug,
+    getPinnedOffer,
     getUnlockInfo,
+    hasTrackingChange,
     isPublicReport,
     isUnlocked,
     redactAnalysis,
@@ -51,8 +55,11 @@ export default async function Page({
     const jar = await cookies();
     const account = getAccount(jar.get(ACCOUNT_COOKIE)?.value);
     const unlocked = !!account && !!analysis && isUnlocked(account.id, analysis.id);
-    // Mock-only R7-5 trigger — the real banner is tracking-diff driven (slice 8).
-    const changed = sp.state === "changed";
+    /* R7-5's listing-changed banner is driven by the tracking record (R12):
+       once the report is unlocked, a price/status diff in its seeded tracking
+       record shows the banner. The mock trigger ?state=changed stays as the
+       manual way to flip the state (comment per the slice brief). */
+    const changed = sp.state === "changed" || (!!account && !!analysis && unlocked && hasTrackingChange(account.id, analysis.id));
     // Mock-only R8-3 trigger (?state=ended) — the real ended state arrives from
     // the daily listing re-check (R8-1 annotation); fixture default is "live".
     const ended = sp.state === "ended" || analysis?.listingStatus?.state === "ended";
@@ -60,6 +67,29 @@ export default async function Page({
     // this slug (stamped by POST /api/analyses); everyone else on the free
     // tier is a shared-link visitor.
     const visitor = !!analysis && !unlocked && jar.get(RUNNER_COOKIE)?.value !== slug;
+
+    /* R5-6 — the offer calculator's initial payload is computed here, at the
+       store boundary (the client never computes, §6.2): at the pinned offer
+       when one exists, else at asking. The unpaid tier gets the same payload
+       locked at asking (its figures are all free-tier-visible) and never POSTs. */
+    let offer: OfferCalculatorProps | undefined;
+    const pinned = account && analysis ? getPinnedOffer(account.id, analysis.id) : undefined;
+    if (analysis?.offer && analysis.listing && analysis.status === "done") {
+        const initial = computeOffer(analysis, unlocked && pinned ? pinned.offerPrice : analysis.listing.askPrice);
+        if (initial) {
+            offer = {
+                slug: analysis.slug,
+                initial,
+                askPrice: analysis.listing.askPrice,
+                sliderMin: analysis.offer.slider.min,
+                sliderStep: analysis.offer.slider.step,
+                marketNote: analysis.offer.marketNote,
+                honesty: analysis.offer.honesty,
+                initialPinned: unlocked ? (pinned ?? null) : null,
+                unlocked,
+            };
+        }
+    }
 
     return (
         <LangProvider initialLang={lang}>
@@ -78,12 +108,14 @@ export default async function Page({
                                 unlockPackId={unlock?.packId}
                                 changed={changed}
                                 initialPublic={isPublicReport(analysis.id)}
+                                offer={offer}
+                                pinned={pinned ?? null}
                             />
                         );
                     })()
                 ) : (
                     <>
-                        <VerdictView analysis={redactAnalysis(analysis)} visitor={visitor} ended={ended} />
+                        <VerdictView analysis={redactAnalysis(analysis)} visitor={visitor} ended={ended} offer={offer} />
                         {isPublicReport(analysis.id) ? <JsonLd analysis={redactAnalysis(analysis)} lang={lang} /> : null}
                     </>
                 )

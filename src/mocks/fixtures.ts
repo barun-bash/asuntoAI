@@ -4,7 +4,7 @@
  * Every figure is engine-authored here; the UI formats but never computes (§6.2).
  * Locked flags exist ONLY in redacted form — there is no hidden content to leak (§6.4).
  */
-import type { Analysis, OgVariantData, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef } from "@/lib/types";
+import type { Analysis, OgVariantData, Pack, PolicyActual, PolicyData, PolicyPresetKey, PolicyTestDef, TrackingRecord } from "@/lib/types";
 
 export const CANONICAL_SLUG = "tuomiokirkonkatu-23-b-14-tampere";
 export const REFUSED_SLUG = "rautatienkatu-18-c-44-tampere";
@@ -524,6 +524,61 @@ export const canonicalAnalysis: Analysis = {
         ],
     },
     policy: policyData,
+    /* R5-6 offer calculator — engine-published panel prose. The market note is
+       MODELLED; the honesty paragraph is the frame's annotation verbatim (EN),
+       FI translated with the boards' vocabulary — flagged in the PR. The
+       recompute itself is the mock engine's published model (src/lib/store.ts,
+       "Offer calculator"); the slider's min/step come from the frame. */
+    offer: {
+        marketNote: {
+            en: "listed 34 days · accepted discounts in this district run 3–6 %",
+            fi: "markkinoilla 34 päivää · hyväksytyt alennukset tällä alueella 3–6 %",
+        },
+        honesty: {
+            en: "The calculator re-runs the same engine as the verdict — nothing here is client arithmetic. It will happily show you that a lower price makes the liability ratio worse: honesty over persuasion, even in the tool built for negotiating.",
+            fi: "Laskuri ajaa saman moottorin kuin päätelmä — mitään ei lasketa selaimessa. Se näyttää mielellään, että halvempi hinta pahentaa korjausvastuuosuutta: rehellisyys ennen myyntipuhetta, myös työkalussa, joka on tehty neuvotteluun.",
+        },
+        slider: { min: 90000, step: 500 },
+    },
+    /* R13-1 compare column — the canonical report frozen at v2 (post price-drop
+       re-run + documents: debt-free 112 000 €, liability 56 400 € @ 4–5 y).
+       Cell strings verbatim from the R13-1 frame (EN); FI number formats per
+       C12, FI words composed ("katto", "putket" style from the boards) —
+       flagged in the PR. The v1-era /r page data stays as-is; compare columns
+       are their own frozen engine payload. */
+    compare: {
+        versionTag: "v2",
+        readAt: "2026-07-29T09:00:00+03:00",
+        state: "price-dropped",
+        access: "unlocked",
+        meta: { en: "2h+kk · 54 m² · 1962", fi: "2h+kk · 54 m² · 1962" },
+        cells: {
+            debtFree: { en: "112 000 €", fi: "112 000 €" },
+            sqm: { en: "2 074 € · −20.0 %", fi: "2 074 € · −20,0 %" },
+            yield: { en: "9.1 → 6.1 %", fi: "9,1 → 6,1 %" },
+            yieldSub: { en: "−3.0", fi: "−3,0" },
+            liability: { en: "56 400 € · 4–5 y · 50.4 %", fi: "56 400 € · 4–5 v · 50,4 %" },
+            companyGrade: "C",
+            municipalityGrade: "A",
+            flags: { en: "1 high · 2 caution", fi: "1 vakava · 2 varoitusta" },
+            cashFlow: { en: "+21 €/mo", fi: "+21 €/kk" },
+            cashNeeded: { en: "29 900 €", fi: "29 900 €" },
+        },
+        verdictKind: "fail-building",
+        verdictN: 2,
+        sort: {
+            debtFree: 112000,
+            sqmVsMedian: -20.0,
+            realYield: 6.1,
+            liability: 56400,
+            companyRank: 2,
+            municipalityRank: 4,
+            highFlags: 1,
+            totalFlags: 3,
+            cashFlow: 21,
+            cashNeeded: 29900,
+        },
+    },
     /* ── Full report (R7-1…R7-8) — engine-authored document data ─────────────
        §3/§6 rows verbatim from the R3 board script (liabilityRows / yearRows);
        §1 prose verbatim from R7-1 (EN) and R7-6 (FI); §4/§5 from R7-2; chat
@@ -618,6 +673,232 @@ export const canonicalAnalysis: Analysis = {
         yearGrowth: { en: "rent growth 1.5 %/y, charge growth 3.0 %/y.", fi: "vuokrankasvu 1,5 %/v, vastikkeen kasvu 3,0 %/v." },
         /* R7-5 mock diff (real diffs come from tracking, slice 8). */
         listingChange: { now: "98 600 €", was: "104 600 €", seenAt: "2026-07-29T08:12:00+03:00" },
+        /* R7-9 price history (appendix A) — EN verbatim from the frame; series
+           verbatim from the board script (priceHistory); deal 2 185 €/m² asking
+           is OBSERVED, the series MODELLED. FI title/legend/honesty verbatim
+           from the frame's FI row; FI narrative/stats composed — flagged in the PR.
+           Per-year n is engine fixture data (the board names only 2026's 214). */
+        priceHistory: {
+            series: [
+                { year: "2016", medianSqm: 2150, n: 388 },
+                { year: "2017", medianSqm: 2230, n: 402 },
+                { year: "2018", medianSqm: 2320, n: 415 },
+                { year: "2019", medianSqm: 2400, n: 431 },
+                { year: "2020", medianSqm: 2450, n: 376 },
+                { year: "2021", medianSqm: 2610, n: 452 },
+                { year: "2022", medianSqm: 2780, n: 468 },
+                { year: "2023", medianSqm: 2640, n: 391 },
+                { year: "2024", medianSqm: 2560, n: 402 },
+                { year: "2025", medianSqm: 2570, n: 428 },
+                { year: "2026", medianSqm: 2590, n: 214 },
+            ],
+            dealSqm: 2185,
+            dealDisplay: { en: "2 185 €/m²", fi: "2 185 €/m²" },
+            medianNowDisplay: "2 590 €/m²",
+            title: {
+                en: "Tampere keskusta — realised €/m², 2h apartments 45–60 m²",
+                fi: "Tampereen keskusta — toteutuneet €/m², 2h-asunnot 45–60 m²",
+            },
+            sourceNote: {
+                en: "annual medians · realised sales, Pirkanmaa data Q2/2026 · nominal €",
+                fi: "vuosimediaanit · toteutuneet kaupat, Pirkanmaan data Q2/2026 · nimelliset €",
+            },
+            seriesLabel: { en: "district median €/m²", fi: "alueen mediaani €/m²" },
+            dealLabel: { en: "this apartment, asking", fi: "tämä asunto, pyyntihinta" },
+            stats: [
+                {
+                    label: { en: "10-y growth", fi: "10 v kasvu" },
+                    value: { en: "+1.9 %/y", fi: "+1,9 %/v" },
+                    note: { en: "nominal CAGR 2016–2026", fi: "nimellinen CAGR 2016–2026" },
+                },
+                {
+                    label: { en: "From 2022 peak", fi: "Vuoden 2022 huipusta" },
+                    value: { en: "−6.8 %", fi: "−6,8 %" },
+                    note: { en: "2 780 → 2 590 €/m²", fi: "2 780 → 2 590 €/m²" },
+                },
+            ],
+            narrative: {
+                en: "This apartment asks 2 185 €/m² — 15.6 % under a median that has itself already corrected 6.8 % from its 2022 peak. The discount is real, not a peak-anchored illusion. The likeliest reason it exists is §2 flag 1: the market prices the un-executed pipe renovation the same way this report does.",
+                fi: "Tämä asunto pyytää 2 185 €/m² — 15,6 % alle mediaanin, joka on itse jo korjautunut 6,8 % vuoden 2022 huipusta. Alennus on todellinen, ei huippuun ankkuroitu harha. Todennäköisin syy on §2:n lippu 1: markkinat hinnoittelevat toteuttamattoman putkiremontin samoin kuin tämä raportti.",
+            },
+            narrativeStrongs: [{ en: "2 185 €/m²", fi: "2 185 €/m²" }],
+            honesty: {
+                en: "Medians are realised sales, not asking prices; 2026 covers H1 (214 transactions). Nominal figures — no inflation adjustment, said plainly.",
+                fi: "Mediaanit ovat toteutuneita kauppoja, eivät pyyntihintoja; 2026 kattaa alkuvuoden (214 kauppaa). Nimellishinnat — ei inflaatiokorjausta, suoraan sanottuna.",
+            },
+        },
+        /* R7-10 rent history (appendix B) — EN verbatim from the frame; series
+           verbatim from the board script (rentHistory); sitting tenancy 845 €/mo
+           OBSERVED, the series MODELLED. FI verbatim where the frame's FI row
+           gives it ("Vuokrahistoria — …", "tämä asunto, voimassa oleva vuokra",
+           "vuokrat eivät laskeneet hintojen mukana"); rest composed — flagged. */
+        rentHistory: {
+            series: [
+                { year: "2016", medianRent: 705, n: 296 },
+                { year: "2017", medianRent: 720, n: 304 },
+                { year: "2018", medianRent: 738, n: 318 },
+                { year: "2019", medianRent: 755, n: 327 },
+                { year: "2020", medianRent: 770, n: 289 },
+                { year: "2021", medianRent: 782, n: 341 },
+                { year: "2022", medianRent: 800, n: 356 },
+                { year: "2023", medianRent: 825, n: 332 },
+                { year: "2024", medianRent: 842, n: 347 },
+                { year: "2025", medianRent: 852, n: 351 },
+                { year: "2026", medianRent: 860, n: 176 },
+            ],
+            tenancyRent: 845,
+            dealDisplay: { en: "845 €/mo", fi: "845 €/kk" },
+            title: {
+                en: "Tampere keskusta — median rent €/mo, 2h apartments 45–60 m²",
+                fi: "Tampereen keskusta — mediaanivuokra €/kk, 2h-asunnot 45–60 m²",
+            },
+            sourceNote: {
+                en: "advertised lettings, 24-month rolling · Pirkanmaa data Q2/2026 · nominal €",
+                fi: "vuokrailmoitukset, 24 kk liukuva · Pirkanmaan data Q2/2026 · nimelliset €",
+            },
+            seriesLabel: { en: "district median rent €/mo", fi: "alueen mediaanivuokra €/kk" },
+            dealLabel: { en: "this apartment, sitting tenancy", fi: "tämä asunto, voimassa oleva vuokra" },
+            stats: [
+                {
+                    label: { en: "10-y growth", fi: "10 v kasvu" },
+                    value: { en: "+2.0 %/y", fi: "+2,0 %/v" },
+                    note: { en: "nominal CAGR 2016–2026", fi: "nimellinen CAGR 2016–2026" },
+                },
+                {
+                    label: { en: "Since the 2022 price peak", fi: "Vuoden 2022 hintahuipusta" },
+                    value: { en: "+7.5 %", fi: "+7,5 %" },
+                    note: { en: "800 → 860 €/mo — rents never corrected", fi: "800 → 860 €/kk — vuokrat eivät korjautuneet" },
+                },
+            ],
+            narrative: {
+                en: "Rents didn’t follow prices down. While €/m² corrected 6.8 % from 2022 (appendix A), the median 2h rent rose 7.5 % — that widening gap is why an 8.6 % gross yield exists at all. The sitting tenancy at 845 € sits 1.7 % under the 2026 median: market-rate, not a discount to fix. Underwriting still uses P10 = 780 €, not the trend line.",
+                fi: "Vuokrat eivät laskeneet hintojen mukana. Kun €/m² korjautui 6,8 % vuodesta 2022 (liite A), 2h-asuntojen mediaanivuokra nousi 7,5 % — tämä avautuva kuilu on syy, miksi 8,6 %:n bruttotuotto on ylipäänsä olemassa. Istuva vuokrasuhde 845 €:lla on 1,7 % vuoden 2026 mediaanin alla: markkinatasoa, ei korjattava alennus. Laskenta käyttää silti P10:ta = 780 €, ei trendiviivaa.",
+            },
+            narrativeStrongs: [{ en: "845 €", fi: "845 €" }],
+            honesty: {
+                en: "Advertised rents, not contracts; unrenovated-kitchen weighting as §4. Nominal figures — no inflation adjustment, said plainly.",
+                fi: "Ilmoitetut vuokrat, eivät sopimuksia; remontoimattomien keittiöiden painotus kuten §4:ssa. Nimellisluvut — ei inflaatiokorjausta, suoraan sanottuna.",
+            },
+        },
+        /* R7-11 agent checklist (appendix C) — EN verbatim from the frame. One
+           item per flag (1–3) + per missing-document gap (isännöitsijäntodistus,
+           PTS, tenancy terms, energy/heating) — the engine emits, the LLM only
+           phrases. FI: the frame's FI row gives "Kysy välittäjältä — näyttöä
+           varten" (the H2), "Pyydä isännöitsijäntodistus", "Onko yhtiökokous
+           päättänyt LVIS-hankkeesta?", "EI ILMOITUKSESSA" — the rest composed,
+           flagged in the PR. */
+        agentChecklist: {
+            title: {
+                en: "Seven questions for the agent — each one earned by this listing",
+                fi: "Kysy välittäjältä — näyttöä varten",
+            },
+            outro: {
+                en: "Every question names the flag or gap that earned it — nothing generic. Bring back any of these documents and the re-run is free; the estimate tightens, the credit stays spent once.",
+                fi: "Jokainen kysymys nimee lipun tai puutteen, joka sen ansioitsi — ei yleispätevää. Tuo jokin näistä dokumenteista, niin uudelleenajo on maksuton; arvio tarkentuu, krediitti pysyy käytettynä vain kerran.",
+            },
+            outroStrongs: [{ en: "re-run is free", fi: "uudelleenajo on maksuton" }],
+            items: [
+                {
+                    id: "mgr-cert",
+                    question: {
+                        en: "Ask for the isännöitsijäntodistus — it wasn’t provided with the listing.",
+                        fi: "Pyydä isännöitsijäntodistus — sitä ei toimitettu ilmoituksen mukana.",
+                    },
+                    questionStrongs: [{ en: "isännöitsijäntodistus", fi: "isännöitsijäntodistus" }],
+                    why: {
+                        en: "Settles the repair years and the company’s finances in one document · tightens flags 1–3 and the C grade · re-running this report with it is free",
+                        fi: "Ratkaisee korjausvuodet ja yhtiön talouden yhdellä dokumentilla · tarkentaa lippuja 1–3 ja C-arvosanaa · raportin ajo sillä uudelleen on maksuton",
+                    },
+                    basis: { gap: "isannöitsijäntodistus" },
+                    answersWith: { en: "SOURCE DOCUMENT", fi: "LÄHDEDOKUMENTTI" },
+                },
+                {
+                    id: "pts",
+                    question: {
+                        en: "Ask for the PTS — the 2026–2031 long-term plan.",
+                        fi: "Pyydä PTS — 2026–2031 pitkän tähtäimen suunnitelma.",
+                    },
+                    questionStrongs: [{ en: "PTS", fi: "PTS" }],
+                    why: {
+                        en: "Prices the pipe scope and timing the company itself expects · flag 1, §3 — could move the 58 200 € estimate either way",
+                        fi: "Hintaa putkiremontin laajuuden ja ajoituksen yhtiön itsensä odottamana · lippu 1, §3 — voi siirtää 58 200 € arviota kumpaankin suuntaan",
+                    },
+                    basis: { gap: "pts" },
+                    answersWith: { en: "SOURCE DOCUMENT", fi: "LÄHDEDOKUMENTTI" },
+                },
+                {
+                    id: "lvis-decision",
+                    question: {
+                        en: "Has the yhtiökokous decided anything on the LVIS project — or only planned?",
+                        fi: "Onko yhtiökokous päättänyt LVIS-hankkeesta jotain — vai vain suunnitellut?",
+                    },
+                    questionStrongs: [{ en: "yhtiökokous decided", fi: "yhtiökokous päättänyt" }],
+                    why: {
+                        en: "A decision date collapses the 4–7 year window and changes year-5 financing (§6) · flag 1",
+                        fi: "Päätöspäivä tiivistää 4–7 vuoden ikkunan ja muuttaa vuoden 5 rahoitusta (§6) · lippu 1",
+                    },
+                    basis: { flagId: "flag-pipe-renovation" },
+                    answersWith: { en: "MEETING MINUTES", fi: "PÖYTÄKIRJA" },
+                },
+                {
+                    id: "ground-lease",
+                    question: {
+                        en: "What are the ground-lease renewal terms for the 2031 reset — index, negotiation state?",
+                        fi: "Mitkä ovat maanvuokran uusimisehdot vuoden 2031 tarkistukseen — indeksi, neuvottelutilanne?",
+                    },
+                    questionStrongs: [{ en: "ground-lease renewal terms", fi: "maanvuokran uusimisehdot" }],
+                    why: {
+                        en: "Narrows the modelled +32–59 €/mo charge range · flag 2",
+                        fi: "Kaventaa mallinnettua +32–59 €/kk vastikehaarukkaa · lippu 2",
+                    },
+                    basis: { flagId: "flag-leased-plot" },
+                    answersWith: { en: "LEASE CONTRACT", fi: "MAANVUOKRASOPIMUS" },
+                },
+                {
+                    id: "windows-scope",
+                    question: {
+                        en: "Are the windows inside the LVIS scope, or a separate future project?",
+                        fi: "Kuuluvatko ikkunat LVIS-kokonaisuuteen, vai ovatko ne erillinen tuleva hanke?",
+                    },
+                    questionStrongs: [{ en: "windows inside the LVIS scope", fi: "ikkunat LVIS-kokonaisuuteen" }],
+                    why: {
+                        en: "Inside: 5 200 € share (§3) · standalone: 5 000–9 000 € on top · flag 3",
+                        fi: "Mukana: 5 200 € osuus (§3) · erillisenä: 5 000–9 000 € päälle · lippu 3",
+                    },
+                    basis: { flagId: "flag-original-windows" },
+                    answersWith: { en: "PTS / MINUTES", fi: "PTS / PÖYTÄKIRJA" },
+                },
+                {
+                    id: "rent-raised",
+                    question: {
+                        en: "When was the rent last raised, and on what index? Any notice given either way?",
+                        fi: "Milloin vuokraa on viimeksi korotettu, ja mihin indeksiin? Onko varoitusta annettu kumpaankaan suuntaan?",
+                    },
+                    questionStrongs: [{ en: "rent last raised", fi: "viimeksi korotettu" }],
+                    why: {
+                        en: "845 € is 1.7 % under median (appendix B) — the answer says whether it stays · §4",
+                        fi: "845 € on 1,7 % mediaanin alla (liite B) — vastaus kertoo, pysyykö se · §4",
+                    },
+                    basis: { gap: "tenancy-terms" },
+                    answersWith: { en: "TENANCY CONTRACT", fi: "VUOKRASOPIMUS" },
+                },
+                {
+                    id: "energy-heating",
+                    question: {
+                        en: "Energy certificate class and the heating system’s age?",
+                        fi: "Energiatodistuksen energialuokka ja lämmitysjärjestelmän ikä?",
+                    },
+                    questionStrongs: [{ en: "heating system’s age", fi: "lämmitysjärjestelmän ikä" }],
+                    why: {
+                        en: "Neither appears in the listing — the only two ordinary facts it omits",
+                        fi: "Kumpikaan ei näy ilmoituksessa — ainoat kaksi tavanomaista seikkaa, jotka siitä puuttuvat",
+                    },
+                    basis: { gap: "not-in-listing" },
+                    answersWith: { en: "NOT IN LISTING", fi: "EI ILMOITUKSESSA" },
+                    dashed: true,
+                },
+            ],
+        },
         /* R7-P P1 cover verdict explanation — FI verbatim from the frame; EN
            composed from the same engine facts — flagged in the PR. */
         coverVerdictBody: {
@@ -648,7 +929,7 @@ export const canonicalAnalysis: Analysis = {
             purchaseLeft: [
                 { label: { fi: "Myyntihinta", en: "Asking price" }, value: { fi: "98 600 €", en: "98 600 €" } },
                 { label: { fi: "Yhtiölainaosuus (maksetaan pois)", en: "Company loan share (paid off)" }, value: { fi: "13 400 €", en: "13 400 €" } },
-                { label: { fi: "Velaton hinta", en: "Debt-free price" }, value: { fi: "112 000 €", en: "112 000 €" }, bold: true },
+                { label: { fi: "Velaton hinta", en: "Debt-free price" }, value: { fi: "112 000 €", en: "112 000 €" }, bold: true },
                 { label: { fi: "Varainsiirtovero 1,5 %", en: "Transfer tax 1.5 %" }, value: { fi: "1 680 €", en: "1 680 €" } },
             ],
             purchaseRight: [
@@ -779,15 +1060,19 @@ export const canonicalAnalysis: Analysis = {
                     citations: [{ section: { en: "§7 Tests", fi: "§7 Testit" }, anchor: "s7" }],
                 },
                 {
-                    // "What should I ask the agent?" — DECISION: the checklist ships with a
-                    // later slice (R7-11), so the chip gets a short honest canned answer that
-                    // points at §2's flags (each names its source sentence) — commented in the PR.
+                    // R7-1 chip — "What should I ask the agent?" answers with the
+                    // R7-11 checklist and cites it (the checklist lives after §7,
+                    // anchor agent-checklist; slice-8 update of the slice-4 stub).
                     match: ["ask the agent", "välittäjä"],
                     answer: {
-                        en: "A ready-made agent checklist ships with a later slice. Until then, ask about the three flags in §2 — each one names the listing sentence it came from.",
-                        fi: "Valmis välittäjän kysymyslista julkaistaan myöhemmässä vaiheessa. Siihen asti kysy §2:n kolmesta lipusta — jokainen nimee ilmoituksen lähdelauseensa.",
+                        en: "Seven questions, each earned by this listing — ask for the isännöitsijäntodistus and the PTS first; together they settle the repair years, the company’s finances and the pipe scope. The full checklist sits after §7, keeps your ticks, and prints as appendix C — ready to take to the viewing.",
+                        fi: "Seitsemän kysymystä, jokaisen ansainnut tämä ilmoitus — pyydä ensin isännöitsijäntodistus ja PTS; ne ratkaisevat yhdessä korjausvuodet, yhtiön talouden ja putkiremontin laajuuden. Koko lista on §7:n jälkeen, säilyttää rastisi ja tulostuu liitteenä C — valmiina näyttöön.",
                     },
-                    citations: [{ section: { en: "§2 Flags", fi: "§2 Riskiliput" }, anchor: "s2" }],
+                    strongs: [
+                        { en: "isännöitsijäntodistus", fi: "isännöitsijäntodistus" },
+                        { en: "PTS", fi: "PTS" },
+                    ],
+                    citations: [{ section: { en: "Agent checklist", fi: "Välittäjän kysymykset" }, anchor: "agent-checklist" }],
                 },
             ],
             refusal: {
@@ -904,10 +1189,276 @@ export const withdrawnAnalysis: Analysis = {
     },
 };
 
+/* ── Tracking template (R12-1) — seeded at unlock (store.seedTracking) ───────
+   The canonical report's published tracking record: price dropped 6 000 € the
+   morning after unlock → free re-run froze v2 → the checklist documents
+   tightened the liability. EN verbatim from the R12-1 frame; FI composed from
+   the frame's FI rows ("Hinta laski 6 000 €" verbatim) — flagged in the PR.
+   The daily check itself is the real backend's cron concern — the mock seeds
+   the record at unlock and never advances it (comment per the slice brief). */
+export const canonicalTrackingTemplate: Omit<TrackingRecord, "seededAt"> = {
+    listingStatus: "live",
+    checkedAt: "2026-07-29T10:40:00+03:00",
+    checkedNote: { en: "2 h ago", fi: "2 h sitten" },
+    priceAtRead: 104600,
+    priceNow: 98600,
+    domAtRead: 34,
+    domNow: 41,
+    domDistrictMedian: 52,
+    versions: [
+        { v: 1, at: "2026-07-28T13:41:00+03:00", fails: 3, trigger: { en: "Analysed and unlocked", fi: "Analysoitu ja avattu" } },
+        { v: 2, at: "2026-07-29T08:40:00+03:00", fails: 2, trigger: { en: "price dropped → free re-run", fi: "hinta laski → maksuton uudelleenajo" } },
+    ],
+    events: [
+        {
+            at: "2026-07-29T08:40:00+03:00",
+            title: { en: "Re-run → v2 · 0 credits", fi: "Uudelleenajo → v2 · 0 krediittiä" },
+            detail: {
+                en: "Cash flow @ 3.45 %: −14 → +21 €/mo (FAIL → PASS) · gross 8.6 → 9.1 % · liability share 49.3 → 52.0 % (stays fail) · chat reset to 15",
+                fi: "Kassavirta @ 3,45 %: −14 → +21 €/kk (HYLKÄÄ → LÄPÄISEE) · brutto 8,6 → 9,1 % · korjausvastuuosuus 49,3 → 52,0 % (jää hylätyksi) · keskustelulaskuri nollautui 15:een",
+            },
+        },
+        {
+            at: "2026-07-29T08:12:00+03:00",
+            title: { en: "Price dropped 6 000 € → 98 600 €", fi: "Hinta laski 6 000 € → 98 600 €" },
+            detail: { en: "Alert email sent · re-run offered free", fi: "Hälytyssähköposti lähetetty · uudelleenajo tarjottu maksutta" },
+        },
+        {
+            at: "2026-07-28T14:05:00+03:00",
+            title: {
+                en: "Checklist: isännöitsijäntodistus + PTS received — estimate tightened",
+                fi: "Tarkistuslista: isännöitsijäntodistus + PTS saapui — arvio tarkentui",
+            },
+            detail: {
+                en: "Liability 58 200 € → 56 400 € · window narrowed to 4–5 years · 4 of 7 questions answered",
+                fi: "Korjausvastuu 58 200 € → 56 400 € · ikkuna kaveni 4–5 vuoteen · 4 / 7 kysymystä vastattua",
+            },
+        },
+        {
+            at: "2026-07-28T13:41:00+03:00",
+            title: { en: "Analysed and unlocked · v1 · fails 3 of 14", fi: "Analysoitu ja avattu · v1 · hylkää 3 / 14" },
+            detail: { en: "5-pack purchased · 1 credit spent · PDF downloaded", fi: "5 kpl paketti ostettiin · 1 krediitti käytetty · PDF ladattu" },
+        },
+    ],
+    checklistProgress: { answered: 4, total: 7 },
+    verdictNote: { en: "was 3 in v1 · building tests unchanged", fi: "oli 3 v1:ssä · taloyhtiötestit muuttumattomat" },
+};
+
+/* ── Compare fixtures (R13-1) — two additional done analyses ─────────────────
+   These exist so /reports/compare renders 2–3 columns in the single-fixture
+   mock: distinct slugs/addresses, engine-authored, matching the R13-1 columns
+   and the R10 board script rows verbatim. They are COMPARE fixtures — kept out
+   of recentPublic, never replayed by createRun, and their compare.access
+   declares Anne's drawer state (the real engine derives unlocked per account).
+   Their verdict/flag data is the minimum for a valid public free summary —
+   one redacted locked flag each, no hidden content (§6.4). */
+
+export const PIRKANKATU_SLUG = "pirkankatu-8-a-3-tampere";
+export const HAMEENPUISTO_SLUG = "hameenpuisto-31-c-52-tampere";
+
+export const pirkankatuAnalysis: Analysis = {
+    id: "ana_2026_1185",
+    slug: PIRKANKATU_SLUG,
+    status: "done",
+    number: "2026-1185",
+    readAt: "2026-07-27T11:20:00+03:00",
+    steps: [],
+    listing: {
+        addr: "Pirkankatu 8 A 3",
+        city: "Tampere",
+        postalCode: "33200",
+        type: "yksiö",
+        typeFi: "yksiö",
+        m2: 29,
+        floor: "2/4",
+        lift: false,
+        built: 1968,
+        company: "As Oy Pirkankatu 8",
+        askPrice: 79000,
+        loanShare: 5000,
+        debtFree: 84000,
+        oikotieId: "21965500",
+        fetchedAt: "2026-07-27T11:19:00+03:00",
+    },
+    listingStatus: {
+        state: "live",
+        liveNote: {
+            en: "listing still live on Oikotie ✓ checked 1 h ago",
+            fi: "ilmoitus yhä voimassa Oikotiessa ✓ tarkistettu 1 h sitten",
+        },
+        endedNote: {
+            en: "This listing has ended on Oikotie. The analysis below reflects it as last read.",
+            fi: "Tämä ilmoitus on päättynyt Oikotiessa. Alla oleva analyysi kuvaa ilmoitusta viimeisimmän lukuhetken mukaisena.",
+        },
+    },
+    verdict: {
+        grossYield: {
+            value: 7.9,
+            basis: "MAPPED",
+            note: "P50 rent 555 € × 12 ÷ debt-free 84 000 €.",
+            noteFi: "Vuokra P50 555 € × 12 ÷ velaton hinta 84 000 €.",
+        },
+        realYield: {
+            value: 7.4,
+            basis: "MODELLED",
+            deltaPp: -0.5,
+            note: "Same rent against 90 100 € — price plus the 6 100 € liability.",
+            noteFi: "Sama vuokra hintaan 90 100 € — velaton hinta + korjausvastuu 6 100 €.",
+        },
+        liability: {
+            total: 6100,
+            window: "—",
+            windowFi: "—",
+            items: [{ label: "Balcony slab share", labelFi: "Parvekelaatan osuus", amount: 6100, basis: "ESTIMATED" }],
+        },
+        grades: {
+            company: { grade: "A", note: "Pipes done 2016, healthy finances", noteFi: "Putket tehty 2016, talous kunnossa" },
+            municipality: { grade: "B", name: "Tampere", note: "Population +1.1 %/y", noteFi: "Väestö +1,1 %/v" },
+        },
+        flagCount: { total: 1, high: 0, caution: 1 },
+        flags: [{ id: "flag-balcony-slab", severity: "caution", locked: true, costRange: "2–4 K€", costRangeFi: "2–4 t€" }],
+    },
+    compare: {
+        versionTag: "v1",
+        readAt: "2026-07-27T11:20:00+03:00",
+        state: "live",
+        access: "unlocked",
+        meta: { en: "yksiö · 29 m² · 1968", fi: "yksiö · 29 m² · 1968" },
+        cells: {
+            debtFree: { en: "84 000 €", fi: "84 000 €" },
+            sqm: { en: "2 897 € · −5.0 %", fi: "2 897 € · −5,0 %" },
+            yield: { en: "7.9 → 7.4 %", fi: "7,9 → 7,4 %" },
+            yieldSub: { en: "−0.5", fi: "−0,5" },
+            liability: { en: "6 100 € · pipes 2016", fi: "6 100 € · putket 2016" },
+            companyGrade: "A",
+            municipalityGrade: "B",
+            flags: { en: "1 caution", fi: "1 varoitus" },
+            cashFlow: { en: "+64 €/mo", fi: "+64 €/kk" },
+            cashNeeded: { en: "22 600 €", fi: "22 600 €" },
+        },
+        verdictKind: "pass",
+        sort: {
+            debtFree: 84000,
+            sqmVsMedian: -5.0,
+            realYield: 7.4,
+            liability: 6100,
+            companyRank: 4,
+            municipalityRank: 3,
+            highFlags: 0,
+            totalFlags: 1,
+            cashFlow: 64,
+            cashNeeded: 22600,
+        },
+    },
+};
+
+export const hameenpuistoAnalysis: Analysis = {
+    id: "ana_2026_1183",
+    slug: HAMEENPUISTO_SLUG,
+    status: "done",
+    number: "2026-1183",
+    readAt: "2026-07-25T09:15:00+03:00",
+    steps: [],
+    listing: {
+        addr: "Hämeenpuisto 31 C 52",
+        city: "Tampere",
+        postalCode: "33200",
+        type: "2h+k",
+        typeFi: "2h+k",
+        m2: 49,
+        floor: "5/6",
+        lift: true,
+        built: 1955,
+        company: "As Oy Hämeenpuisto 31",
+        askPrice: 119000,
+        loanShare: 8700,
+        debtFree: 127700,
+        oikotieId: "21965210",
+        fetchedAt: "2026-07-25T09:14:00+03:00",
+    },
+    listingStatus: {
+        state: "live",
+        liveNote: {
+            en: "listing still live on Oikotie ✓ checked 3 h ago",
+            fi: "ilmoitus yhä voimassa Oikotiessa ✓ tarkistettu 3 h sitten",
+        },
+        endedNote: {
+            en: "This listing has ended on Oikotie. The analysis below reflects it as last read.",
+            fi: "Tämä ilmoitus on päättynyt Oikotiessa. Alla oleva analyysi kuvaa ilmoitusta viimeisimmän lukuhetken mukaisena.",
+        },
+    },
+    verdict: {
+        grossYield: {
+            value: 6.8,
+            basis: "MAPPED",
+            note: "P50 rent 725 € × 12 ÷ debt-free 127 700 €.",
+            noteFi: "Vuokra P50 725 € × 12 ÷ velaton hinta 127 700 €.",
+        },
+        realYield: {
+            value: 6.1,
+            basis: "MODELLED",
+            deltaPp: -0.7,
+            note: "Same rent against 140 100 € — price plus the 12 400 € liability.",
+            noteFi: "Sama vuokra hintaan 140 100 € — velaton hinta + korjausvastuu 12 400 €.",
+        },
+        liability: {
+            total: 12400,
+            window: "2–4 YEARS",
+            windowFi: "2–4 V",
+            items: [{ label: "Roof share", labelFi: "Katto-osuus", amount: 12400, basis: "ESTIMATED" }],
+        },
+        grades: {
+            company: { grade: "B", note: "Roof due in 2–4 years, otherwise maintained", noteFi: "Katto edessä 2–4 vuodessa, muuten kunnossapidetty" },
+            municipality: { grade: "A", name: "Tampere", note: "Population +1.1 %/y", noteFi: "Väestö +1,1 %/v" },
+        },
+        flagCount: { total: 2, high: 0, caution: 2 },
+        flags: [
+            { id: "flag-roof-window", severity: "caution", locked: true, costRange: "12 400 €", costRangeFi: "12 400 €" },
+            { id: "flag-lift-age", severity: "caution", locked: true, costRange: "3–6 K€", costRangeFi: "3–6 t€" },
+        ],
+    },
+    compare: {
+        versionTag: "v1",
+        readAt: "2026-07-25T09:15:00+03:00",
+        state: "rerun-pending",
+        access: "unlocked",
+        meta: { en: "2h+k · 49 m² · 1955", fi: "2h+k · 49 m² · 1955" },
+        cells: {
+            debtFree: { en: "127 700 €", fi: "127 700 €" },
+            sqm: { en: "2 606 € · +0.6 %", fi: "2 606 € · +0,6 %" },
+            yield: { en: "6.8 → 6.1 %", fi: "6,8 → 6,1 %" },
+            yieldSub: { en: "−0.7", fi: "−0,7" },
+            liability: { en: "12 400 € · roof 2–4 y", fi: "12 400 € · katto 2–4 v" },
+            companyGrade: "B",
+            municipalityGrade: "A",
+            flags: { en: "2 caution", fi: "2 varoitusta" },
+            cashFlow: { en: "+5 €/mo", fi: "+5 €/kk" },
+            cashNeeded: { en: "33 400 €", fi: "33 400 €" },
+        },
+        verdictKind: "pass-near",
+        verdictN: 2,
+        sort: {
+            debtFree: 127700,
+            sqmVsMedian: 0.6,
+            realYield: 6.1,
+            liability: 12400,
+            companyRank: 3,
+            municipalityRank: 4,
+            highFlags: 0,
+            totalFlags: 2,
+            cashFlow: 5,
+            cashNeeded: 33400,
+        },
+    },
+};
+
 export const fixtures: Record<string, Analysis> = {
     [CANONICAL_SLUG]: canonicalAnalysis,
     [REFUSED_SLUG]: refusedAnalysis,
     [WITHDRAWN_SLUG]: withdrawnAnalysis,
+    /* Compare fixtures (R13) — see the comment above. Not in recentPublic. */
+    [PIRKANKATU_SLUG]: pirkankatuAnalysis,
+    [HAMEENPUISTO_SLUG]: hameenpuistoAnalysis,
 };
 
 /** Recent public analyses for the landing example rows (R1-1 marketing strip). */

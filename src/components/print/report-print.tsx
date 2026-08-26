@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import {
+    PrintBarLineChart,
     PrintChip,
     PrintLockup,
     PrintQuote,
@@ -14,16 +15,18 @@ import type { Dict } from "@/i18n/dict";
 import { capFirst, formatDate, formatDateTime, formatEUR, formatPercent, numberWord } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { evaluatePolicy, formatPolicyLine } from "@/lib/policy";
-import type { Analysis, FlagFull } from "@/lib/types";
+import type { Analysis, FlagFull, PinnedOffer, PriceHistory, RentHistory } from "@/lib/types";
 import { cx } from "@/utils/cx";
 
 /**
- * /r/:slug/pdf — the A4 print document (R7-P P1–P3, handoff §10): P1 cover
- * (verdict), P2 flags + liability, P3 numbers + the fourteen tests. Server-
- * rendered paginated sheets (see src/styles/print.css for the sheet/@page
- * technique); every figure is engine-published in the fixture — this file
- * formats and lays out only (§6.2). Content data is SHARED with the screen
- * document (report-document.tsx), the layout is the print frames' own.
+ * /r/:slug/pdf — the A4 print document (R7-P P1–P3 + appendices, handoff §10):
+ * P1 cover (verdict), P2 flags + liability, P3 numbers + the fourteen tests,
+ * then appendices A (price history) + B (rent history) sharing ONE sheet and
+ * C (agent checklist, real checkbox squares) as the report's last page.
+ * Server-rendered paginated sheets (see src/styles/print.css for the
+ * sheet/@page technique); every figure is engine-published in the fixture —
+ * this file formats and lays out only (§6.2). Content data is SHARED with the
+ * screen document (report-document.tsx), the layout is the print frames' own.
  * §7's marks are derived from the policy fixtures (balanced evaluation), the
  * same sanctioned re-run the screen document performs.
  */
@@ -40,6 +43,11 @@ interface SheetProps {
     t: Dict;
     page: number;
     total: number;
+    /** Appendix C's persisted ticks (server-side per account+report, R7-11). */
+    checkedIds?: string[];
+    /** R5-6 pinned offer — the cover carries it ("your target: 98 500 €") and
+       appendix C's header repeats it (the R5-6 contract). */
+    pinned?: PinnedOffer | null;
 }
 
 function publicUrl(analysis: Analysis): string {
@@ -53,7 +61,7 @@ function fullFlags(analysis: Analysis): FlagFull[] {
 
 /* ── P1 · A4 cover (the board renders it in Finnish — the primary market's
    artifact; EN parity via ?lang=en) ── */
-function CoverSheet({ analysis, lang, t, page, total }: SheetProps) {
+function CoverSheet({ analysis, lang, t, page, total, pinned }: SheetProps) {
     const { listing, verdict, report, policy } = analysis;
     if (!listing || !verdict || !report || !policy) return null;
     const run = evaluatePolicy(policy, policy.presets.balanced);
@@ -120,6 +128,14 @@ function CoverSheet({ analysis, lang, t, page, total }: SheetProps) {
                 </div>
                 {run.passing ? null : <p className="p-verdict-body p-num">{report.coverVerdictBody[lang]}</p>}
             </div>
+
+            {/* R5-6 — the pinned offer on the cover ("your target: 98 500 €"),
+               with §1 and the checklist header. */}
+            {pinned ? (
+                <p className="p-pinned p-num">
+                    {tpl(t.print.pinnedLine, { price: formatEUR(pinned.offerPrice, lang), date: formatDate(new Date(pinned.pinnedAt).toISOString(), lang) })}
+                </p>
+            ) : null}
 
             <div className="p-tiles-3">
                 <div className="p-grade">
@@ -338,19 +354,143 @@ function NumbersSheet({ analysis, lang, t, page, total }: SheetProps) {
     );
 }
 
+/* ── Appendices A+B · price & rent history on ONE sheet (handoff §10). Same
+   data and panel anatomy as the screen's R7-9/10 panels — title, MODELLED
+   source note, chart (static SVG twin: misty bars / steel flat deal-line),
+   OBSERVED deal legend, the two stat tiles, narrative, the honesty line. The
+   screen panels' eyebrows are dropped: the running header already names the
+   appendices (noted in the PR). ── */
+function HistoryBlock({ mark, history, deal, lang, t }: { mark: "A" | "B"; history: PriceHistory | RentHistory; deal: number; lang: Lang; t: Dict }) {
+    const points = history.series.map((p) => ({ label: p.year, value: "medianSqm" in p ? p.medianSqm : p.medianRent }));
+    return (
+        <div>
+            <SectionRow mark={mark} title={history.title[lang]} marginTop={mark === "A" ? undefined : 22} />
+            <p className="p-hhonesty" style={{ marginTop: 4 }}>
+                <PrintChip basis="MODELLED" t={t} /> {history.sourceNote[lang]}
+            </p>
+            <PrintBarLineChart points={points} deal={deal} ariaLabel={history.title[lang]} />
+            <div className="p-legend p-num">
+                <span>
+                    <span aria-hidden className="p-swatch-bar" />
+                    {history.seriesLabel[lang]}
+                </span>
+                <span>
+                    <span aria-hidden className="p-swatch-line" />
+                    {history.dealLabel[lang]} — {history.dealDisplay[lang]} <PrintChip basis="OBSERVED" t={t} />
+                </span>
+            </div>
+            <div className="p-hstats p-num">
+                {history.stats.map((stat) => (
+                    <div className="p-hstat" key={stat.label.en}>
+                        <div className="p-hstat-label">{stat.label[lang]}</div>
+                        <div className="p-hstat-value">{stat.value[lang]}</div>
+                        <div className="p-hstat-note">{stat.note[lang]}</div>
+                    </div>
+                ))}
+            </div>
+            <p className="p-hnarrative p-num">
+                <StrongPrint text={history.narrative[lang]} strongs={history.narrativeStrongs.map((s) => s[lang])} />
+            </p>
+            <p className="p-hhonesty">{history.honesty[lang]}</p>
+        </div>
+    );
+}
+
+function HistorySheet({ analysis, lang, t, page, total }: SheetProps) {
+    const { listing, report } = analysis;
+    if (!listing || !report) return null;
+
+    return (
+        <section className="p-sheet" aria-label={t.print.runningHistory}>
+            <RunningHeader left={`№ ${analysis.number} · ${listing.addr}, ${listing.city}`} right={t.print.runningHistory} />
+
+            <HistoryBlock mark="A" history={report.priceHistory} deal={report.priceHistory.dealSqm} lang={lang} t={t} />
+            <HistoryBlock mark="B" history={report.rentHistory} deal={report.rentHistory.tenancyRent} lang={lang} t={t} />
+
+            <SheetBottom>
+                <SheetFooter left={publicUrl(analysis)} right={tpl(t.print.pageOf, { page, total })} />
+            </SheetBottom>
+        </section>
+    );
+}
+
+/* ── Appendix C · the agent checklist, the report's last page (handoff §10).
+   Real checkbox squares (☐ empty / ☒ midnight + tick) reflecting the account's
+   persisted state — "checkboxes are real print targets" (R7-11 annotation). ── */
+function ChecklistSheet({ analysis, lang, t, page, total, checkedIds, pinned }: SheetProps) {
+    const { listing, report } = analysis;
+    if (!listing || !report) return null;
+    const checklist = report.agentChecklist;
+    const checked = new Set(checkedIds ?? []);
+
+    return (
+        <section className="p-sheet" aria-label={t.print.runningChecklist}>
+            <RunningHeader left={`№ ${analysis.number} · ${listing.addr}, ${listing.city}`} right={t.print.runningChecklist} />
+
+            <div className="p-eyebrow" style={{ marginTop: 14 }}>
+                {tpl(t.checklist.eyebrow, { n: analysis.number })}
+            </div>
+            <SectionRow mark="C" title={checklist.title[lang]} marginTop={8} />
+            {/* R5-6 — the pinned offer rides the checklist header in print too. */}
+            {pinned ? <p className="p-pinned p-num">{tpl(t.checklist.pinnedLine, { price: formatEUR(pinned.offerPrice, lang) })}</p> : null}
+            <div className="p-citems p-num">
+                {checklist.items.map((item) => {
+                    const on = checked.has(item.id);
+                    return (
+                        <div className="p-citem" key={item.id}>
+                            <span aria-hidden className={cx("p-cbox", on && "p-cbox-on")}>
+                                {on ? "✓" : ""}
+                            </span>
+                            <span>
+                                <span className="p-cq">
+                                    <StrongPrint text={item.question[lang]} strongs={item.questionStrongs.map((s) => s[lang])} />
+                                </span>
+                                <span className="p-cwhy">{item.why[lang]}</span>
+                            </span>
+                            <span className={cx("p-chip p-cchip", item.dashed ? "p-chip-est" : "p-chip-doc")}>{item.answersWith[lang]}</span>
+                        </div>
+                    );
+                })}
+            </div>
+            <p className="p-coutro p-num">
+                <StrongPrint text={checklist.outro[lang]} strongs={checklist.outroStrongs.map((s) => s[lang])} />
+            </p>
+
+            <SheetBottom>
+                <SheetFooter left={publicUrl(analysis)} right={tpl(t.print.pageOf, { page, total })} />
+            </SheetBottom>
+        </section>
+    );
+}
+
 /**
- * The three sheets, paginated. Slice 8 slots the appendices into this array —
- * A (price history) + B (rent history) share one sheet, C (agent checklist,
- * real checkboxes) comes last (handoff §10); page x/y recomputes from the
- * array length, so nothing else changes.
+ * The sheets, paginated: P1–P3 then the appendices (slice 8) — A (price
+ * history) + B (rent history) share ONE sheet, C (agent checklist, real
+ * checkboxes) comes last (handoff §10). Page x/y recomputes from the array
+ * length; REPORT_PRINT_PAGES lets the route's toolbar hint stay in step.
  */
-export function ReportPrint({ analysis, lang, t }: { analysis: Analysis; lang: Lang; t: Dict }) {
-    const sheets = [CoverSheet, FlagsSheet, NumbersSheet];
-    const total = sheets.length;
+const SHEETS = [CoverSheet, FlagsSheet, NumbersSheet, HistorySheet, ChecklistSheet];
+
+export const REPORT_PRINT_PAGES = SHEETS.length;
+
+export function ReportPrint({
+    analysis,
+    lang,
+    t,
+    checkedIds,
+    pinned,
+}: {
+    analysis: Analysis;
+    lang: Lang;
+    t: Dict;
+    checkedIds?: string[];
+    pinned?: PinnedOffer | null;
+}) {
+    const total = SHEETS.length;
     return (
         <div className="rsm-print">
-            {sheets.map((Sheet, i) => (
-                <Sheet key={i} analysis={analysis} lang={lang} t={t} page={i + 1} total={total} />
+            {SHEETS.map((Sheet, i) => (
+                <Sheet key={i} analysis={analysis} lang={lang} t={t} page={i + 1} total={total} checkedIds={checkedIds} pinned={pinned} />
             ))}
         </div>
     );

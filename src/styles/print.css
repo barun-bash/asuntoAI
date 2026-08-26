@@ -328,6 +328,13 @@
     color: var(--color-rsm-misty);
 }
 
+/* Checklist document chips (appendix C): solid = the frame's #46525E slate,
+   dashed = the NOT IN LISTING gap (C1 grammar). */
+.p-chip-doc {
+    box-shadow: inset 0 0 0 1px var(--color-rsm-hairline);
+    color: var(--color-rsm-slate);
+}
+
 /* ── P1 cover ──────────────────────────────────────────────────────────────── */
 
 .p-cover-eyebrow {
@@ -425,6 +432,15 @@
     line-height: 1.6;
     font-weight: 500;
     color: var(--color-rsm-charcoal);
+}
+
+/* R5-6 pinned-offer line on the cover ("your target: 98 500 €"). */
+.p-pinned {
+    margin-top: 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    font-weight: 700;
+    color: var(--color-rsm-steel);
 }
 
 /* Grades + flag summary row. */
@@ -882,5 +898,194 @@
 }
 
 .p-legal strong {
+    font-weight: 700;
+}
+
+/* ── Appendices A/B/C (R7-9/10/11 print forms, handoff §10) ──────────────────
+   A (price) + B (rent) share one sheet, C (checklist) is the last page. The
+   charts are static SVG twins of the screen panels — same data, same grammar
+   (misty bars / steel flat deal-line). */
+
+.p-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+}
+
+.p-chart-tick {
+    font-family: var(--font-body);
+    font-size: 8px;
+    fill: var(--color-rsm-slate-50);
+}
+
+/* Chart legend — the frame's own row (swatches + labels + chip). */
+.p-legend {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 10px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.p-swatch-bar {
+    width: 9px;
+    height: 9px;
+    border-radius: 2.5px;
+    background: var(--color-rsm-misty-50);
+}
+
+.p-swatch-line {
+    width: 12px;
+    border-top: 2px solid var(--color-rsm-steel);
+}
+
+/* Stat tiles beside/below each history chart (the R7-9/10 right rail). */
+.p-hstats {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.p-hstat {
+    border: 1px solid var(--color-rsm-hairline);
+    border-radius: 10px;
+    padding: 8px 12px;
+    background: var(--color-white);
+}
+
+.p-hstat-label {
+    font-size: 9px;
+    line-height: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-rsm-misty);
+}
+
+.p-hstat-value {
+    margin-top: 2px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-hstat-note {
+    margin-top: 2px;
+    font-size: 9.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-hnarrative {
+    margin-top: 8px;
+    font-size: 11.5px;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--color-rsm-charcoal);
+}
+
+.p-hnarrative strong {
+    font-weight: 700;
+}
+
+.p-hhonesty {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+/* Appendix C — checklist rows with real checkbox squares (the R7-11 frame's
+   1.5 px squares scaled to print; checked = midnight fill + paper tick, the
+   same state the screen persists). */
+.p-citems {
+    margin-top: 8px;
+}
+
+.p-citem {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 2px;
+    border-top: 1px solid var(--color-rsm-row-line);
+}
+
+.p-citem:last-child {
+    border-bottom: 1px solid var(--color-rsm-row-line);
+}
+
+.p-cbox {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    margin-top: 1.5px;
+    border: 1.3px solid #c4c8ca;
+    border-radius: 3.5px;
+    background: var(--color-white);
+    font-size: 9px;
+    line-height: 1;
+    color: var(--color-rsm-paper);
+}
+
+.p-cbox-on {
+    background: var(--color-rsm-midnight);
+    border-color: var(--color-rsm-midnight);
+}
+
+.p-cq {
+    display: block;
+    font-size: 12px;
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--color-rsm-midnight);
+}
+
+.p-cq strong {
+    font-weight: 700;
+}
+
+.p-cwhy {
+    display: block;
+    margin-top: 1px;
+    font-size: 10px;
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-cchip {
+    flex: none;
+    margin-left: auto;
+    margin-top: 1px;
+}
+
+.p-coutro {
+    margin-top: 10px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-rsm-misty);
+}
+
+.p-coutro strong {
     font-weight: 700;
 }

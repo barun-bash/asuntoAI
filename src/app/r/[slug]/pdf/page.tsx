@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PrintToolbar } from "@/components/print/print-toolbar";
-import { ReportPrint } from "@/components/print/report-print";
+import { REPORT_PRINT_PAGES, ReportPrint } from "@/components/print/report-print";
 import { dict } from "@/i18n/dict";
 import { parseLang } from "@/lib/i18n";
-import { ACCOUNT_COOKIE, getAccount, getBySlug, isUnlocked, unlockAnalysis } from "@/lib/store";
+import { ACCOUNT_COOKIE, getAccount, getAgentChecklist, getBySlug, getPinnedOffer, isUnlocked, unlockAnalysis } from "@/lib/store";
 
 /**
- * /r/:slug/pdf — the A4 print document (R7-P P1–P3, handoff §10). Server-
- * rendered paginated sheets + @page stylesheet, so the browser's "Save as PDF"
- * yields the artifact. Gated exactly like the report route: full-report content
- * exists only for the unlocked account — everyone else redirects to /r/:slug
- * (locked data never reaches the client, §6.4). Appendices A (price history) +
- * B (rent history) + C (agent checklist) are NOT in this slice — their panels
- * ship in slice 8 and slot into the sheet array in report-print.tsx.
+ * /r/:slug/pdf — the A4 print document (R7-P P1–P3 + appendices A/B/C, handoff
+ * §10). Server-rendered paginated sheets + @page stylesheet, so the browser's
+ * "Save as PDF" yields the artifact. Gated exactly like the report route:
+ * full-report content exists only for the unlocked account — everyone else
+ * redirects to /r/:slug (locked data never reaches the client, §6.4).
+ * Appendices A (price history) + B (rent history) share one sheet; C (agent
+ * checklist) is the last page, its checkbox squares reflecting the account's
+ * persisted ticks (R7-11 "checkboxes are real print targets").
  */
 export default async function Page({
     params,
@@ -35,6 +36,10 @@ export default async function Page({
 
     const t = dict[lang];
     const suffix = lang === "en" ? "?lang=en" : "";
+    // Appendix C prints the account's persisted ticks (R7-11 checked state).
+    const checkedIds = getAgentChecklist(account.id, analysis)
+        ?.items.filter((item) => item.checked)
+        .map((item) => item.id);
 
     return (
         <>
@@ -44,11 +49,12 @@ export default async function Page({
                 basePath={`/r/${slug}/pdf`}
                 backHref={`/r/${slug}${suffix}`}
                 lang={lang}
-                hint={t.print.toolbarHint.replace("{pages}", "3")}
+                hint={t.print.toolbarHint.replace("{pages}", String(REPORT_PRINT_PAGES))}
                 labels={{ back: t.print.toolbarBack, print: t.print.toolbarPrint }}
             />
             <main>
-                <ReportPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} />
+                {/* R5-6: the pinned offer prints on the cover + appendix C header. */}
+                <ReportPrint analysis={unlockAnalysis(analysis)} lang={lang} t={t} checkedIds={checkedIds} pinned={getPinnedOffer(account.id, analysis.id)} />
             </main>
         </>
     );

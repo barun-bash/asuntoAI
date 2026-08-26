@@ -156,6 +156,13 @@ export interface Analysis {
     /** Full-report document data (R7-*) — only meaningful for unlocked accounts;
        the free tier never receives it (the page drops it before render, §6.4). */
     report?: ReportDoc;
+    /** Offer-calculator model prose (R5-6) — the panel exists only where the
+       engine publishes it (the canonical deal). The recompute formulas are the
+       mock engine's, published in src/lib/store.ts. */
+    offer?: OfferFixture;
+    /** Compare column data (R13-1) — the report's engine metrics frozen at its
+       own version. Present on the canonical deal and the two compare fixtures. */
+    compare?: CompareFixture;
     /** Refusal / withdrawn particulars (engine-authored prose). */
     refusal?: {
         heading: string;
@@ -415,6 +422,102 @@ export interface ListingChange {
     seenAt: string;
 }
 
+/* ── History panels + agent checklist (R7-9/10/11) — engine-published ────────
+   Contract shapes (handoff §5, board annotations): GET /r/:id/price-history
+   {series[{year, medianSqm, n}], dealSqm} · GET /r/:id/rent-history
+   {series[{year, medianRent, n}], tenancyRent} · GET /r/:id/agent-checklist
+   → items[{question, questionFi, basis:{flagId|gap}, answersWith, checked}].
+   The series are annual medians in NOMINAL € — stated plainly on the panel.
+   Every stat value and narrative figure is engine-published; the UI never
+   derives a number from the series (§6.2). */
+
+export interface PriceHistoryPoint {
+    year: string;
+    medianSqm: number;
+    /** Transactions behind the median (the frame names 2026's 214 in copy). */
+    n: number;
+}
+
+export interface RentHistoryPoint {
+    year: string;
+    medianRent: number;
+    n: number;
+}
+
+/** A stat tile beside the chart (R7-9/10 right rail): value + note per language. */
+export interface HistoryStat {
+    label: LocalText;
+    /** Engine-published display ("+1.9 %/y" / "+1,9 %/v"). */
+    value: LocalText;
+    note: LocalText;
+}
+
+interface HistoryBase {
+    /** Panel H2 — names the district + segment (R7-9/10 verbatim). */
+    title: LocalText;
+    /** The series' source note next to the MODELLED chip. */
+    sourceNote: LocalText;
+    /** Chart legend label for the bars ("district median €/m²"). */
+    seriesLabel: LocalText;
+    /** Chart legend label for the deal line ("this apartment, asking"); the
+       deal's display figure follows it in the legend row. */
+    dealLabel: LocalText;
+    /** Engine-published deal figure display ("2 185 €/m²" · "845 €/mo" / "845 €/kk"). */
+    dealDisplay: LocalText;
+    /** The two stat tiles beside the chart (10-y growth + from-2022). */
+    stats: [HistoryStat, HistoryStat];
+    /** Narrative paragraph (engine prose) with its bolded figure(s). */
+    narrative: LocalText;
+    narrativeStrongs: LocalText[];
+    /** The honesty line — "nominal figures, no inflation adjustment, said plainly". */
+    honesty: LocalText;
+}
+
+export interface PriceHistory extends HistoryBase {
+    series: PriceHistoryPoint[];
+    /** This apartment's asking €/m² — OBSERVED; the line is flat by definition. */
+    dealSqm: number;
+    /** Engine-published display of the current district median €/m² (the header
+       meta's "district median 2 590 €/m²"). */
+    medianNowDisplay: string;
+}
+
+export interface RentHistory extends HistoryBase {
+    series: RentHistoryPoint[];
+    /** The sitting tenancy's rent €/mo — OBSERVED; flat by definition. */
+    tenancyRent: number;
+}
+
+/** What earned a checklist item (§4 data model): a flag, or a missing-document
+   gap. The "why" line names it in words ("· flag 1", "· §4"). */
+export type ChecklistBasis = { flagId: string } | { gap: string };
+
+export interface AgentChecklistItem {
+    id: string;
+    question: LocalText;
+    /** Engine-published substrings the UI bolds (the board bolds the document phrase). */
+    questionStrongs: LocalText[];
+    /** The small "why" line naming the flag/§ that earned the question. */
+    why: LocalText;
+    basis: ChecklistBasis;
+    /** The document chip (C1 grammar): SOURCE DOCUMENT / MEETING MINUTES /
+       LEASE CONTRACT / PTS / MINUTES / TENANCY CONTRACT / NOT IN LISTING (+FI). */
+    answersWith: LocalText;
+    /** Dashed chip (the board's NOT IN LISTING — a listing gap, C1 dashed grammar). */
+    dashed?: boolean;
+}
+
+/** R7-11 — one item per flag + per missing-document gap; the LLM phrases,
+   never invents an item. `checked` persists server-side per account+report. */
+export interface AgentChecklist {
+    /** Panel H2 ("Seven questions for the agent — each one earned by this listing"). */
+    title: LocalText;
+    /** Outro line ("Every question names the flag or gap that earned it — …"). */
+    outro: LocalText;
+    outroStrongs: LocalText[];
+    items: AgentChecklistItem[];
+}
+
 /* ── P4 bank summary (R7-P) — engine-published bank-version figures ──────────
    The one-pager always uses the CURRENT version's figures (P4 annotation: v2,
    post price-drop, post documents); the loan need is re-derived by the engine
@@ -475,6 +578,13 @@ export interface ReportDoc {
     yearAssumptions: { text: LocalText; basis: Provenance }[];
     yearGrowth: LocalText;
     listingChange: ListingChange;
+    /** R7-9 price history (appendix A) — expands from the header meta's €/m² stat. */
+    priceHistory: PriceHistory;
+    /** R7-10 rent history (appendix B) — expands from §4's lettings source line. */
+    rentHistory: RentHistory;
+    /** R7-11 agent checklist (appendix C) — after §7; checked state persists
+       server-side per account+report (store merges it in at the boundary). */
+    agentChecklist: AgentChecklist;
     /** P1 cover verdict explanation (R7-P FI verbatim / EN parity) — engine prose. */
     coverVerdictBody: LocalText;
     /** §3 basis line in the print document (P2) — tighter than the screen's. */
@@ -588,8 +698,216 @@ export interface AccountReportRow {
     policyPassing: boolean;
     policyFails: number;
     policyTotal: number;
-    /** Row status vocabulary (R10-1): unlocked · summary only · listing ended.
-       "Price dropped ↓" is a tracking state (R12, later slice). */
-    status: "unlocked" | "summary" | "ended";
+    /** Row status vocabulary (R10-1): unlocked · summary only · listing ended ·
+       price dropped (a tracking state, R12 — the row status links to the
+       tracking dashboard, the R12 scope guard's "My-reports row status link"). */
+    status: "unlocked" | "summary" | "ended" | "dropped";
     unlockTs?: number;
+}
+
+/* ── Offer calculator (R5-6) — POST /r/:id/offer {price} ─────────────────────
+   The engine re-runs the full metric + test set at the offer price; the client
+   never computes a figure (rule §6.2) — the API returns engine-computed numbers
+   and the UI only formats them (the policy-margin precedent). The frame's
+   prose (market note, honesty paragraph) is engine-published in the fixture. */
+
+/** Pinned offer {offerPrice, pinnedAt} — persists server-side per account+report
+   (§4); renders in §1, the PDF and the checklist header. */
+export interface PinnedOffer {
+    offerPrice: number;
+    pinnedAt: number;
+}
+
+/** Engine-published offer-model prose for one analysis (the fixture's block). */
+export interface OfferFixture {
+    /** R5-6 market note under the heading — MODELLED. */
+    marketNote: LocalText;
+    /** The honesty paragraph at the panel's foot ("…a lower price makes the
+       liability ratio worse: honesty over persuasion…") — engine prose. */
+    honesty: LocalText;
+    /** Slider bounds: min € and step € (max is always the asking price). */
+    slider: { min: number; step: number };
+}
+
+/** A flip-list row (R5-6): one test that failed at the asking price. */
+export interface OfferFlip {
+    /** Policy test key (cashFlowBase | liabilityShare | companyGrade on the canonical deal). */
+    key: string;
+    /** flip = FAIL→PASS at this offer (seafoam); stays = STAYS FAIL (coral, reason inline). */
+    kind: "flip" | "stays";
+    /** Liability-row transition values ("49.3 → 52.0 %") — engine-computed. */
+    from?: number;
+    to?: number;
+    /** The cash-flow row's fix boundary (from the test's explanation.fixablePrice). */
+    fixablePrice?: number;
+}
+
+/** The recomputed metric + test set at one offer price (the API payload). */
+export interface OfferResult {
+    price: number;
+    /** Engine-formatted ("98 500 €") — the big number and the pin line. */
+    priceDisplay: string;
+    /** True when price === asking: the UI shows absolute values, not transitions. */
+    atAsking: boolean;
+    /** Signed % vs asking (−5.8) — engine-computed, UI formats. */
+    vsAskingPct: number;
+    debtFree: number;
+    sqm: number;
+    /** Signed % vs district median €/m² (−20.0) — engine-computed, UI formats. */
+    pctVsMedian: number;
+    gross: { from: number; to: number };
+    real: { from: number; to: number };
+    cashFlow: { from: number; to: number };
+    cashNeeded: number;
+    /** The 14-test re-run at this offer (Balanced, like §1/§7). */
+    verdict: { passing: boolean; failCount: number; total: number; wasFailCount: number };
+    flips: OfferFlip[];
+}
+
+/* ── Tracking (R12) — GET /reports/:id/tracking ──────────────────────────────
+   Auto-on at unlock (§4); live + 30 days; daily check (the cron is the real
+   backend's — the mock seeds the record at unlock). Versions never overwrite;
+   the timeline is append-only, newest first. One listing, actual vs. read —
+   explicitly NOT the platform's portfolio (the R12 scope guard). */
+
+export interface TrackingVersion {
+    v: number;
+    /** ISO — when the version was frozen. */
+    at: string;
+    /** Balanced fail count frozen with the version (v1 3 → v2 2). */
+    fails: number;
+    /** What produced the version ("price dropped → free re-run") — engine prose. */
+    trigger: LocalText;
+}
+
+export interface TrackingEvent {
+    /** ISO. */
+    at: string;
+    /** Engine-published line, figures embedded ("Price dropped 6 000 € → 98 600 €"). */
+    title: LocalText;
+    detail?: LocalText;
+}
+
+/** The stored record (per account+report). The GET payload merges pinnedOffer. */
+export interface TrackingRecord {
+    listingStatus: "live" | "ended";
+    /** ISO — the last daily check. */
+    checkedAt: string;
+    /** Engine-published recency note ("checked 2 h ago"). */
+    checkedNote: LocalText;
+    priceAtRead: number;
+    priceNow: number;
+    domAtRead: number;
+    domNow: number;
+    domDistrictMedian: number;
+    versions: TrackingVersion[];
+    events: TrackingEvent[];
+    checklistProgress: { answered: number; total: number };
+    /** Verdict-tile tail ("was 3 in v1 · building tests unchanged") — engine prose. */
+    verdictNote: LocalText;
+    /** Unlock ts — "Tracking · since unlock …". */
+    seededAt: number;
+    /** Per-object mute (R12 "Stop tracking" / R14 note). */
+    stoppedAt?: number;
+}
+
+/** The tracking GET payload — the §5 contract shape + pinned offer. */
+export interface TrackingPayload extends Omit<TrackingRecord, "seededAt" | "stoppedAt"> {
+    pinnedOffer: PinnedOffer | null;
+    /** Signed € delta of the asking price since the read (−6 000) — engine-
+       computed (§6.2), the UI only formats it. */
+    priceDelta: number;
+    /** Signed % between the pinned offer and the current asking (0.1 = the
+       offer sits 0.1 % under asking) — engine-computed, the UI only formats. */
+    pinnedGapPct: number | null;
+    stopped: boolean;
+}
+
+/* ── Compare (R13) — GET /reports/compare?ids= ───────────────────────────────
+   2–4 columns, each frozen at its own version + read date, staleness stated
+   per column with an inline free re-run. "best in row" marks facts only —
+   never the verdict row. Summary-only columns carry the free-tier rows + a
+   lock marker on the §3/financing-derived lines (§6.4: locked values never
+   reach the client). */
+
+export type CompareColumnState = "live" | "price-dropped" | "rerun-pending";
+
+/** Fact rows that can carry the steel best-in-row dot (never the verdict row). */
+export type CompareRowKey = "debtFree" | "sqm" | "yield" | "liability" | "grades" | "flags" | "cashFlow" | "cashNeeded";
+
+/** Rows hidden behind the seam for a summary-only column (lock markers). */
+export const COMPARE_LOCKED_ROWS = ["liability", "cashFlow", "cashNeeded"] as const satisfies readonly CompareRowKey[];
+
+/** Engine-published compare column data (R13-1) — frozen at the report's own version. */
+export interface CompareFixture {
+    versionTag: string;
+    /** ISO — the version's read date. */
+    readAt: string;
+    state: CompareColumnState;
+    /** The column's tier in the mock account's drawer. The real engine derives
+       this per account; the compare fixtures declare Anne's state (see
+       fixtures.ts comment). The canonical report's column is gated by the
+       account's real unlock instead. */
+    access: "unlocked" | "summary";
+    /** Header meta ("2h+kk · 54 m² · 1962"). */
+    meta: LocalText;
+    cells: {
+        debtFree: LocalText;
+        /** "2 074 € · −20.0 %". */
+        sqm: LocalText;
+        /** "9.1 → 6.1 %". */
+        yield: LocalText;
+        /** "−3.0" — the pp gap under the yield pair. */
+        yieldSub: LocalText;
+        /** "56 400 € · 4–5 y · 50.4 %". */
+        liability: LocalText;
+        companyGrade: string;
+        municipalityGrade: string;
+        /** "1 high · 2 caution". */
+        flags: LocalText;
+        cashFlow: LocalText;
+        cashNeeded: LocalText;
+    };
+    verdictKind: "fail-building" | "pass" | "pass-near";
+    /** Fails count (fail-building) / near count (pass-near). */
+    verdictN?: number;
+    /** Engine sort keys for best-in-row (facts only — never the verdict row). */
+    sort: {
+        debtFree: number;
+        sqmVsMedian: number;
+        realYield: number;
+        liability: number;
+        companyRank: number;
+        municipalityRank: number;
+        highFlags: number;
+        totalFlags: number;
+        cashFlow: number;
+        cashNeeded: number;
+    };
+}
+
+/** A compare column as served: locked cells REMOVED, lock markers listed (§6.4). */
+export interface CompareColumn {
+    id: string;
+    slug: string;
+    addr: string;
+    meta: LocalText;
+    versionTag: string;
+    readAt: string;
+    state: CompareColumnState;
+    unlocked: boolean;
+    cells: Omit<CompareFixture["cells"], "liability" | "cashFlow" | "cashNeeded"> &
+        Partial<Pick<CompareFixture["cells"], "liability" | "cashFlow" | "cashNeeded">>;
+    /** Subset of COMPARE_LOCKED_ROWS — present only on summary-only columns. */
+    lockedRows: CompareRowKey[];
+    verdictKind: CompareFixture["verdictKind"];
+    verdictN?: number;
+}
+
+export interface CompareResponse {
+    columns: CompareColumn[];
+    /** row key → winning column id (facts only; unique best — ties unmarked). */
+    best: Partial<Record<CompareRowKey, string>>;
+    /** The engine's policy test count (14) for the verdict pills. */
+    policyTotal: number;
 }

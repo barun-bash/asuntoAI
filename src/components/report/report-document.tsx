@@ -2,57 +2,32 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { AgentChecklistSection } from "@/components/report/agent-checklist";
 import { FlagCard } from "@/components/report/flag-card";
+import { HistoryPanel } from "@/components/report/history-panel";
+import { OfferCalculator, type OfferCalculatorProps } from "@/components/report/offer-calculator";
 import { PolicyPanel } from "@/components/report/policy-panel";
 import { ProvenanceChip } from "@/components/report/provenance-chip";
 import { PublicToggle } from "@/components/report/public-toggle";
+import { StrongText } from "@/components/report/strong-text";
 import { capFirst, formatDate, formatDateTime, formatEUR, formatPercent, numberWord } from "@/lib/format";
 import { evaluatePolicy, formatPolicyLine } from "@/lib/policy";
-import type { Analysis, FlagFull } from "@/lib/types";
+import type { Analysis, FlagFull, PinnedOffer } from "@/lib/types";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
 
 /**
- * The full report document (R7-1…R7-8): §1 verdict · §2 flags · §3 liability ·
- * §4 rent · §5 financing · §6 years · §7 tests, then the footer. Rendered in
- * place of the free summary on the same route once the account owns the
- * report — the seam opens, never a confetti moment. Every figure is
- * engine-published in the fixture; this file formats and lays out only (§6.2).
- * §7's compact marks are DERIVED from the slice-2 policy fixtures (balanced
- * evaluation) — the fourteen tests are not duplicated (per slice brief).
+ * The full report document (R7-1…R7-11): §1 verdict · §2 flags · §3 liability ·
+ * §4 rent · §5 financing · §6 years · §7 tests, then the agent checklist
+ * (R7-11, an appendix — NOT a §-section: the rail stays §1–§7), then the
+ * footer. The price/rent history panels (R7-9/10) expand in place from the
+ * header meta's €/m² stat and §4's lettings source line. Rendered in place of
+ * the free summary on the same route once the account owns the report — the
+ * seam opens, never a confetti moment. Every figure is engine-published in
+ * the fixture; this file formats and lays out only (§6.2). §7's compact marks
+ * are DERIVED from the slice-2 policy fixtures (balanced evaluation) — the
+ * fourteen tests are not duplicated (per slice brief).
  */
-
-/* ── Bolds engine-published substrings inside engine prose (the board bolds
-   figures inside flag bodies, basis paragraphs and chat answers). The strongs
-   arrive from the fixture per language — no UI-side number picking. ── */
-export function StrongText({ text, strongs }: { text: string; strongs?: string[] }) {
-    if (!strongs?.length) return <>{text}</>;
-    // Split on each strong (first occurrence), preserving order.
-    const parts: (string | { strong: string })[] = [text];
-    for (const s of strongs) {
-        for (let i = 0; i < parts.length; i++) {
-            const part = parts[i];
-            if (typeof part !== "string") continue;
-            const at = part.indexOf(s);
-            if (at === -1) continue;
-            parts.splice(i, 1, part.slice(0, at), { strong: s }, part.slice(at + s.length));
-            break;
-        }
-    }
-    return (
-        <>
-            {parts.map((part, i) =>
-                typeof part === "string" ? (
-                    <span key={i}>{part}</span>
-                ) : (
-                    <strong key={i} className="tnum font-bold">
-                        {part.strong}
-                    </strong>
-                ),
-            )}
-        </>
-    );
-}
 
 /* ── Document-rhythm quote block (handoff §10 "Document rhythm"): steel-blue
    3 px rule, soft-sky fill, italic Finnish + source line + translation (when
@@ -114,7 +89,7 @@ function gradeWash(grade: string): string {
 }
 
 /* ── §1 Verdict ── */
-function VerdictSection({ analysis }: { analysis: Analysis }) {
+function VerdictSection({ analysis, pinned }: { analysis: Analysis; pinned: PinnedOffer | null }) {
     const { lang, t } = useLang();
     const { verdict, policy, report } = analysis;
     if (!verdict || !policy || !report) return null;
@@ -174,6 +149,16 @@ function VerdictSection({ analysis }: { analysis: Analysis }) {
                     </div>
                 ))}
             </div>
+            {/* R5-6: the pinned offer renders in §1 as "your target: 98 500 €"
+               (also in the PDF and the checklist header). */}
+            {pinned ? (
+                <p className="tnum mt-2.5 flex items-center gap-2 text-[12.5px] leading-[1.5] font-medium text-rsm-steel">
+                    <span aria-hidden className="flex size-4 items-center justify-center rounded-full bg-rsm-midnight text-[9px] font-bold text-rsm-lime">
+                        ◎
+                    </span>
+                    {tpl(t.report.targetLine, { price: formatEUR(pinned.offerPrice, lang) })}
+                </p>
+            ) : null}
             <p className="mt-3 text-[13.5px] leading-[1.65] wrap-anywhere text-rsm-charcoal">{report.prose[lang]}</p>
             <p className="mt-2.5 text-[11px] leading-[1.5] wrap-anywhere text-rsm-slate-50">{report.proseNote[lang]}</p>
         </section>
@@ -368,8 +353,20 @@ function LiabilitySection({ analysis }: { analysis: Analysis }) {
 
 /* ── §4 Rent — P10/P50/P90 tiles + the dashed "your figure" card (shown only
    after the user supplies a figure in chat or policy — dashed = user-supplied,
-   never engine, never used in any figure, §6.5). ── */
-function RentSection({ analysis, yourFigure }: { analysis: Analysis; yourFigure: { display: string; note: string } | null }) {
+   never engine, never used in any figure, §6.5). The lettings source line
+   carries the "rent history ▸" entry point — the R7-10 panel expands in place
+   between the source line and the tenancy quote. ── */
+function RentSection({
+    analysis,
+    yourFigure,
+    rentOpen,
+    onToggleRent,
+}: {
+    analysis: Analysis;
+    yourFigure: { display: string; note: string } | null;
+    rentOpen: boolean;
+    onToggleRent: () => void;
+}) {
     const { lang, t } = useLang();
     const { report } = analysis;
     if (!report) return null;
@@ -416,10 +413,21 @@ function RentSection({ analysis, yourFigure }: { analysis: Analysis; yourFigure:
             <p className="mt-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12.5px] leading-[1.6] wrap-anywhere text-rsm-slate">
                 <span>{rent.source[lang]}</span>
                 <ProvenanceChip basis="MODELLED" />
+                {/* R7-10 entry point — expands the rent history panel in place. */}
+                <button
+                    type="button"
+                    aria-expanded={rentOpen}
+                    aria-controls="rent-history-panel"
+                    onClick={onToggleRent}
+                    className="inline-flex min-h-11 items-center font-medium whitespace-nowrap text-rsm-steel underline-offset-4 hover:underline"
+                >
+                    {t.history.rentLink}
+                </button>
                 <span aria-hidden>·</span>
                 <span>{rent.tenancy[lang]}</span>
                 <ProvenanceChip basis="OBSERVED" />
             </p>
+            <HistoryPanel kind="rent" slug={analysis.slug} number={analysis.number} open={rentOpen} panelId="rent-history-panel" />
             <div className="mt-2.5">
                 <ReportQuote
                     quote={rent.tenancyQuote.text}
@@ -571,8 +579,10 @@ function YearsSection({ analysis }: { analysis: Analysis }) {
 
 /* ── §7 The fourteen tests — compact marks DERIVED from the slice-2 policy
    fixtures (balanced evaluation; the tests themselves are not duplicated).
-   "edit thresholds ↗" opens the policy panel, which stays after the document. ── */
-function TestsSection({ analysis }: { analysis: Analysis }) {
+   "edit thresholds ↗" opens the policy panel, which stays after the document;
+   the R5-6 frame names §7's edit link as the offer calculator's second entry
+   point — "offer calculator ↗" sits beside it. ── */
+function TestsSection({ analysis, hasOffer }: { analysis: Analysis; hasOffer: boolean }) {
     const { lang, t } = useLang();
     const { policy } = analysis;
     if (!policy) return null;
@@ -587,12 +597,19 @@ function TestsSection({ analysis }: { analysis: Analysis }) {
                     preset: t.policy.presets.balanced,
                 })}
             >
-                <a
-                    href="#policy"
-                    className="ml-auto inline-flex min-h-11 items-center text-[12.5px] font-medium text-rsm-steel underline-offset-4 hover:underline"
-                >
-                    {t.report.editThresholds}
-                </a>
+                <span className="ml-auto flex items-center gap-4">
+                    {hasOffer ? (
+                        <a
+                            href="#offer"
+                            className="inline-flex min-h-11 items-center text-[12.5px] font-medium text-rsm-steel underline-offset-4 hover:underline"
+                        >
+                            {t.report.offerLink}
+                        </a>
+                    ) : null}
+                    <a href="#policy" className="inline-flex min-h-11 items-center text-[12.5px] font-medium text-rsm-steel underline-offset-4 hover:underline">
+                        {t.report.editThresholds}
+                    </a>
+                </span>
             </SectionHeading>
             <div className="mt-3 grid gap-x-5 md:grid-cols-2">
                 {run.results.map((r) => {
@@ -621,10 +638,11 @@ function TestsSection({ analysis }: { analysis: Analysis }) {
     );
 }
 
-/* ── R7-5 listing-changed banner — pins under the report header. The mock
-   trigger is ?state=changed (real diffs arrive from tracking, slice 8).
-   "Keep this version" dismisses locally; "Re-run — free" is a no-op until the
-   re-run flow ships with tracking (comment per slice brief). ── */
+/* ── R7-5 listing-changed banner — pins under the report header. Driven by the
+   tracking record (R12): once unlocked, a price/status diff in the seeded
+   record shows it; ?state=changed stays as the manual mock trigger. "Keep
+   this version" dismisses locally; "Re-run — free" is a no-op until the
+   re-run flow ships (comment per slice brief). ── */
 function ChangedBanner({ analysis }: { analysis: Analysis }) {
     const { lang, t } = useLang();
     const [kept, setKept] = useState(false);
@@ -684,6 +702,8 @@ export function ReportDocument({
     unlockDate,
     unlockOrigin,
     initialPublic,
+    offer,
+    pinned,
 }: {
     analysis: Analysis;
     yourFigure: { display: string; note: string } | null;
@@ -692,10 +712,18 @@ export function ReportDocument({
     unlockOrigin: string;
     /** Owner visibility for the public page — the R7-2 footer toggle (R8). */
     initialPublic: boolean;
+    /** R5-6 calculator payload (server-computed at the pinned offer or asking). */
+    offer?: OfferCalculatorProps;
+    /** The account's pinned offer (R5-6) — renders in §1 and appendix C's header. */
+    pinned: PinnedOffer | null;
 }) {
     const { lang, t } = useLang();
     const { listing } = analysis;
     const h1Ref = useRef<HTMLHeadingElement>(null);
+    // The history panels expand in place from their entry links (R7-9 header
+    // meta €/m² stat, R7-10 §4 lettings source line).
+    const [priceOpen, setPriceOpen] = useState(false);
+    const [rentOpen, setRentOpen] = useState(false);
 
     // h1 receives focus on route arrival (a11y §11), same as the free summary.
     useEffect(() => {
@@ -704,6 +732,7 @@ export function ReportDocument({
 
     if (!listing || !analysis.verdict || !analysis.report) return null;
     const meta = t.verdict.meta;
+    const { priceHistory, agentChecklist } = analysis.report;
 
     return (
         <div className="flex flex-col gap-6">
@@ -731,7 +760,28 @@ export function ReportDocument({
                         {/* Board fidelity: EN reads "read 13:40" (R7-1), FI the full
                            "luettu 28.7.2026 13.40" (R7-6). */}
                         , {t.verdict.readAt} {lang === "fi" ? formatDateTime(listing.fetchedAt, lang) : formatDateTime(listing.fetchedAt, lang).split(" ")[1]}
+                        {/* R7-9 entry point: the header meta's €/m² stat carries
+                           the "price history ▸" link, expanding the panel in
+                           place below the meta. Figures are engine-published in
+                           the fixture (deal OBSERVED, median MODELLED). */}
+                        {" · "}
+                        <span className="tnum">{priceHistory.dealDisplay[lang]}</span>
+                        {" · "}
+                        <span className="tnum">
+                            {t.history.districtMedian} {priceHistory.medianNowDisplay}
+                        </span>
+                        {" · "}
+                        <button
+                            type="button"
+                            aria-expanded={priceOpen}
+                            aria-controls="price-history-panel"
+                            onClick={() => setPriceOpen((v) => !v)}
+                            className="inline-flex min-h-11 items-center font-medium whitespace-nowrap text-rsm-steel underline-offset-4 hover:underline"
+                        >
+                            {t.history.priceLink}
+                        </button>
                     </p>
+                    <HistoryPanel kind="price" slug={analysis.slug} number={analysis.number} open={priceOpen} panelId="price-history-panel" />
                     {/* The quiet unlocked strip — in place of the seam, never confetti. */}
                     <p className="mt-1.5 flex items-center gap-2.5 rounded-[10px] border border-rsm-hairline bg-rsm-editor-bg px-3.5 py-2 text-xs leading-[1.5] wrap-anywhere text-rsm-slate">
                         <span
@@ -743,24 +793,45 @@ export function ReportDocument({
                         <span className="max-md:hidden">{tpl(t.report.unlockedStrip, { date: unlockDate, origin: unlockOrigin })}</span>
                         <span className="md:hidden">{tpl(t.report.unlockedStripShort, { date: unlockDate, origin: unlockOrigin })}</span>
                         {/* Mock trigger: opens the R7-5 banner state (?state=changed);
-                           the real flow is tracking-diff driven (slice 8). */}
+                           the real flow is tracking-diff driven (the tracking
+                           record's price/status diff now also drives it). */}
                         <Link
                             href={`/r/${analysis.slug}?state=changed`}
                             className="ml-auto inline-flex min-h-11 shrink-0 items-center text-xs font-medium whitespace-nowrap text-rsm-steel underline-offset-4 hover:underline"
                         >
                             {t.report.rerunLink}
                         </Link>
+                        {/* R12 entry from the report header (the scope guard's
+                           "My-reports row status link + report header"). */}
+                        <Link
+                            href={`/reports/${analysis.slug}/tracking`}
+                            className="inline-flex min-h-11 shrink-0 items-center text-xs font-medium whitespace-nowrap text-rsm-steel underline-offset-4 hover:underline"
+                        >
+                            {t.report.trackingLink}
+                        </Link>
                     </p>
                     {changed ? <ChangedBanner analysis={analysis} /> : null}
                 </header>
 
-                <VerdictSection analysis={analysis} />
+                <VerdictSection analysis={analysis} pinned={pinned} />
                 <FlagsSection analysis={analysis} />
                 <LiabilitySection analysis={analysis} />
-                <RentSection analysis={analysis} yourFigure={yourFigure} />
+                <RentSection analysis={analysis} yourFigure={yourFigure} rentOpen={rentOpen} onToggleRent={() => setRentOpen((v) => !v)} />
                 <FinancingSection analysis={analysis} />
                 <YearsSection analysis={analysis} />
-                <TestsSection analysis={analysis} />
+                <TestsSection analysis={analysis} hasOffer={!!offer} />
+
+                {/* R7-11 — the agent checklist lives after §7 (appendix C, prints
+                   as the last page). An appendix, not a §-section: the scroll-spy
+                   rail stays §1–§7 (the R7 frames don't add it). The pinned offer
+                   rides the checklist header (R5-6). */}
+                <AgentChecklistSection
+                    slug={analysis.slug}
+                    number={analysis.number}
+                    addr={`${listing.addr}, ${listing.postalCode ? `${listing.postalCode} ` : ""}${listing.city}`}
+                    checklist={agentChecklist}
+                    pinned={pinned}
+                />
 
                 {/* Footer — figures reflect the read moment; legal line. */}
                 <footer className="mt-7 flex flex-wrap items-center gap-x-3.5 gap-y-1 border-t-2 border-rsm-midnight pt-4 text-[11.5px] leading-[1.6] wrap-anywhere text-rsm-misty">
@@ -799,6 +870,10 @@ export function ReportDocument({
                     showUnlockStrip={false}
                 />
             ) : null}
+
+            {/* The offer calculator (R5-6) follows the policy panel — its entry
+               points are the fail banner's fix line and §7's offer link. */}
+            {offer ? <OfferCalculator {...offer} /> : null}
         </div>
     );
 }

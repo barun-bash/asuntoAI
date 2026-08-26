@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AccountTopBar } from "@/components/account/account-top-bar";
 import { RefundSheet, type RefundSubject } from "@/components/account/refund-sheet";
 import { WatchSheet } from "@/components/account/watch-sheet";
@@ -20,6 +21,11 @@ type Filter = "all" | "unlocked" | "passing" | "watching";
  * entry menu (open · email support prefilled with the № · request a refund).
  * "Watching" rows arrive with the tracking slice (R12) — the pill stays per
  * the frame and filters to an honestly empty view until then.
+ *
+ * R12/R13 (slice 8b): an unlocked row's status links to its tracking
+ * dashboard (the R12 scope guard's entry), flipping to "Price dropped ↓"
+ * when the record saw one. "Compare" toggles the R13 selection mode — 2–4
+ * rows, selection order = column order, then /reports/compare?ids=….
  */
 export function ReportsView({
     rows,
@@ -33,11 +39,16 @@ export function ReportsView({
     watch: Watch | undefined;
 }) {
     const { t, lang } = useLang();
+    const router = useRouter();
     const [balance, setBalance] = useState(initialBalance);
     const [watch, setWatch] = useState(initialWatch);
     const [filter, setFilter] = useState<Filter>("all");
     const [watchSheetOpen, setWatchSheetOpen] = useState(false);
     const [refundSubject, setRefundSubject] = useState<RefundSubject | null>(null);
+    /* R13 selection mode — checkboxes appear on "Compare" (the frame's flow:
+       select 2–4 analysed listings in My reports → Compare). */
+    const [compareMode, setCompareMode] = useState(false);
+    const [selected, setSelected] = useState<string[]>([]);
 
     const unlockedCount = rows.filter((r) => r.status !== "summary").length;
     const filtered = rows.filter((r) => {
@@ -46,6 +57,19 @@ export function ReportsView({
         if (filter === "watching") return false; // tracking rows land with R12
         return true;
     });
+
+    const toggleSelect = (reportId: string) => {
+        setSelected((cur) => {
+            if (cur.includes(reportId)) return cur.filter((id) => id !== reportId);
+            if (cur.length >= 4) return cur; // the frame's 2–4
+            return [...cur, reportId]; // selection order = column order
+        });
+    };
+
+    const exitCompare = () => {
+        setCompareMode(false);
+        setSelected([]);
+    };
 
     const watchSummary = watch
         ? watch.maxPrice != null
@@ -71,7 +95,8 @@ export function ReportsView({
                     {tpl(rows.length === 1 ? t.reports.sublineOne : t.reports.subline, { a: rows.length, u: unlockedCount, email: maskEmail(email) })}
                 </p>
 
-                {/* Filter rail — mobile keeps three pills (R10-4), ≥768 all four (R10-7). */}
+                {/* Filter rail — mobile keeps three pills (R10-4), ≥768 all four (R10-7).
+                   The R13 "Compare" toggle opens the selection mode beside it. */}
                 <div className="mt-5 flex flex-wrap gap-1.5" role="group" aria-label={t.reports.title}>
                     {FILTERS.map((f) => (
                         <button
@@ -97,6 +122,21 @@ export function ReportsView({
                             )}
                         </button>
                     ))}
+                    {rows.length >= 2 ? (
+                        <button
+                            type="button"
+                            aria-pressed={compareMode}
+                            onClick={() => (compareMode ? exitCompare() : setCompareMode(true))}
+                            className={cx(
+                                "ml-auto inline-flex min-h-11 items-center rounded-full px-4 text-[13px] font-bold whitespace-nowrap transition-colors duration-200 ease-rsm",
+                                compareMode
+                                    ? "bg-rsm-midnight text-rsm-paper"
+                                    : "text-rsm-midnight shadow-[inset_0_0_0_1px_var(--color-rsm-hairline)] hover:shadow-[inset_0_0_0_1px_var(--color-rsm-steel)]",
+                            )}
+                        >
+                            {compareMode ? t.reports.compareCancel : t.reports.compareMode}
+                        </button>
+                    ) : null}
                 </div>
 
                 {/* Watch strip (R10-1/R10-5 entry). */}
@@ -152,6 +192,10 @@ export function ReportsView({
                             <ReportRow
                                 key={row.reportId}
                                 row={row}
+                                compareMode={compareMode}
+                                selected={selected.includes(row.reportId)}
+                                selectDisabled={!selected.includes(row.reportId) && selected.length >= 4}
+                                onToggleSelect={() => toggleSelect(row.reportId)}
                                 onRefund={() =>
                                     setRefundSubject({
                                         slug: row.slug,
@@ -165,6 +209,30 @@ export function ReportsView({
                     </div>
                 )}
             </main>
+
+            {/* R13 — the selection bar: 2–4 rows, selection order = column order. */}
+            {compareMode ? (
+                <div className="sticky bottom-0 z-30 border-t border-rsm-hairline bg-rsm-paper/95 backdrop-blur-[8px]">
+                    <div className="mx-auto flex w-full max-w-[1120px] flex-wrap items-center gap-3 px-4 py-3 md:px-8">
+                        <span className="tnum text-[13px] font-medium text-rsm-slate">{tpl(t.reports.compareSelected, { n: selected.length })}</span>
+                        <button
+                            type="button"
+                            disabled={selected.length < 2}
+                            onClick={() => router.push(`/reports/compare?ids=${selected.join(",")}`)}
+                            className="inline-flex min-h-11 items-center justify-center rounded-full bg-rsm-lime px-5 text-sm font-bold text-rsm-midnight transition-colors duration-200 ease-rsm hover:bg-rsm-lime-75 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {tpl(t.reports.compareGo, { n: selected.length })}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={exitCompare}
+                            className="ml-auto inline-flex min-h-11 items-center px-3 text-sm font-medium text-rsm-steel underline-offset-4 hover:underline"
+                        >
+                            {t.reports.compareCancel}
+                        </button>
+                    </div>
+                </div>
+            ) : null}
 
             <WatchSheet watch={watch} open={watchSheetOpen} onClose={() => setWatchSheetOpen(false)} onSaved={setWatch} />
             {refundSubject ? <RefundSheet subject={refundSubject} open onClose={() => setRefundSubject(null)} onBalance={setBalance} /> : null}
@@ -191,17 +259,37 @@ function PolicyPill({ row }: { row: AccountReportRow }) {
 
 function StatusText({ row }: { row: AccountReportRow }) {
     const { t } = useLang();
-    const label = row.status === "unlocked" ? t.reports.statusUnlocked : row.status === "ended" ? t.reports.statusEnded : t.reports.statusSummary;
-    return (
-        <span
-            className={cx(
-                "text-[12.5px] font-medium",
-                row.status === "unlocked" ? "text-rsm-midnight" : row.status === "ended" ? "text-rsm-slate-50" : "text-rsm-steel",
-            )}
-        >
-            {label}
-        </span>
-    );
+    const label =
+        row.status === "unlocked"
+            ? t.reports.statusUnlocked
+            : row.status === "ended"
+              ? t.reports.statusEnded
+              : row.status === "dropped"
+                ? t.reports.statusDropped
+                : t.reports.statusSummary;
+    const color =
+        row.status === "unlocked"
+            ? "text-rsm-midnight"
+            : row.status === "ended"
+              ? "text-rsm-slate-50"
+              : row.status === "dropped"
+                ? "text-rsm-amber-deep"
+                : "text-rsm-steel";
+    /* R12 — an unlocked row's status is the tracking dashboard's entry (the
+       scope guard: "My-reports row 'Unlocked' status link"). It sits above the
+       row's overlay link, like the row menu. */
+    if (row.status === "unlocked" || row.status === "dropped") {
+        return (
+            <Link
+                href={`/reports/${row.slug}/tracking`}
+                aria-label={tpl(t.reports.statusLinkAria, { status: label })}
+                className={cx("relative z-10 inline-flex min-h-11 items-center text-[12.5px] font-medium underline-offset-4 hover:underline", color)}
+            >
+                {label}
+            </Link>
+        );
+    }
+    return <span className={cx("inline-flex min-h-11 items-center text-[12.5px] font-medium", color)}>{label}</span>;
 }
 
 function Dots({ row, labelled }: { row: AccountReportRow; labelled?: boolean }) {
@@ -218,7 +306,23 @@ function Dots({ row, labelled }: { row: AccountReportRow; labelled?: boolean }) 
     );
 }
 
-function ReportRow({ row, onRefund }: { row: AccountReportRow; onRefund: () => void }) {
+function ReportRow({
+    row,
+    onRefund,
+    compareMode = false,
+    selected = false,
+    selectDisabled = false,
+    onToggleSelect,
+}: {
+    row: AccountReportRow;
+    onRefund: () => void;
+    /** R13 selection mode: the row's overlay becomes the checkbox (selection
+       order = column order), the report link and row menu suspend. */
+    compareMode?: boolean;
+    selected?: boolean;
+    selectDisabled?: boolean;
+    onToggleSelect?: () => void;
+}) {
     const { t, lang } = useLang();
     const href = `/r/${row.slug}`;
     const yields = `${formatPercent(row.gross, lang)} → ${formatPercent(row.real, lang)}`;
@@ -231,54 +335,92 @@ function ReportRow({ row, onRefund }: { row: AccountReportRow; onRefund: () => v
             ? t.reports.statusSummary
             : row.status === "ended"
               ? t.reports.statusEnded
-              : row.policyPassing
-                ? t.reports.mobileSubPasses
-                : tpl(t.reports.mobileSubFails, { n: row.policyFails, total: row.policyTotal });
+              : row.status === "dropped"
+                ? t.reports.statusDropped
+                : row.policyPassing
+                  ? t.reports.mobileSubPasses
+                  : tpl(t.reports.mobileSubFails, { n: row.policyFails, total: row.policyTotal });
     const mobileSubColor =
         row.status === "summary"
             ? "text-rsm-steel"
             : row.status === "ended"
               ? "text-rsm-slate-50"
-              : row.policyPassing
-                ? "text-rsm-seafoam-deep"
-                : "text-rsm-coral-deep";
+              : row.status === "dropped"
+                ? "text-rsm-amber-deep"
+                : row.policyPassing
+                  ? "text-rsm-seafoam-deep"
+                  : "text-rsm-coral-deep";
+
+    /* The compare checkbox — the R7-11 grammar (18 px square, midnight + tick). */
+    const check = compareMode ? (
+        <span
+            aria-hidden
+            className={cx(
+                "flex size-[18px] shrink-0 items-center justify-center rounded-[5px] border-[1.5px] transition-colors duration-200 ease-rsm",
+                selected ? "border-rsm-midnight bg-rsm-midnight text-rsm-paper" : "border-[#C4C8CA] bg-white",
+                selectDisabled && "opacity-50",
+            )}
+        >
+            {selected ? "✓" : ""}
+        </span>
+    ) : null;
 
     return (
-        <div className="relative border-t border-rsm-row-line">
-            <Link href={href} aria-label={row.addr} className="absolute inset-0 z-0 rounded-[4px]" />
+        <div className={cx("relative border-t border-rsm-row-line", selected && "bg-rsm-soft-sky/50")}>
+            {compareMode ? (
+                <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={selected}
+                    aria-disabled={selectDisabled || undefined}
+                    aria-label={tpl(t.reports.compareSelectRow, { addr: row.addr })}
+                    onClick={() => {
+                        if (!selectDisabled) onToggleSelect?.();
+                    }}
+                    className="absolute inset-0 z-0 rounded-[4px]"
+                />
+            ) : (
+                <Link href={href} aria-label={row.addr} className="absolute inset-0 z-0 rounded-[4px]" />
+            )}
             {/* ≤767 — R10-4: dots, address + subline, real yield. */}
             <div className="flex items-center gap-3 py-3 md:hidden">
-                <Dots row={row} />
+                {check ?? <Dots row={row} />}
                 <span className="min-w-0 flex-1">
                     <span className="block truncate text-[14px] font-medium wrap-anywhere text-rsm-midnight">{row.addr}</span>
                     <span className={cx("block text-[12px] leading-[1.4]", mobileSubColor)}>{mobileSub}</span>
                 </span>
                 <span className="tnum font-display text-[15px] font-medium text-rsm-midnight">{formatPercent(row.real, lang)}</span>
-                <RowMenu row={row} onRefund={onRefund} />
+                {compareMode ? null : <RowMenu row={row} onRefund={onRefund} />}
             </div>
             {/* 768–1279 — R10-7: liability + dots fold into the subline; grid 1.9fr/108/96/110 + menu. */}
             <div className="hidden grid-cols-[minmax(0,1.9fr)_108px_96px_110px_44px] items-center gap-3 py-3.5 md:grid xl:hidden">
-                <span className="min-w-0">
-                    <span className="block truncate text-[14px] font-medium wrap-anywhere text-rsm-midnight">{row.addr}</span>
-                    <span className="tnum block truncate text-[12px] leading-[1.4] text-rsm-slate">{tabletMeta}</span>
+                <span className="flex min-w-0 items-center gap-3">
+                    {check}
+                    <span className="min-w-0">
+                        <span className="block truncate text-[14px] font-medium wrap-anywhere text-rsm-midnight">{row.addr}</span>
+                        <span className="tnum block truncate text-[12px] leading-[1.4] text-rsm-slate">{tabletMeta}</span>
+                    </span>
                 </span>
                 <span className="tnum text-right text-[13px] text-rsm-midnight">{yields}</span>
                 <PolicyPill row={row} />
                 <StatusText row={row} />
-                <RowMenu row={row} onRefund={onRefund} />
+                {compareMode ? <span /> : <RowMenu row={row} onRefund={onRefund} />}
             </div>
             {/* ≥1280 — R10-1: six columns + overflow. */}
             <div className="hidden grid-cols-[minmax(0,2.2fr)_120px_110px_72px_116px_140px_44px] items-center gap-3 py-3.5 xl:grid">
-                <span className="min-w-0">
-                    <span className="block truncate text-[14px] font-medium wrap-anywhere text-rsm-midnight">{row.addr}</span>
-                    <span className="tnum block truncate text-[12px] leading-[1.4] text-rsm-slate">{meta}</span>
+                <span className="flex min-w-0 items-center gap-3">
+                    {check}
+                    <span className="min-w-0">
+                        <span className="block truncate text-[14px] font-medium wrap-anywhere text-rsm-midnight">{row.addr}</span>
+                        <span className="tnum block truncate text-[12px] leading-[1.4] text-rsm-slate">{meta}</span>
+                    </span>
                 </span>
                 <span className="tnum text-right text-[13px] text-rsm-midnight">{yields}</span>
                 <span className="tnum text-right text-[13px] text-rsm-midnight">{liability}</span>
                 <Dots row={row} labelled />
                 <PolicyPill row={row} />
                 <StatusText row={row} />
-                <RowMenu row={row} onRefund={onRefund} />
+                {compareMode ? <span /> : <RowMenu row={row} onRefund={onRefund} />}
             </div>
         </div>
     );

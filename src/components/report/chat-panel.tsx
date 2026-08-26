@@ -2,11 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, MessageSmileCircle, XClose } from "@untitledui/icons";
-import { StrongText } from "@/components/report/report-document";
+import { StrongText } from "@/components/report/strong-text";
 import type { ChatResponse } from "@/lib/types";
 import { CHAT_TURN_CAP } from "@/lib/types";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
+
+/** Window event that opens the chat from elsewhere in the document (R7-11's
+   "Ask these in chat instead →"): the ≥1280 dock is always visible, so it just
+   focuses its input; the tablet overlay / mobile sheet opens. */
+export const OPEN_CHAT_EVENT = "resimator:open-chat";
 
 /**
  * "Ask this report" (R7-1…R7-8) — one chat, three presentations:
@@ -116,8 +121,10 @@ function CitationChip({ section, anchor }: { section: string; anchor: string }) 
 }
 
 /* ── The shared panel surface: header (title + live count), scrollable body
-   (intro + suggestion chips | conversation | exhausted card), input footer. ── */
-function ChatSurface({ chat, onClose, autoFocus }: { chat: ChatState; onClose?: () => void; autoFocus?: boolean }) {
+   (intro + suggestion chips | conversation | exhausted card), input footer.
+   `inputId` tags one presentation's input so OPEN_CHAT_EVENT can focus it
+   (the always-visible ≥1280 dock). ── */
+function ChatSurface({ chat, onClose, autoFocus, inputId }: { chat: ChatState; onClose?: () => void; autoFocus?: boolean; inputId?: string }) {
     const { t } = useLang();
     const [draft, setDraft] = useState("");
     const bodyRef = useRef<HTMLDivElement>(null);
@@ -229,6 +236,7 @@ function ChatSurface({ chat, onClose, autoFocus }: { chat: ChatState; onClose?: 
             <div className={cx("flex items-center gap-2 border-t border-rsm-row-line px-4 py-3", exhausted && "opacity-50")}>
                 <input
                     ref={inputRef}
+                    id={inputId}
                     type="text"
                     value={draft}
                     disabled={exhausted || pending}
@@ -284,6 +292,23 @@ export function ChatPanel({ slug, initialTurnsLeft, onYourFigure }: { slug: stri
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
+    // OPEN_CHAT_EVENT (R7-11 "Ask these in chat instead →"): the ≥1280 dock is
+    // always on screen — focus its input and bring it into view; below that the
+    // overlay/sheet opens (the docked input doesn't exist in the layout there).
+    useEffect(() => {
+        const onOpenChat = () => {
+            if (window.matchMedia("(min-width: 1280px)").matches) {
+                const input = document.getElementById("chat-dock-input");
+                input?.scrollIntoView({ behavior: "smooth", block: "center" });
+                input?.focus({ preventScroll: true });
+            } else {
+                setOpen(true);
+            }
+        };
+        window.addEventListener(OPEN_CHAT_EVENT, onOpenChat);
+        return () => window.removeEventListener(OPEN_CHAT_EVENT, onOpenChat);
+    }, []);
+
     const close = () => {
         setOpen(false);
         // Return focus to the rail input (tablet) or the bar button (mobile).
@@ -303,7 +328,7 @@ export function ChatPanel({ slug, initialTurnsLeft, onYourFigure }: { slug: stri
         <>
             {/* ≥1280 — docked 380 px panel beside the document (R7-1). */}
             <div className="sticky top-[88px] max-h-[calc(100vh-112px)] w-[380px] shrink-0 overflow-hidden rounded-[16px] border border-rsm-hairline bg-white shadow-rsm-sm max-xl:hidden">
-                <ChatSurface chat={chat} />
+                <ChatSurface chat={chat} inputId="chat-dock-input" />
             </div>
 
             {/* 768–1279 — bottom rail with inline input (R7-7); sending opens
