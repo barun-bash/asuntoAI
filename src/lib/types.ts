@@ -1077,7 +1077,7 @@ export interface PartnerOrgPayload {
 export interface PartnerKeyRow {
     id: string;
     kind: PartnerKeyKind;
-    /** "rsm_live_7f4k…c2" — prefix+suffix only (R17-1 verbatim). */
+    /** Mask anatomy per R17-1: prefix+suffix only ("rsm_live_xxxx…xx"). Values are derived mock secrets — see store.ts mockHex. */
     masked: string;
     status: PartnerKeyStatus;
     createdDisplay: string;

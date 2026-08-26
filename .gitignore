@@ -29,8 +29,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env files (can opt-in for committing if needed)
-.env
+# env files — never commit real secrets; .env.example is the checked-in template
+.env*
 
 # vercel
 .vercel

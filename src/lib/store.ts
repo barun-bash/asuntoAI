@@ -12,7 +12,7 @@
  * the screens. The mock completes every intent synchronously (the real flow
  * is Stripe confirm → webhook; handoff-notes "Purchase").
  */
-import { createHmac } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { formatDate, formatEUR, formatPercent } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { isSupportedListingUrl } from "@/lib/listing-url";
@@ -1433,12 +1433,19 @@ export const PARTNER_WEBHOOK_EVENT = "analysis.completed";
 /** R17 notes: "webhook HMAC-signed, retries 5× exponential". */
 export const PARTNER_WEBHOOK_RETRIES = "5× exponential backoff";
 
-/** Deterministic mock keys for the seeded org (R17-1 rows): their masked forms
-   are the frame's verbatim ("rsm_live_7f4k…c2" / "rsm_test_9d1a…8e"). The
-   sandbox key replays the canonical fixture — smoke tests can rely on these. */
+/** Deterministic mock keys for the seeded org (R17-1 rows). Mock credentials
+   are DERIVED from plain seeds — nothing credential-shaped is stored in source
+   (a GitGuardian alert on a previous whsec_ literal is why; scanners and humans
+   must never mistake a mock for a real secret). Derivation is deterministic, so
+   the sandbox replay and smoke tests stay stable. Real secrets belong in
+   .env.local (gitignored) — see .env.example. */
+function mockHex(seed: string, length: number): string {
+    return createHash("sha256").update(`resimator-mock:${seed}`).digest("hex").slice(0, length);
+}
 export const MOCK_PARTNER_ORG_ID = "org_km_tampere";
-export const MOCK_PARTNER_LIVE_KEY = "rsm_live_7f4k9q2m8vx1c2";
-export const MOCK_PARTNER_SANDBOX_KEY = "rsm_test_9d1a6b3f5c7d8e";
+export const MOCK_PARTNER_LIVE_KEY = `rsm_live_${mockHex("partner-key-live", 18)}`;
+export const MOCK_PARTNER_SANDBOX_KEY = `rsm_test_${mockHex("partner-key-sandbox", 18)}`;
+const MOCK_PARTNER_WEBHOOK_SECRET = `whsec_${mockHex("partner-webhook-signing", 32)}`;
 /** The sandbox job id — the R17-2 example's own ("an_9f2c"); replaying the
    canonical fixture means the same id and payload every time. */
 export const PARTNER_SANDBOX_JOB_ID = "an_9f2c";
@@ -1468,7 +1475,7 @@ function seedPartnerOrg(): void {
         ],
         webhook: {
             url: "https://api.km-tampere.fi/hooks/resimator",
-            secret: "whsec_9c31f7ab42e8d6a5b0f1e2d3c4a59687",
+            secret: MOCK_PARTNER_WEBHOOK_SECRET,
             delivering: true, // "DELIVERING" (R17-1)
         },
     });
@@ -1704,7 +1711,7 @@ function partnerKeyRow(key: PartnerKey): PartnerKeyRow {
     return {
         id: key.id,
         kind: key.kind,
-        // "rsm_live_7f4k…c2" — prefix+suffix only (R17-1 verbatim anatomy).
+        // Prefix+suffix mask anatomy per R17-1; values are derived mock secrets.
         masked: `${key.secret.slice(0, 13)}…${key.secret.slice(-2)}`,
         status: key.status,
         createdDisplay: formatDate(new Date(key.createdAt).toISOString(), "en"),
