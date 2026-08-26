@@ -305,6 +305,9 @@ export interface Account {
     createdAt: number;
     /** First full unlock free per account — honored exactly once (§12). */
     freeClaimed: boolean;
+    /** R15-2/3: the 3 first-run onboarding tips fire once ever — set on skip OR
+       finish (guests without an account use localStorage instead). */
+    onboardingSeen?: boolean;
 }
 
 export type DeclineCode = "insufficient_funds" | "generic";

@@ -340,7 +340,10 @@ export function PolicyPanel({
                         role="radiogroup"
                         aria-label={t.policy.groupLabel}
                         onKeyDown={onGroupKeyDown}
-                        className="-mx-1 scrollbar-hide w-full overflow-x-auto md:mx-0 md:ml-auto md:w-auto md:overflow-visible"
+                        /* data-onboarding anchor: R15-2 tip 3 ("re-runs live,
+                           thresholds are yours") halos the preset pills. */
+                        data-onboarding="policy"
+                        className="-mx-1 scrollbar-hide w-full overflow-x-auto rounded md:mx-0 md:ml-auto md:w-auto md:overflow-visible"
                     >
                         <div className="flex w-max gap-2 px-1 py-1 md:w-auto md:flex-wrap md:justify-end">
                             {PRESET_ORDER.map((key) => {

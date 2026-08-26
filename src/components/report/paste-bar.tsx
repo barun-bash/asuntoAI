@@ -14,8 +14,13 @@ const SEEN_KEY = "asunto:analysis-run";
  * - autofocus; paste of a valid URL auto-submits after 300 ms; Enter submits
  * - validated as you type; error is aria-live polite + aria-invalid, never a toast
  * - submitting swaps the label for a spinner ≤150 ms, width locked, input read-only
+ *
+ * The marketing landing (/raportti · /report) reuses the same bar — its CTA
+ * copy comes from the Landing board ("Analyse — free") and the R15-1 example
+ * chip stays exclusive to the product landing (Landing board annotation: the
+ * hero paste bar submits into the R1 flow).
  */
-export function PasteBar() {
+export function PasteBar({ submitLabel, placeholder, exampleChip = true }: { submitLabel?: string; placeholder?: string; exampleChip?: boolean }) {
     const { t } = useLang();
     const router = useRouter();
     const [value, setValue] = useState("");
@@ -95,7 +100,7 @@ export function PasteBar() {
                         }}
                         onBlur={() => setTouched(true)}
                         onPaste={onPaste}
-                        placeholder={t.landing.placeholder}
+                        placeholder={placeholder ?? t.landing.placeholder}
                         className={cx(
                             "tnum min-h-14 w-full rounded-rsm-input border bg-white px-4 text-[15px] text-rsm-midnight transition-colors duration-200 ease-rsm outline-none placeholder:text-rsm-misty-75",
                             showError ? "border-[1.5px] border-rsm-coral" : "border-rsm-hairline focus:border-rsm-steel",
@@ -121,7 +126,7 @@ export function PasteBar() {
                             {t.landing.submitting}
                         </>
                     ) : (
-                        t.landing.submit
+                        (submitLabel ?? t.landing.submit)
                     )}
                 </button>
             </form>
@@ -135,7 +140,7 @@ export function PasteBar() {
                 ) : null}
             </div>
 
-            {showExample ? (
+            {exampleChip && showExample ? (
                 <button
                     type="button"
                     onClick={() => {

@@ -115,7 +115,17 @@ export default async function Page({
                     })()
                 ) : (
                     <>
-                        <VerdictView analysis={redactAnalysis(analysis)} visitor={visitor} ended={ended} offer={offer} />
+                        <VerdictView
+                            analysis={redactAnalysis(analysis)}
+                            visitor={visitor}
+                            ended={ended}
+                            offer={offer}
+                            /* R15-2/3: tips fire on the first verdict this
+                               account/browser owns — never for shared-link
+                               visitors (gated inside the view too). */
+                            onboardingSeen={account?.onboardingSeen ?? false}
+                            hasAccount={!!account}
+                        />
                         {isPublicReport(analysis.id) ? <JsonLd analysis={redactAnalysis(analysis)} lang={lang} /> : null}
                     </>
                 )
