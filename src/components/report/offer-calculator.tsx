@@ -293,8 +293,9 @@ function OfferPanel({ props, state, idSuffix }: { props: OfferCalculatorProps; s
                 ))}
             </div>
 
-            {/* Verdict at this offer — the re-run answers the user's action (live). */}
-            <p aria-live="polite" className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+            {/* Verdict at this offer — the re-run answers the user's action:
+               aria-live assertive, the policy banner's precedent (a11y §11). */}
+            <p aria-live="assertive" aria-atomic="true" className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
                 <span
                     className={cx(
                         "font-display text-[17px] leading-[1.3] font-medium",

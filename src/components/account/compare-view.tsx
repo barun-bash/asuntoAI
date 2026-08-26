@@ -23,6 +23,10 @@ import { cx } from "@/utils/cx";
  * column bleeds the frame edge to say so; ≥1280 the columns grow to fill.
  * (The frame's drag-to-reorder stays engine/platform work — the mock keeps
  * selection order, flagged in the PR.)
+ *
+ * Deferred: the R13-1 print annotation ("print: fits one landscape A4") is
+ * NOT implemented — the compare table is screen-only in this slice; a
+ * landscape print sheet is follow-up work alongside any compare print spec.
  */
 
 interface RowDef {

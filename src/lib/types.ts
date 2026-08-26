@@ -814,6 +814,9 @@ export interface TrackingRecord {
 /** The tracking GET payload — the §5 contract shape + pinned offer. */
 export interface TrackingPayload extends Omit<TrackingRecord, "seededAt" | "stoppedAt"> {
     pinnedOffer: PinnedOffer | null;
+    /** Signed € delta of the asking price since the read (−6 000) — engine-
+       computed (§6.2), the UI only formats it. */
+    priceDelta: number;
     /** Signed % between the pinned offer and the current asking (0.1 = the
        offer sits 0.1 % under asking) — engine-computed, the UI only formats. */
     pinnedGapPct: number | null;

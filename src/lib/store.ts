@@ -188,6 +188,12 @@ export function redactAnalysis(analysis: Analysis): Analysis {
     return {
         ...analysis,
         report: undefined,
+        /* The R13 compare block is also locked content: it freezes the v2
+           full-report figures (56 400 € liability, +21 €/mo cash flow, 29 900 €
+           cash needed, the price-dropped state) — locked data never reaches
+           the free-tier client (§6.4). The compare route re-reads it from the
+           store with its own per-column gating. */
+        compare: undefined,
         verdict: analysis.verdict ? { ...analysis.verdict, flags: analysis.verdict.flags.map((f) => redactFlag(f as FlagFull)) } : undefined,
     };
 }
@@ -606,9 +612,10 @@ const round100 = (v: number): number => Math.round(v / 100) * 100;
 
 /** One recomputed metric set at an offer price (numeric — the API serializes
    the numbers; formatting is the shared format.ts layer's, both sides of the
-   boundary). */
-function offerMetrics(price: number) {
-    const ask = canonicalAnalysis.listing!.askPrice;
+   boundary). The asking price comes from the passed analysis; the rest of the
+   model is the engine-published constants above. */
+function offerMetrics(analysis: Analysis, price: number) {
+    const ask = analysis.listing!.askPrice;
     const m = OFFER_MODEL;
     const debtFree = price + m.loanShare;
     /* The buyer's 30 k€ equity scales with the price (mock engine rule — this
@@ -657,11 +664,12 @@ function offerMetrics(price: number) {
 }
 
 /** The 14 actuals at an offer price: price-dependent keys recomputed above,
-   price-independent keys verbatim from the fixture (grades, hoitovastike,
-   the unfunded-project flag). Display strings formatted at the boundary. */
-function offerActuals(price: number): PolicyActual[] {
-    const m = offerMetrics(price);
-    const base = canonicalAnalysis.policy!.actuals;
+   price-independent keys verbatim from the passed analysis (grades,
+   hoitovastike, the unfunded-project flag). Display strings formatted at the
+   boundary. */
+function offerActuals(analysis: Analysis, price: number): PolicyActual[] {
+    const m = offerMetrics(analysis, price);
+    const policy = analysis.policy!;
     const override: Record<string, number> = {
         grossYield: m.gross,
         netYield: m.net,
@@ -674,13 +682,13 @@ function offerActuals(price: number): PolicyActual[] {
         p10Covers: m.p10Covers,
         companyLoanShare: m.companyLoanShare,
     };
-    return base.map((actual) => {
+    return policy.actuals.map((actual) => {
         const value = override[actual.key];
         if (value === undefined) return actual;
         /* Keep the fixture's display grammar per key: % with FI comma, €/mo or
            € with fi-FI grouping, U+2212 minus — formatPercent/formatEUR cover
            both; the flag/grade keys never land here. */
-        const unit = canonicalAnalysis.policy!.tests.find((t) => t.key === actual.key)?.unit;
+        const unit = policy.tests.find((t) => t.key === actual.key)?.unit;
         const display = unit === "percent" ? formatPercent(value, "en") : unit === "eurMonth" ? `${formatEUR(value, "en")}/mo` : formatEUR(value, "en");
         const displayFi = unit === "percent" ? formatPercent(value, "fi") : unit === "eurMonth" ? `${formatEUR(value, "fi")}/kk` : formatEUR(value, "fi");
         return { key: actual.key, value, display, displayFi };
@@ -700,11 +708,11 @@ export function computeOffer(analysis: Analysis, price: number): OfferResult | u
     const clamped = Math.min(ask, Math.max(offer.slider.min, Math.round(price)));
     if (!Number.isFinite(clamped)) return undefined;
 
-    const metrics = offerMetrics(clamped);
-    const data = { ...policy, actuals: offerActuals(clamped) };
+    const metrics = offerMetrics(analysis, clamped);
+    const data = { ...policy, actuals: offerActuals(analysis, clamped) };
     const runAtOffer = evaluatePolicy(data, policy.presets.balanced);
     const runAtAsk = evaluatePolicy(policy, policy.presets.balanced);
-    const askMetrics = offerMetrics(ask);
+    const askMetrics = offerMetrics(analysis, ask);
 
     /* Flip list: the tests that failed at asking, in test order — FAIL→PASS
        seafoam when the offer flips one, STAYS FAIL coral with the reason
@@ -826,10 +834,12 @@ export function getTrackingPayload(accountId: string, reportId: string): Trackin
     const { seededAt: _seededAt, stoppedAt, ...rest } = record;
     void _seededAt;
     const pinnedOffer = getPinnedOffer(accountId, reportId) ?? null;
-    /* The offer-vs-asking gap is engine work (§6.2): 0.1 = the offer sits
-       0.1 % under the current asking — the R12-1 "the drop closed your gap". */
+    /* The price delta and the offer-vs-asking gap are engine work (§6.2):
+       −6 000 € since the read; 0.1 = the offer sits 0.1 % under the current
+       asking — the R12-1 "the drop closed your gap". */
+    const priceDelta = record.priceNow - record.priceAtRead;
     const pinnedGapPct = pinnedOffer ? Math.round(((record.priceNow - pinnedOffer.offerPrice) / record.priceNow) * 1000) / 10 : null;
-    return { ...rest, pinnedOffer, pinnedGapPct, stopped: stoppedAt !== undefined };
+    return { ...rest, priceDelta, pinnedOffer, pinnedGapPct, stopped: stoppedAt !== undefined };
 }
 
 /** The seededAt ts the dashboard's "since unlock" line needs. */

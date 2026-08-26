@@ -48,7 +48,7 @@ export function TrackingView({
     const [busy, setBusy] = useState(false);
 
     const current = payload.versions[payload.versions.length - 1];
-    const priceDelta = payload.priceNow - payload.priceAtRead;
+    const priceDelta = payload.priceDelta; // engine-published (§6.2) — formatted, never derived here
     const pinned = payload.pinnedOffer;
     const gapClosing = (payload.pinnedGapPct ?? 0) >= 0;
 

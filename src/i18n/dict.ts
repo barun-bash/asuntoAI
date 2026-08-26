@@ -368,7 +368,7 @@ export const dict = {
             priceLink: "hintahistoria ▸",
             rentLink: "vuokrahistoria ▸",
             districtMedian: "alueen mediaani",
-            priceEyebrow: "Hintahistoria · liite numeroon {n}",
+            priceEyebrow: "Hintahistoria · liite A numeroon {n}",
             rentEyebrow: "Vuokrahistoria · liite B numeroon {n}",
             loading: "Ladataan…",
         },
