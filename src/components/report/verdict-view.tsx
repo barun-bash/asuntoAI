@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FlagCard, LiabilityItemRow, LockedFlagRow } from "@/components/report/flag-card";
 import { GradeTile } from "@/components/report/grade-tile";
 import { OfferCalculator, type OfferCalculatorProps } from "@/components/report/offer-calculator";
+import { OnboardingTips } from "@/components/report/onboarding-tips";
 import { PaywallSeam, StickyUnlockBar } from "@/components/report/paywall-seam";
 import { PolicyPanel } from "@/components/report/policy-panel";
 import { ProvenanceChip } from "@/components/report/provenance-chip";
@@ -34,6 +35,8 @@ export function VerdictView({
     visitor = false,
     ended = false,
     offer,
+    onboardingSeen = true,
+    hasAccount = false,
 }: {
     analysis: Analysis;
     unlocked?: boolean;
@@ -43,6 +46,10 @@ export function VerdictView({
        is locked at asking with the seam copy; absent when the engine publishes
        no offer model for the analysis. */
     offer?: OfferCalculatorProps;
+    /** R15-2/3: the account's persisted onboarding flag. Defaults to "seen" so
+       every existing caller keeps tips off unless the page opts in. */
+    onboardingSeen?: boolean;
+    hasAccount?: boolean;
 }) {
     const { lang, t } = useLang();
     const h1Ref = useRef<HTMLHeadingElement>(null);
@@ -60,8 +67,11 @@ export function VerdictView({
     const provenanceKeys = ["OBSERVED", "MAPPED", "MODELLED", "ESTIMATED"] as const;
 
     return (
-        <div className="min-h-screen pb-24 md:pb-16">
+        <div className="relative min-h-screen pb-24 md:pb-16">
             <TopBar analyseAnother />
+            {/* R15-2/3 onboarding: fires only on a verdict this account/browser
+               owns (the visitor/seam paths are excluded server-side). */}
+            <OnboardingTips enabled={!visitor} seenOnAccount={onboardingSeen} hasAccount={hasAccount} />
             <main className="mx-auto w-full max-w-[840px] px-4 md:max-w-[704px] md:px-0 xl:max-w-[840px]">
                 {/* R8-1 visitor banner / R8-3 ended banner — the public-page
                    register the owner view doesn't carry. */}
@@ -95,9 +105,11 @@ export function VerdictView({
                         </Link>
                     </div>
                 ) : null}
-                <div className="flex flex-col gap-8 rounded-rsm-card border border-rsm-hairline bg-rsm-paper p-5 shadow-rsm-sm md:p-8">
+                {/* R15-2 dim target: OnboardingTips sets data-onboarding-step on
+                   this sheet; non-target slots dim to 45 % (CSS in resimator.css). */}
+                <div data-onboarding-sheet className="flex flex-col gap-8 rounded-rsm-card border border-rsm-hairline bg-rsm-paper p-5 shadow-rsm-sm md:p-8">
                     {/* Header — every surface is a numbered, dated, sourced document. */}
-                    <header className="flex flex-col gap-2">
+                    <header data-slot="header" className="flex flex-col gap-2">
                         <p className="text-xs font-bold tracking-[0.08em] text-rsm-steel uppercase">{t.verdict.eyebrow}</p>
                         <p className="tnum text-xs text-rsm-misty">
                             № {analysis.number} · {formatDateTime(analysis.readAt, lang)}
@@ -132,13 +144,13 @@ export function VerdictView({
                     </header>
 
                     {/* Yields — 2-up at every width (R1-7 mobile, R1-16 tablet). */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div data-slot="yields" className="grid grid-cols-2 gap-3 rounded-rsm-tile">
                         <YieldMetricRow label={t.verdict.grossYield} metric={verdict.grossYield} />
                         <YieldMetricRow label={t.verdict.realYield} metric={verdict.realYield} delta />
                     </div>
 
                     {/* Grades — 2-up; compact tiles survive 390 px (R1-7). */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div data-slot="grades" className="grid grid-cols-2 gap-3">
                         <GradeTile
                             grade={verdict.grades.company.grade}
                             label={t.verdict.housingCompany}
@@ -152,7 +164,7 @@ export function VerdictView({
                     </div>
 
                     {/* Flags */}
-                    <section className="flex flex-col gap-3" aria-labelledby="flags-title">
+                    <section data-slot="flags" className="flex flex-col gap-3 rounded-rsm-tile" aria-labelledby="flags-title">
                         <h2 id="flags-title" className="font-display text-2xl font-medium text-rsm-midnight">
                             {tpl(t.verdict.flagsFound, { n: verdict.flagCount.total })}
                         </h2>
@@ -181,7 +193,7 @@ export function VerdictView({
                     </section>
 
                     {/* The honest seam */}
-                    <div id={SEAM_ANCHOR}>
+                    <div data-slot="seam" id={SEAM_ANCHOR}>
                         <PaywallSeam
                             lockedFlags={lockedFlags}
                             total={verdict.flagCount.total}
@@ -194,16 +206,22 @@ export function VerdictView({
 
                     {/* Policy panel (R5-1…R5-5) — full panel visible on the free verdict. */}
                     {analysis.policy ? (
-                        <PolicyPanel policy={analysis.policy} addr={listing.addr} flagCount={verdict.flagCount.total} seamAnchorId={SEAM_ANCHOR} />
+                        <div data-slot="policy" className="rounded-rsm-card">
+                            <PolicyPanel policy={analysis.policy} addr={listing.addr} flagCount={verdict.flagCount.total} seamAnchorId={SEAM_ANCHOR} />
+                        </div>
                     ) : null}
 
                     {/* Offer calculator (R5-6) — visible on the free verdict but
                        locked at asking with the unlock seam copy; it never
                        POSTs until the report is unlocked. */}
-                    {offer ? <OfferCalculator {...offer} seamHref={`#${SEAM_ANCHOR}`} /> : null}
+                    {offer ? (
+                        <div data-slot="offer" className="rounded-rsm-card">
+                            <OfferCalculator {...offer} seamHref={`#${SEAM_ANCHOR}`} />
+                        </div>
+                    ) : null}
 
                     {/* Provenance legend (C1 definitions) + engine note */}
-                    <footer className="flex flex-col gap-2 border-t border-rsm-hairline pt-5">
+                    <footer data-slot="footer" className="flex flex-col gap-2 border-t border-rsm-hairline pt-5">
                         <dl className="grid gap-2 text-xs text-rsm-misty md:grid-cols-2">
                             {provenanceKeys.map((key) => (
                                 <div key={key} className="flex items-center gap-2">

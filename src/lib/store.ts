@@ -216,6 +216,14 @@ export function getAccount(id: string | undefined | null): Account | undefined {
     return id ? store.accounts.get(id) : undefined;
 }
 
+/** R15-2/3 — first-run onboarding fires once per account; called on skip OR
+   finish (R15-2 annotation). Guests never reach this — they persist to
+   localStorage instead. */
+export function markOnboardingSeen(accountId: string): void {
+    const account = getAccount(accountId);
+    if (account) account.onboardingSeen = true;
+}
+
 /** Balance = sum of ledger deltas (append-only; never negative by construction). */
 export function balanceOf(accountId: string): number {
     return (store.ledger.get(accountId) ?? []).reduce((sum, entry) => sum + entry.delta, 0);

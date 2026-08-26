@@ -31,7 +31,9 @@ export function FlagCard({ flag, window: windowLabel }: { flag: FlagFull; window
                 <span className="text-rsm-misty">{windowLabel}</span>
             </div>
             <p className="text-[15px] leading-relaxed wrap-anywhere text-rsm-charcoal">{lang === "fi" ? flag.bodyFi : flag.body}</p>
-            <div className="flex flex-col gap-3">
+            {/* data-onboarding anchor: R15-2 tip 2 ("The sentence behind the
+               claim") halos the citation blocks. */}
+            <div data-onboarding="citation" className="flex flex-col gap-3 rounded">
                 {flag.quotes.map((quote) => (
                     <CitationBlock key={quote.text} quote={quote.text} source={lang === "fi" ? quote.sourceFi : quote.source} translation={quote.translation} />
                 ))}

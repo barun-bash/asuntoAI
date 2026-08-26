@@ -14,7 +14,9 @@ export function YieldMetricRow({ label, metric, delta }: { label: string; metric
 
     return (
         <div className="flex flex-col gap-1.5 rounded-rsm-tile border border-rsm-hairline bg-white p-4 md:p-5">
-            <div className="flex items-center gap-2">
+            {/* data-onboarding anchor: R15-2 tip 1 ("every number names its
+               source") halos the first provenance chip on the sheet. */}
+            <div data-onboarding="provenance" className="flex items-center gap-2 self-start rounded">
                 <span className="text-sm font-medium text-rsm-misty">{label}</span>
                 <ProvenanceChip basis={metric.basis} />
             </div>

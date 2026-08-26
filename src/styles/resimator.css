@@ -107,15 +107,19 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* Policy threshold editor (R5-2): the DS Slider ships Untitled brand purple;
-   spec §2 reserves Steel Blue for interaction — recolor within this scope only. */
-.policy-slider .bg-brand-solid {
+/* Policy threshold editor (R5-2) and the marketing miss-cost slider (Landing
+   #cost): the DS Slider ships Untitled brand purple; spec §2 reserves Steel
+   Blue for interaction — recolor within these scopes only. */
+.policy-slider .bg-brand-solid,
+.marketing-slider .bg-brand-solid {
     background-color: var(--rsm-steel-blue);
 }
-.policy-slider .bg-quaternary {
+.policy-slider .bg-quaternary,
+.marketing-slider .bg-quaternary {
     background-color: var(--rsm-misty-blue-25);
 }
-.policy-slider .ring-slider-handle-border {
+.policy-slider .ring-slider-handle-border,
+.marketing-slider .ring-slider-handle-border {
     --tw-ring-color: var(--rsm-steel-blue);
 }
 
@@ -127,4 +131,199 @@ body {
 }
 .rsm-toggle .bg-tertiary {
     background-color: var(--rsm-slate-grey-25);
+}
+
+/* ── Marketing landing — how-it-works loop (Landing board) ───────────────────
+   CSS storyboard, keyframes verbatim from the board: 12 s, three beats
+   (paste → reads+prices live → verdict), steel loop line. The production swap
+   is a captioned screen-recording mp4/webm (muted, loop, playsinline,
+   poster = beat 3) — same three beats and timing; drop it in inside
+   LoopStoryboard and keep this reduced-motion poster path. */
+@keyframes lpS1 {
+    0%,
+    26% {
+        opacity: 1;
+    }
+    32%,
+    94% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpS2 {
+    0%,
+    26% {
+        opacity: 0;
+    }
+    32%,
+    60% {
+        opacity: 1;
+    }
+    66%,
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpS3 {
+    0%,
+    60% {
+        opacity: 0;
+    }
+    66%,
+    94% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpBar {
+    0%,
+    32% {
+        width: 6%;
+    }
+    60%,
+    100% {
+        width: 94%;
+    }
+}
+@keyframes lpT1 {
+    0%,
+    34% {
+        opacity: 0.3;
+    }
+    38%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpT2 {
+    0%,
+    42% {
+        opacity: 0.3;
+    }
+    46%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpT3 {
+    0%,
+    50% {
+        opacity: 0.3;
+    }
+    54%,
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes lpPop {
+    0%,
+    68% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    73%,
+    94% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes lpLoop {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+.lp-s1 {
+    animation: lpS1 12s linear infinite;
+}
+.lp-s2 {
+    animation: lpS2 12s linear infinite;
+}
+.lp-s3 {
+    animation: lpS3 12s linear infinite;
+}
+.lp-bar {
+    animation: lpBar 12s linear infinite;
+}
+.lp-t1 {
+    animation: lpT1 12s linear infinite;
+}
+.lp-t2 {
+    animation: lpT2 12s linear infinite;
+}
+.lp-t3 {
+    animation: lpT3 12s linear infinite;
+}
+.lp-pop {
+    animation: lpPop 12s linear infinite;
+}
+.lp-loop {
+    animation: lpLoop 12s linear infinite;
+}
+/* prefers-reduced-motion → static verdict beat (board media query, verbatim). */
+@media (prefers-reduced-motion: reduce) {
+    .lp-s1,
+    .lp-s2 {
+        animation: none !important;
+        opacity: 0 !important;
+    }
+    .lp-s3 {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+    .lp-bar,
+    .lp-t1,
+    .lp-t2,
+    .lp-t3,
+    .lp-pop,
+    .lp-loop {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .lp-bar {
+        width: 94% !important;
+    }
+    .lp-loop {
+        width: 100% !important;
+    }
+}
+
+/* ── R15-2/3 first-run onboarding ────────────────────────────────────────────
+   Not a modal: the page stays scrollable and readable — non-target sheet
+   sections dim to 45 %, the target keeps full opacity and gets a 3 px steel
+   halo. data-onboarding-step is set on [data-onboarding-sheet] by the
+   OnboardingTips component; targets carry data-onboarding anchors. */
+[data-onboarding-sheet][data-onboarding-step] > [data-slot] {
+    opacity: 0.45;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-onboarding-sheet][data-onboarding-step="provenance"] > [data-slot="yields"],
+[data-onboarding-sheet][data-onboarding-step="citation"] > [data-slot="flags"],
+[data-onboarding-sheet][data-onboarding-step="policy"] > [data-slot="policy"] {
+    opacity: 1;
+}
+.onboarding-halo {
+    position: relative;
+    z-index: 1;
+    border-radius: 10px;
+    /* R15-2: the 3 px steel halo renders at 22 % alpha (board value verbatim). */
+    box-shadow: 0 0 0 3px rgba(66, 122, 161, 0.22);
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* While the tips run (data-onboarding-active on <html>), the mobile bottom-docked
+   tip card owns the bottom edge — the StickyUnlockBar shares z-40 and is later
+   in DOM, so it would paint over the tip. It slides back once the sequence ends. */
+[data-onboarding-active] .rsm-sticky-unlock {
+    display: none;
 }
