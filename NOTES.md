@@ -26,3 +26,7 @@ _Canonical terms and facts, sharpened as the grilling resolves them._
 5. **Good to go**: user merges the `frontend-web` → `main` PR. Slice PRs into `frontend-web` may be merged by the orchestrator once review is clean.
 6. **Backend**: mock engine (`src/lib/store.ts`) carries the whole journey unless the user delivers a real engine; contracts stay engine-shaped so the swap is one file.
 7. **Checkpoint cadence (push right)**: the user is involved once per slice, late — a PR + brief (what shipped, what was verified, what needs eyes), not raw output.
+
+## Journey status (2026-07-30): COMPLETE
+All ten §13 slices merged into `frontend-web` (PRs #2–#10 squash-merged; PR #1 `frontend-web`→`main` awaits the user's "good to go"). Reviewers caught real issues each round — three §6.4 payload leaks, a free-credit refund exploit, slider/a11y defects — all fixed pre-merge.
+Production follow-ups (outside the journey): real engine swap behind `src/lib/store.ts`, Stripe, email sending, partner backend, translator review of composed FI strings (flagged inline in `src/i18n/dict.ts`), browser pixel pass at 1440/768/390.
