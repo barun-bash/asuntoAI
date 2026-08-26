@@ -65,9 +65,6 @@
     /* Board row separator #F0EDE7 and slider-row background #FBFAF7 (R5-1/R5-2). */
     --color-rsm-row-line: #f0ede7;
     --color-rsm-editor-bg: #fbfaf7;
-    /* Steel evidence wash #EBF2FA — Landing board quote blocks + evidence-section
-       field (marketing surfaces; product quote blocks reuse the same board value). */
-    --color-rsm-steel-wash: #ebf2fa;
 
     /* Type */
     --font-display: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -322,4 +319,11 @@ body {
     /* R15-2: the 3 px steel halo renders at 22 % alpha (board value verbatim). */
     box-shadow: 0 0 0 3px rgba(66, 122, 161, 0.22);
     transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* While the tips run (data-onboarding-active on <html>), the mobile bottom-docked
+   tip card owns the bottom edge — the StickyUnlockBar shares z-40 and is later
+   in DOM, so it would paint over the tip. It slides back once the sequence ends. */
+[data-onboarding-active] .rsm-sticky-unlock {
+    display: none;
 }

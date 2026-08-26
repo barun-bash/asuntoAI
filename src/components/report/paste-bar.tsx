@@ -18,19 +18,43 @@ const SEEN_KEY = "asunto:analysis-run";
  * The marketing landing (/raportti · /report) reuses the same bar — its CTA
  * copy comes from the Landing board ("Analyse — free") and the R15-1 example
  * chip stays exclusive to the product landing (Landing board annotation: the
- * hero paste bar submits into the R1 flow).
+ * hero paste bar submits into the R1 flow). The board's 390 frame shortens the
+ * placeholder ("Paste the listing link…") — pass placeholderShort to opt in.
  */
-export function PasteBar({ submitLabel, placeholder, exampleChip = true }: { submitLabel?: string; placeholder?: string; exampleChip?: boolean }) {
+export function PasteBar({
+    submitLabel,
+    placeholder,
+    placeholderShort,
+    exampleChip = true,
+}: {
+    submitLabel?: string;
+    placeholder?: string;
+    placeholderShort?: string;
+    exampleChip?: boolean;
+}) {
     const { t } = useLang();
     const router = useRouter();
+    /* SSR and the hydration render both ship the long placeholder; the effect
+       then swaps to the short one on ≤767 (a window-reading useState initializer
+       would produce a hydration attribute mismatch that never re-renders). */
+    const [isDesktop, setIsDesktop] = useState(true);
     const [value, setValue] = useState("");
     const [touched, setTouched] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [showExample, setShowExample] = useState(false);
     const pasteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 768px)");
+        const update = () => setIsDesktop(mq.matches);
+        update();
+        mq.addEventListener("change", update);
+        return () => mq.removeEventListener("change", update);
+    }, []);
+
     const valid = isSupportedListingUrl(value);
     const showError = touched && value.trim().length > 0 && !valid;
+    const activePlaceholder = !isDesktop && placeholderShort ? placeholderShort : (placeholder ?? t.landing.placeholder);
 
     useEffect(() => {
         // The example chip shows on first visit only (R15-1).
@@ -100,7 +124,7 @@ export function PasteBar({ submitLabel, placeholder, exampleChip = true }: { sub
                         }}
                         onBlur={() => setTouched(true)}
                         onPaste={onPaste}
-                        placeholder={placeholder ?? t.landing.placeholder}
+                        placeholder={activePlaceholder}
                         className={cx(
                             "tnum min-h-14 w-full rounded-rsm-input border bg-white px-4 text-[15px] text-rsm-midnight transition-colors duration-200 ease-rsm outline-none placeholder:text-rsm-misty-75",
                             showError ? "border-[1.5px] border-rsm-coral" : "border-rsm-hairline focus:border-rsm-steel",

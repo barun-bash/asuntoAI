@@ -152,7 +152,10 @@ export function StickyUnlockBar({ anchorId, reportSlug }: { anchorId: string; re
         <div
             aria-hidden={!visible}
             className={cx(
-                "fixed inset-x-0 bottom-0 z-40 border-t border-rsm-hairline bg-rsm-paper p-3 transition-transform duration-250 ease-rsm md:hidden",
+                /* rsm-sticky-unlock: hidden by CSS while R15-2/3 onboarding runs
+                   ([data-onboarding-active]) — the bottom-docked tip owns the
+                   bottom edge and both share z-40. */
+                "rsm-sticky-unlock fixed inset-x-0 bottom-0 z-40 border-t border-rsm-hairline bg-rsm-paper p-3 transition-transform duration-250 ease-rsm md:hidden",
                 visible ? "translate-y-0" : "translate-y-full",
             )}
         >

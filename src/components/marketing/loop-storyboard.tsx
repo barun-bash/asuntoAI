@@ -80,7 +80,7 @@ export function LoopStoryboard() {
                     <p className="mb-2.5 text-[10px] leading-[13px] font-bold tracking-[0.09em] text-rsm-steel uppercase">{m.beat2}</p>
                     <div className="rounded-rsm-tile border border-rsm-hairline bg-white px-5 py-4">
                         <p className="font-display text-[15px] leading-[1.3] font-medium text-rsm-midnight">Tuomiokirkonkatu 23 B 14, Tampere</p>
-                        <div className="my-3 h-1 overflow-hidden rounded-full bg-rsm-steel-wash">
+                        <div className="my-3 h-1 overflow-hidden rounded-full bg-rsm-soft-sky">
                             <div className="lp-bar h-full w-[6%] rounded-full bg-rsm-steel" />
                         </div>
                         <div className="lp-t1 flex items-center gap-[9px] border-t border-rsm-row-line py-[7px] text-[12.5px] leading-[1.45] font-medium text-rsm-midnight">
@@ -135,7 +135,7 @@ export function LoopStoryboard() {
                                 {t.common.high} · {formatEUR(58200, lang)}
                             </span>
                         </div>
-                        <div className="lp-pop mt-3 rounded-r-lg border-l-[3px] border-rsm-steel bg-rsm-steel-wash px-3 py-2">
+                        <div className="lp-pop mt-3 rounded-r-lg border-l-[3px] border-rsm-steel bg-rsm-soft-sky px-3 py-2">
                             <span className="block text-[11.5px] leading-[1.5] font-medium text-rsm-midnight italic">
                                 ”Taloyhtiössä on teetetty kuntotutkimus 2024…”
                             </span>
@@ -145,7 +145,7 @@ export function LoopStoryboard() {
                 </div>
 
                 {/* Loop line — 12 s progress, restarts with the beats. */}
-                <div className="absolute bottom-0 left-0 h-[2px] w-full bg-rsm-steel-wash">
+                <div className="absolute bottom-0 left-0 h-[2px] w-full bg-rsm-soft-sky">
                     <div className="lp-loop h-full w-0 bg-rsm-steel" />
                 </div>
             </div>

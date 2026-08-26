@@ -28,7 +28,7 @@ function PainChip({ label, tone }: { label: string; tone: "high" | "caution" }) 
 /** Steel-bordered quote block — the board's citation grammar on marketing cards. */
 function MarketingQuote({ quote, source, compact = false }: { quote: string; source: string; compact?: boolean }) {
     return (
-        <div className={cx("rounded-r-lg border-l-[3px] border-rsm-steel bg-rsm-steel-wash", compact ? "px-3 py-2" : "px-[13px] py-[9px]")}>
+        <div className={cx("rounded-r-lg border-l-[3px] border-rsm-steel bg-rsm-soft-sky", compact ? "px-3 py-2" : "px-[13px] py-[9px]")}>
             <span
                 className={cx(
                     "block font-medium wrap-anywhere text-rsm-midnight italic",
@@ -146,7 +146,9 @@ export function MarketingLanding() {
     const { lang, t } = useLang();
     const m = t.marketing;
 
-    // The root layout pins <html lang="fi">; the EN mirror corrects it on mount.
+    // The root layout pins <html lang="fi">: /report additionally ships an
+    // inline script that sets lang="en" pre-hydration; this effect keeps the
+    // attribute right after client-side FI⇄EN navigation in both directions.
     useEffect(() => {
         document.documentElement.lang = lang;
     }, [lang]);
@@ -154,7 +156,9 @@ export function MarketingLanding() {
     const otherLocale = lang === "fi" ? { href: "/report", label: "EN" } : { href: "/raportti", label: "FI" };
     const unlockHref = lang === "en" ? "/unlock?lang=en" : "/unlock";
     const homeHref = lang === "en" ? "/?lang=en" : "/";
-    const sampleSrc = lang === "en" ? `${SAMPLE_HREF}?lang=en` : SAMPLE_HREF;
+    /* The sample page keeps the UI locale: EN route links/embed carry ?lang=en
+       (the public page is FI-default like everything else). */
+    const sampleHref = lang === "en" ? `${SAMPLE_HREF}?lang=en` : SAMPLE_HREF;
     const railParts = m.faq.rail.split("hello@resimator.fi");
 
     const stats = [
@@ -199,7 +203,7 @@ export function MarketingLanding() {
                         <a href="#pricing" className="inline-flex min-h-11 items-center hover:text-rsm-steel hover:underline">
                             {m.nav.pricing}
                         </a>
-                        <Link href={SAMPLE_HREF} className="inline-flex min-h-11 items-center hover:text-rsm-steel hover:underline">
+                        <Link href={sampleHref} className="inline-flex min-h-11 items-center hover:text-rsm-steel hover:underline">
                             {m.nav.sample}
                         </Link>
                     </nav>
@@ -237,7 +241,10 @@ export function MarketingLanding() {
                    marketing copy (product surfaces keep exact figures). */}
                 <section className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-4 py-14 md:px-10 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:px-20 lg:pt-[88px] lg:pb-[72px]">
                     <div>
-                        <p className="mb-[18px] text-[11px] leading-[14px] font-bold tracking-[0.1em] text-rsm-steel uppercase">{m.hero.eyebrow}</p>
+                        <p className="mb-[18px] text-[11px] leading-[14px] font-bold tracking-[0.1em] text-rsm-steel uppercase">
+                            <span className="hidden md:inline">{m.hero.eyebrow}</span>
+                            <span className="md:hidden">{m.hero.eyebrowShort}</span>
+                        </p>
                         <h1 className="mb-4 font-display text-[40px] leading-[1.08] font-medium tracking-[-0.01em] text-balance text-rsm-midnight md:text-[54px]">
                             {m.hero.h1a} <span className="tnum whitespace-nowrap">{m.hero.h1Figure}</span> {m.hero.h1b}
                         </h1>
@@ -251,8 +258,13 @@ export function MarketingLanding() {
                             <PainChip label={m.hero.chip3} tone="caution" />
                         </div>
                         {/* Landing board hero placeholder ("https://asunnot.oikotie.fi/…"),
-                           shorter than the product landing's. */}
-                        <PasteBar submitLabel={m.hero.submit} placeholder="https://asunnot.oikotie.fi/…" exampleChip={false} />
+                           shortening to the 390 frame's text placeholder on mobile. */}
+                        <PasteBar
+                            submitLabel={m.hero.submit}
+                            placeholder="https://asunnot.oikotie.fi/…"
+                            placeholderShort={t.landing.placeholderShort}
+                            exampleChip={false}
+                        />
                         <p className="mt-[13px] text-[13px] leading-[1.5] font-medium text-rsm-misty">
                             <span className="hidden md:inline">{m.hero.trust}</span>
                             <span className="md:hidden">{m.hero.trustShort}</span>
@@ -298,7 +310,7 @@ export function MarketingLanding() {
                                     </div>
                                 ))}
                                 <p className="text-[13px] leading-[1.5] font-medium">
-                                    <Link href={SAMPLE_HREF} className="inline-flex min-h-11 items-center text-rsm-steel underline-offset-4 hover:underline">
+                                    <Link href={sampleHref} className="inline-flex min-h-11 items-center text-rsm-steel underline-offset-4 hover:underline">
                                         {m.how.sampleLink}
                                     </Link>
                                 </p>
@@ -307,9 +319,10 @@ export function MarketingLanding() {
                     </div>
                 </section>
 
-                {/* #evidence — steel-wash field. At ≤767 this folds into the
-                   loop's beat 3 and is not duplicated (390 annotation). */}
-                <section id="evidence" className="hidden scroll-mt-20 border-t border-[rgba(20,34,45,0.08)] bg-rsm-steel-wash md:block">
+                {/* #evidence — soft-sky field (DS token; the board's #EBF2FA).
+                   At ≤767 this folds into the loop's beat 3 and is not
+                   duplicated (390 annotation). */}
+                <section id="evidence" className="hidden scroll-mt-20 border-t border-[rgba(20,34,45,0.08)] bg-rsm-soft-sky md:block">
                     <div className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-4 py-[72px] md:px-10 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:px-20">
                         <div>
                             <HeaderSection
@@ -469,13 +482,13 @@ export function MarketingLanding() {
                             </div>
                             {/* Keyboard-reachable Open-full link (board a11y note). */}
                             <p className="mt-5 hidden text-[13.5px] leading-[1.4] font-medium md:block">
-                                <Link href={SAMPLE_HREF} className="inline-flex min-h-11 items-center text-rsm-steel underline-offset-4 hover:underline">
+                                <Link href={sampleHref} className="inline-flex min-h-11 items-center text-rsm-steel underline-offset-4 hover:underline">
                                     {m.sample.openFull}
                                 </Link>
                             </p>
                             {/* 390: condensed card instead of the embed. */}
                             <Link
-                                href={SAMPLE_HREF}
+                                href={sampleHref}
                                 className="flex min-h-11 items-center gap-3 rounded-rsm-tile border border-rsm-hairline bg-white p-4 shadow-rsm-sm md:hidden"
                             >
                                 <span className="min-w-0 flex-1">
@@ -496,7 +509,7 @@ export function MarketingLanding() {
                                     resimator.fi/r/tuomiokirkonkatu-23-b-14-tampere
                                 </span>
                             </div>
-                            <iframe src={sampleSrc} title={m.sample.iframeTitle} loading="lazy" className="h-[440px] w-full border-0" />
+                            <iframe src={sampleHref} title={m.sample.iframeTitle} loading="lazy" className="h-[440px] w-full border-0" />
                         </div>
                     </div>
                 </section>
@@ -535,12 +548,12 @@ export function MarketingLanding() {
                                 <span className="absolute -top-3 left-7 rounded-full bg-rsm-lime px-[11px] py-1.5 text-[10px] leading-none font-bold tracking-[0.06em] text-rsm-midnight uppercase">
                                     {m.pricing.featuredBadge}
                                 </span>
-                                <p className="text-[11px] leading-[14px] font-bold tracking-[0.07em] text-[#91A3B7] uppercase">{m.pricing.fiveName}</p>
+                                <p className="text-[11px] leading-[14px] font-bold tracking-[0.07em] text-rsm-misty-75 uppercase">{m.pricing.fiveName}</p>
                                 <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2">
                                     <span className="tnum font-display text-[40px] leading-none font-medium text-rsm-paper">{formatEUR(199, lang)}</span>
-                                    <span className="tnum text-[13px] leading-[1.4] font-medium text-[#91A3B7]">{m.pricing.fivePer}</span>
+                                    <span className="tnum text-[13px] leading-[1.4] font-medium text-rsm-misty-75">{m.pricing.fivePer}</span>
                                 </p>
-                                <p className="mt-3 text-[13.5px] leading-[1.6] font-medium wrap-anywhere text-[#DAE1E7]">{m.pricing.fiveDesc}</p>
+                                <p className="mt-3 text-[13.5px] leading-[1.6] font-medium wrap-anywhere text-rsm-misty-25">{m.pricing.fiveDesc}</p>
                                 <div className="mt-auto pt-5">
                                     <Link
                                         href={unlockHref}
@@ -601,7 +614,7 @@ export function MarketingLanding() {
                                 <h2 className="mb-3 font-display text-[28px] leading-[1.15] font-medium text-balance text-rsm-paper md:text-[40px]">
                                     {m.band.title}
                                 </h2>
-                                <p className="max-w-[560px] text-[15px] leading-[1.65] font-medium wrap-anywhere text-[#DAE1E7]">{m.band.body}</p>
+                                <p className="max-w-[560px] text-[15px] leading-[1.65] font-medium wrap-anywhere text-rsm-misty-25">{m.band.body}</p>
                             </div>
                             <Link
                                 href={homeHref}

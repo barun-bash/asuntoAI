@@ -29,6 +29,12 @@ export default function Page() {
 
     return (
         <LangProvider initialLang="en">
+            {/* The root layout pins <html lang="fi"> and a route-group layout
+               can't re-render <html>, so this tiny inline script sets en during
+               the initial HTML parse — pre-hydration, before any paint or AT
+               announcement. MarketingLanding's effect repeats it for
+               client-side FI⇄EN navigation (where this script doesn't re-run). */}
+            <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.lang="en"' }} />
             <MarketingLanding />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         </LangProvider>

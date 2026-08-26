@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { tpl, useLang } from "@/providers/lang";
 import { cx } from "@/utils/cx";
 
@@ -31,7 +31,6 @@ export function OnboardingTips({ enabled, seenOnAccount, hasAccount }: { enabled
     const { t } = useLang();
     const [step, setStep] = useState<number | null>(null);
     const [pos, setPos] = useState<TipPosition | null>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
 
     const tips = [
         { key: "provenance" as StepKey, title: t.onboarding.tip1Title, body: t.onboarding.tip1Body },
@@ -79,6 +78,13 @@ export function OnboardingTips({ enabled, seenOnAccount, hasAccount }: { enabled
             return;
         }
 
+        /* Later anchors sit below the fold — bring the target to center on each
+           step change so the card never strands off-screen (instant under
+           prefers-reduced-motion). The card's coordinates are document-based,
+           so the glide doesn't invalidate them. */
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
+
         sheet.setAttribute("data-onboarding-step", key);
         target.classList.add("onboarding-halo");
 
@@ -98,6 +104,19 @@ export function OnboardingTips({ enabled, seenOnAccount, hasAccount }: { enabled
             target.classList.remove("onboarding-halo");
         };
     }, [step, finish]);
+
+    /* While a tip runs, mark the document: the mobile StickyUnlockBar (z-40,
+       later in DOM) would paint over the bottom-docked tip card, so CSS hides
+       it for the sequence (resimator.css). */
+    useEffect(() => {
+        const root = document.documentElement;
+        if (step === null) {
+            root.removeAttribute("data-onboarding-active");
+            return;
+        }
+        root.setAttribute("data-onboarding-active", "true");
+        return () => root.removeAttribute("data-onboarding-active");
+    }, [step]);
 
     // Esc ends the whole sequence (R15-2 annotation).
     useEffect(() => {
@@ -155,7 +174,6 @@ export function OnboardingTips({ enabled, seenOnAccount, hasAccount }: { enabled
         <>
             {/* ≥768: the card anchors below its target with a notch (R15-2). */}
             <div
-                ref={cardRef}
                 role="group"
                 aria-label={t.onboarding.ariaLabel}
                 style={pos ? { top: pos.top, left: pos.left, width: 330, maxWidth: "calc(100vw - 32px)" } : undefined}

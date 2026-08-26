@@ -958,6 +958,9 @@ export const dict = {
             nav: { how: "Näin se toimii", why: "Miksi luottaa siihen", pricing: "Hinnat", sample: "Esimerkkiraportti" },
             hero: {
                 eyebrow: "Asunnon ostajille ja sijoittajille — Suomi",
+                /* 390 frame drops "ja sijoittajille" (same pattern as the EN
+                   390 "For apartment buyers — Finland"). */
+                eyebrowShort: "Asunnon ostajille — Suomi",
                 h1a: "Ilmoitus ei kerro",
                 h1Figure: "58 000",
                 h1b: "euron putkiremontista.",
@@ -1095,7 +1098,7 @@ export const dict = {
                 body: "Tämä on aito, julkinen analyysi — ei kiillotettu malli. Vieritä tässä: alkuperämerkinnät joka luvussa, suomenkielinen lause joka väitteen takana ja rehellinen sauma, johon maksuton yhteenveto päättyy.",
                 bullet1: "Jokainen analyysi saa tällaisen sivun; sen jakaminen on yleisin tapa löytää meidät.",
                 bullet2: "Lukittu pysyy näkyvästi lukittuna — vakavuus ja kustannushaarukat näkyvissä, otsikot raportin takana.",
-                openFull: "Avaa esimerkki koko sivuna ↗",
+                openFull: "Avaa kokonaan ↗",
                 iframeTitle: "Esimerkkiraportti",
                 mobileTitle: "Lue aito analyysi",
                 mobileSub: "julkinen esimerkki, merkit ja lainaukset mukana",
@@ -2068,6 +2071,7 @@ export const dict = {
             nav: { how: "How it works", why: "Why trust it", pricing: "Pricing", sample: "Example report" },
             hero: {
                 eyebrow: "For apartment buyers & investors — Finland",
+                eyebrowShort: "For apartment buyers — Finland",
                 h1a: "The listing won’t mention the",
                 h1Figure: "58 000 €",
                 h1b: "pipe renovation.",
