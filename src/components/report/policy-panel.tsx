@@ -230,6 +230,10 @@ export function PolicyPanel({
     const { lang, t } = useLang();
     const [basePreset, setBasePreset] = useState<PolicyPresetKey>("balanced");
     const [thresholds, setThresholds] = useState<Record<string, number>>({ ...policy.presets.balanced });
+    // Explicit Custom state (R5-2 "Custom, from Yield-seeking"): clicking the
+    // Custom pill adopts the current preset as the editable baseline — clean
+    // until the first threshold edit dirties it against that origin.
+    const [isCustom, setIsCustom] = useState(false);
     const [activeKey, setActiveKey] = useState<string | null>(null);
     const [showRest, setShowRest] = useState(false);
     const [lastRun, setLastRun] = useState<LastRun>({ kind: "initial" });
@@ -243,7 +247,7 @@ export function PolicyPanel({
         try {
             const raw = window.localStorage.getItem(STORAGE_KEY);
             if (raw) {
-                const saved = JSON.parse(raw) as { base?: string; thresholds?: Record<string, number> };
+                const saved = JSON.parse(raw) as { base?: string; custom?: boolean; thresholds?: Record<string, number> };
                 const base = saved.base as PolicyPresetKey;
                 if (base && base in policy.presets && saved.thresholds) {
                     const clean: Record<string, number> = {};
@@ -253,6 +257,7 @@ export function PolicyPanel({
                     }
                     setBasePreset(base);
                     setThresholds(clean);
+                    if (saved.custom === true) setIsCustom(true);
                 }
             }
         } catch {
@@ -261,13 +266,19 @@ export function PolicyPanel({
         setHydrated(true);
     }, [policy]);
 
+    // The re-verdict: 14 comparisons over engine-published actuals — «100 ms.
+    const run = useMemo(() => evaluatePolicy(policy, thresholds), [policy, thresholds]);
+
+    const dirtyCount = dirtyCountAgainst(policy.presets[basePreset], thresholds);
+    const dirty = dirtyCount > 0;
+
     // Save debounced 800 ms (board contract) — anonymous tier only.
     useEffect(() => {
         if (!hydrated) return;
         if (saveTimer.current) window.clearTimeout(saveTimer.current);
         saveTimer.current = window.setTimeout(() => {
             try {
-                window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ base: basePreset, thresholds }));
+                window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ base: basePreset, custom: isCustom || dirty, thresholds }));
             } catch {
                 // Storage unavailable — the policy just won't persist.
             }
@@ -275,18 +286,13 @@ export function PolicyPanel({
         return () => {
             if (saveTimer.current) window.clearTimeout(saveTimer.current);
         };
-    }, [hydrated, basePreset, thresholds]);
+    }, [hydrated, basePreset, isCustom, dirty, thresholds]);
 
-    // The re-verdict: 14 comparisons over engine-published actuals — «100 ms.
-    const run = useMemo(() => evaluatePolicy(policy, thresholds), [policy, thresholds]);
-
-    const dirtyCount = dirtyCountAgainst(policy.presets[basePreset], thresholds);
-    const dirty = dirtyCount > 0;
-    const activePresetKey: PolicyPresetKey | "custom" = dirty ? "custom" : basePreset;
+    const activePresetKey: PolicyPresetKey | "custom" = isCustom || dirty ? "custom" : basePreset;
     const presetName = t.policy.presets[activePresetKey];
     const activeTest = activeKey ? (policy.tests.find((test) => test.key === activeKey) ?? null) : null;
     // R5-4: clean Conservative drops the word "tests" from the summary ("fails 6 of 14 · Conservative").
-    const conservativeClean = basePreset === "conservative" && !dirty;
+    const conservativeClean = basePreset === "conservative" && !dirty && !isCustom;
     // Failing runs: failing tests sort first and passing collapse behind
     // "Show the rest" — at ALL widths (R5-4 desktop annotation), not just mobile.
     const failing = !run.passing;
@@ -294,25 +300,39 @@ export function PolicyPanel({
     const selectPreset = (key: PolicyPresetKey) => {
         setBasePreset(key);
         setThresholds({ ...policy.presets[key] });
+        setIsCustom(false);
         setActiveKey(null);
+        setLastRun({ kind: "preset", at: new Date() });
+    };
+
+    // Clicking Custom while a named preset is active: adopt that preset as the
+    // editable baseline (R5-2's "Custom, from Yield-seeking") — values unchanged,
+    // so the verdict doesn't move until the first edit.
+    const selectCustom = () => {
+        if (activePresetKey === "custom") return;
+        setIsCustom(true);
         setLastRun({ kind: "preset", at: new Date() });
     };
 
     const commitThreshold = (key: string, value: number) => {
         setThresholds((prev) => ({ ...prev, [key]: value }));
+        setIsCustom(true);
         setLastRun({ kind: "edit" });
     };
 
-    // Radiogroup keyboard: arrows move selection (roving tabindex); Custom is
-    // skipped while clean — it only becomes selectable once an edit dirties it.
+    // Radiogroup keyboard: arrows move selection (roving tabindex).
     const onGroupKeyDown = (e: React.KeyboardEvent) => {
         const dir = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
         if (!dir) return;
         e.preventDefault();
-        const selectable = PRESET_ORDER.filter((key) => key !== "custom" || dirty);
+        const selectable = PRESET_ORDER;
         const idx = selectable.indexOf(activePresetKey);
         const next = selectable[(idx + dir + selectable.length) % selectable.length];
-        if (next !== "custom") selectPreset(next);
+        if (next === "custom") {
+            selectCustom();
+        } else {
+            selectPreset(next);
+        }
         radioRefs.current[next]?.focus();
     };
 
@@ -348,21 +368,22 @@ export function PolicyPanel({
                         <div className="flex w-max gap-2 px-1 py-1 md:w-auto md:flex-wrap md:justify-end">
                             {PRESET_ORDER.map((key) => {
                                 const checked = activePresetKey === key;
-                                const disabled = key === "custom" && !dirty;
                                 return (
                                     <button
                                         key={key}
                                         type="button"
                                         role="radio"
                                         aria-checked={checked}
-                                        aria-disabled={disabled || undefined}
                                         tabIndex={checked ? 0 : -1}
                                         ref={(el) => {
                                             radioRefs.current[key] = el;
                                         }}
                                         onClick={() => {
-                                            if (key === "custom" || disabled) return;
-                                            selectPreset(key);
+                                            if (key === "custom") {
+                                                selectCustom();
+                                            } else {
+                                                selectPreset(key);
+                                            }
                                         }}
                                         className={cx(
                                             "flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[12.5px] font-bold whitespace-nowrap transition-colors duration-200 ease-rsm",
@@ -370,7 +391,6 @@ export function PolicyPanel({
                                             checked
                                                 ? "bg-rsm-midnight text-rsm-paper"
                                                 : "text-rsm-midnight shadow-[inset_0_0_0_1px_var(--color-rsm-hairline)] hover:shadow-[inset_0_0_0_1px_var(--color-rsm-steel-50)]",
-                                            disabled && "opacity-60",
                                         )}
                                     >
                                         {t.policy.presets[key]}
@@ -465,13 +485,15 @@ export function PolicyPanel({
                     ) : null}
                 </div>
 
-                {/* Footer: edit hint (clean) / Custom marker + Reset (dirty). */}
+                {/* Footer: edit hint (clean preset) / Custom-from marker (clean Custom) / dirty marker + Reset. */}
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12.5px] leading-relaxed text-rsm-misty">
                     {dirty ? (
                         <span className="inline-flex items-center gap-2">
                             <span aria-hidden className="size-1.5 rounded-full bg-rsm-lime ring-1 ring-rsm-midnight-25" />
                             {tpl(t.policy.customMarker, { preset: t.policy.presets[basePreset], n: dirtyCount })}
                         </span>
+                    ) : isCustom ? (
+                        <span>{tpl(t.policy.customFrom, { preset: t.policy.presets[basePreset] })}</span>
                     ) : (
                         <span>
                             {t.policy.editHintA}
