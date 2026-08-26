@@ -914,3 +914,184 @@ export interface CompareResponse {
     /** The engine's policy test count (14) for the verdict pills. */
     policyTotal: number;
 }
+
+/* ── Partner API (R17) — board contract, handoff §4 "Partner org" + §5 Partner
+   + the R17-2 handoff notes ───────────────────────────────────────────────────
+   "The same verdict, as JSON with its provenance attached" (R17 header). Bearer
+   keys shown once (24 h rotate overlap); HMAC webhooks, 5× retries; 60 req/min
+   (429 + Retry-After); prepaid pool, volume-tiered; refusals never billed; the
+   sandbox key replays the canonical fixture deterministically. Docs are EN-only
+   (developer audience) — the console follows the frames' language (EN). */
+
+export type PartnerKeyKind = "live" | "sandbox";
+
+/** active → (rotate) retiring (24 h overlap, then invalid) → (revoke) revoked. */
+export type PartnerKeyStatus = "active" | "retiring" | "revoked";
+
+export interface PartnerKey {
+    id: string;
+    kind: PartnerKeyKind;
+    /** The full secret — stored server-side ONLY. Shown once at creation and
+       rotation; every later surface renders prefix…suffix (R17 notes). It is
+       never serialized to a client (see PartnerKeyRow). */
+    secret: string;
+    createdAt: number;
+    lastUsedAt?: number;
+    status: PartnerKeyStatus;
+    /** Set on rotation: the retiring key stays valid until this ts (24 h). */
+    retiresAt?: number;
+}
+
+export interface PartnerWebhook {
+    url: string;
+    /** HMAC-SHA256 signing secret (R17-1 "signing secret") — shown once on rotate. */
+    secret: string;
+    delivering: boolean;
+}
+
+/** Partner org {agreementNo, keys[live|sandbox], webhook{url, secret}, pool,
+   tierPrice} (§4) + the R17-1 console figures. */
+export interface PartnerOrg {
+    id: string;
+    name: string;
+    email: string;
+    agreementNo: string;
+    partnerSince: string;
+    /** Prepaid reports remaining (R17-1 "Prepaid pool 858"). */
+    pool: number;
+    /** € per report at the current volume tier (R17-1 "volume tier · 12 €/report"). */
+    tierPrice: number;
+    reportsThisMonth: number;
+    /** Refused runs this month — "not charged, ever" (R17-1). */
+    refusedThisMonth: number;
+    /** The pool level that triggers the auto-invoice (R17-1 "auto-invoice at 100"). */
+    autoInvoiceAt: number;
+    keys: PartnerKey[];
+    webhook: PartnerWebhook;
+}
+
+/** A partner analysis job (POST /v1/analyses → 202). The mock engine completes
+   synchronously; the contract response still reports "queued". */
+export interface PartnerJob {
+    id: string;
+    orgId: string;
+    status: "queued" | "done" | "refused";
+    url: string;
+    /** Per-request webhook override (POST body `webhook?`, §5). */
+    webhookOverride?: string;
+    createdAt: number;
+    /** The fixture this mock job replays. */
+    analysisSlug?: string;
+    /** True once the pool was decremented — only ever on status "done"
+       (REFUSALS NEVER BILLED, §6.3/R17; sandbox replays never bill). */
+    billed: boolean;
+    sandbox: boolean;
+}
+
+/** Payload provenance values are lowercase (R17-2 example), unlike the
+   internal UPPERCASE chips. */
+export type PartnerProvenance = "observed" | "mapped" | "modelled" | "estimated";
+
+export interface PartnerFigure {
+    value: number;
+    provenance: PartnerProvenance;
+}
+
+/** The GET /v1/analyses/:id payload for a completed analysis (R17-2 example
+   shape; the frame's excerpt is shortened — every figure and flag ships). */
+export interface PartnerDonePayload {
+    id: string;
+    status: "done";
+    /** Report № — the register rule ("every surface is a numbered document"). */
+    number: string;
+    address: string;
+    figures: {
+        grossYield: PartnerFigure;
+        realYield: PartnerFigure;
+        liability: {
+            total: number;
+            windowYears: [number, number];
+            provenance: PartnerProvenance;
+            items: { label: string; amount: number; provenance: PartnerProvenance }[];
+        };
+        debtFreePrice: PartnerFigure;
+        askPrice: PartnerFigure;
+        floorArea: PartnerFigure;
+    };
+    /** Every flag ships the Finnish sentence it was read from (§6.1/R17-2). */
+    flags: { severity: Severity; title: string; quote: { fi: string; source: string } }[];
+    grades: { company: string; municipality: string };
+    engine: string;
+    readAt: string;
+    /** The fairness rule, carried in-band: a verdict was issued, the pool paid. */
+    billed: true;
+}
+
+/** Refusal is a first-class state (§6.3), never an error — the failing
+   extractions are named (R17-2) and the payload says what WAS read. */
+export interface PartnerRefusedPayload {
+    id: string;
+    status: "refused";
+    number: string;
+    address: string;
+    refusal: {
+        /** Engine-authored one-liner (the R8-5c OG sub-line's claim). */
+        summary: string;
+        /** The failing extractions, named (R17-2). */
+        failingExtractions: string[];
+        /** What WAS read (rule §6.3) with its provenance / low-confidence marks. */
+        read: { text: string; provenance: PartnerProvenance | "low_confidence" }[];
+        /** Engine-authored way forward (the refusal screen's unlock paragraph). */
+        next: string;
+    };
+    engine: string;
+    readAt: string;
+    /** REFUSALS NEVER BILLED — stated in the payload itself. */
+    billed: false;
+}
+
+export type PartnerAnalysisPayload = PartnerDonePayload | PartnerRefusedPayload;
+
+/** GET /v1/org — agreement, pool and tier state for the Bearer key's org. */
+export interface PartnerOrgPayload {
+    name: string;
+    agreementNo: string;
+    pool: number;
+    tierPrice: number;
+    currency: "EUR";
+    reportsThisMonth: number;
+    refusedThisMonth: number;
+    autoInvoiceAt: number;
+    rateLimit: { requestsPerMinute: number };
+}
+
+/* ── Partner console (R17-1) — serialized view data ──────────────────────────
+   The console never receives a key or webhook secret: they are shown once at
+   creation/rotation, then masked (R17 notes). Display strings are engine-
+   published, per the repo boundary convention. */
+
+export interface PartnerKeyRow {
+    id: string;
+    kind: PartnerKeyKind;
+    /** "rsm_live_7f4k…c2" — prefix+suffix only (R17-1 verbatim). */
+    masked: string;
+    status: PartnerKeyStatus;
+    createdDisplay: string;
+    lastUsedDisplay: string;
+    /** Set while a rotated key is in its 24 h overlap ("until 13.05.2026"). */
+    retiresDisplay?: string;
+}
+
+export interface PartnerConsoleData {
+    name: string;
+    email: string;
+    agreementNo: string;
+    partnerSince: string;
+    reportsThisMonth: number;
+    pool: number;
+    tierPrice: number;
+    refusedThisMonth: number;
+    autoInvoiceAt: number;
+    keys: PartnerKeyRow[];
+    webhook: { url: string; delivering: boolean; maskedSecret: string };
+}

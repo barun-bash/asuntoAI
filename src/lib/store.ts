@@ -12,7 +12,8 @@
  * the screens. The mock completes every intent synchronously (the real flow
  * is Stripe confirm → webhook; handoff-notes "Purchase").
  */
-import { formatEUR, formatPercent } from "@/lib/format";
+import { createHmac } from "node:crypto";
+import { formatDate, formatEUR, formatPercent } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { isSupportedListingUrl } from "@/lib/listing-url";
 import { evaluatePolicy } from "@/lib/policy";
@@ -37,10 +38,20 @@ import type {
     OfferResult,
     Pack,
     PackId,
+    PartnerAnalysisPayload,
+    PartnerConsoleData,
+    PartnerJob,
+    PartnerKey,
+    PartnerKeyKind,
+    PartnerKeyRow,
+    PartnerOrg,
+    PartnerOrgPayload,
+    PartnerProvenance,
     PaymentIntent,
     PinnedOffer,
     PolicyActual,
     PriceHistory,
+    Provenance,
     RefundReason,
     RefundRecord,
     RefundTarget,
@@ -50,7 +61,7 @@ import type {
     Watch,
 } from "@/lib/types";
 import { CHAT_TURN_CAP, COMPARE_LOCKED_ROWS } from "@/lib/types";
-import { canonicalAnalysis, canonicalTrackingTemplate, fixtures, packs } from "@/mocks/fixtures";
+import { canonicalAnalysis, canonicalTrackingTemplate, fixtures, packs, refusedAnalysis } from "@/mocks/fixtures";
 
 export { isSupportedListingUrl };
 
@@ -111,6 +122,13 @@ interface StoreShape {
        (auto-on, §4); the daily check is the real backend's cron — the mock
        serves the seeded record. */
     tracking: Map<string, Map<string, TrackingRecord>>;
+    /** Partner orgs (R17): the mock seeds one (R17-1's Kiinteistömaailma
+       Tampere Keskusta). Org agreement provisioning is sales scope. */
+    partnerOrgs: Map<string, PartnerOrg>;
+    /** Partner analysis jobs (R17): "orgId:jobId" → job. */
+    partnerJobs: Map<string, PartnerJob>;
+    /** Per-key sliding-window request timestamps (60 req/min, R17 notes). */
+    partnerRate: Map<string, number[]>;
 }
 
 const globalStore = globalThis as unknown as { __asuntoStore?: StoreShape };
@@ -135,6 +153,9 @@ if (!globalStore.__asuntoStore) {
         checklist: new Map(),
         pinnedOffers: new Map(),
         tracking: new Map(),
+        partnerOrgs: new Map(),
+        partnerJobs: new Map(),
+        partnerRate: new Map(),
     };
 }
 const store = globalStore.__asuntoStore;
@@ -1352,4 +1373,393 @@ export function deleteAccount(accountId: string, token: string): DeleteAccountRe
     }
 
     return { ok: true, refundedCredits: unusedCredits, refundAmountEur };
+}
+
+/* ── Partner API (R17) ─────────────────────────────────────────────────────────
+   "The same verdict, as JSON with its provenance attached" (R17 header). The
+   whole partner backend is mocked here like every other slice — real hosting
+   is engine scope. Contracts (handoff §5 Partner + R17-2 notes): Bearer keys
+   shown once (24 h rotate overlap) · HMAC-SHA256 webhooks, 5× retries ·
+   60 req/min per key (429 + Retry-After) · prepaid pool, volume-tiered ·
+   REFUSALS NEVER BILLED · the sandbox key replays the canonical fixture
+   deterministically. Consumer surfaces are untouched — "the API is an
+   audience, not a fork" (R17 header). */
+
+/** §4: every analysis carries the engine tag. */
+export const ENGINE_VERSION = "v2.3";
+
+export const PARTNER_RATE_LIMIT = 60;
+export const PARTNER_RATE_WINDOW_MS = 60_000;
+/** Rotate = 24 h overlap: the old key keeps working for 24 h, then retires. */
+export const PARTNER_KEY_ROTATE_OVERLAP_MS = 24 * 60 * 60 * 1000;
+/** Signature header for webhook deliveries (HMAC-SHA256 of the raw body with
+   the org's signing secret, "sha256=<hex>" — see signPartnerWebhook). */
+export const PARTNER_WEBHOOK_SIGNATURE_HEADER = "X-Resimator-Signature";
+export const PARTNER_WEBHOOK_EVENT = "analysis.completed";
+/** R17 notes: "webhook HMAC-signed, retries 5× exponential". */
+export const PARTNER_WEBHOOK_RETRIES = "5× exponential backoff";
+
+/** Deterministic mock keys for the seeded org (R17-1 rows): their masked forms
+   are the frame's verbatim ("rsm_live_7f4k…c2" / "rsm_test_9d1a…8e"). The
+   sandbox key replays the canonical fixture — smoke tests can rely on these. */
+export const MOCK_PARTNER_ORG_ID = "org_km_tampere";
+export const MOCK_PARTNER_LIVE_KEY = "rsm_live_7f4k9q2m8vx1c2";
+export const MOCK_PARTNER_SANDBOX_KEY = "rsm_test_9d1a6b3f5c7d8e";
+/** The sandbox job id — the R17-2 example's own ("an_9f2c"); replaying the
+   canonical fixture means the same id and payload every time. */
+export const PARTNER_SANDBOX_JOB_ID = "an_9f2c";
+
+/** Seeds the R17-1 console org (figures verbatim from the frame: agreement №
+   P-2026-014, pool 858, tier 12 €/report, 142 reports this month, 4 refused,
+   auto-invoice at 100). Idempotent across dev reloads. */
+function seedPartnerOrg(): void {
+    if (store.partnerOrgs.size > 0) return;
+    const now = Date.now();
+    const created = Date.parse("2026-05-12T09:15:00+03:00"); // "12.05.2026" (R17-1)
+    store.partnerOrgs.set(MOCK_PARTNER_ORG_ID, {
+        id: MOCK_PARTNER_ORG_ID,
+        name: "Kiinteistömaailma Tampere Keskusta",
+        email: "api@km-tampere.fi",
+        agreementNo: "P-2026-014",
+        partnerSince: "05/2026",
+        pool: 858,
+        tierPrice: 12,
+        reportsThisMonth: 142,
+        refusedThisMonth: 4,
+        autoInvoiceAt: 100,
+        keys: [
+            // Frame rows: live "2 min ago" · sandbox "yesterday".
+            { id: "pk_live_01", kind: "live", secret: MOCK_PARTNER_LIVE_KEY, createdAt: created, lastUsedAt: now - 2 * 60_000, status: "active" },
+            { id: "pk_sandbox_01", kind: "sandbox", secret: MOCK_PARTNER_SANDBOX_KEY, createdAt: created, lastUsedAt: now - 26 * 3_600_000, status: "active" },
+        ],
+        webhook: {
+            url: "https://api.km-tampere.fi/hooks/resimator",
+            secret: "whsec_9c31f7ab42e8d6a5b0f1e2d3c4a59687",
+            delivering: true, // "DELIVERING" (R17-1)
+        },
+    });
+}
+seedPartnerOrg();
+
+/** Resolves a Bearer key to its org + key. Retiring keys stay valid through
+   their 24 h overlap; revoked keys never authenticate. Updates lastUsedAt
+   (the console's "Last used" column). */
+export function authenticatePartnerKey(request: Request): { org: PartnerOrg; key: PartnerKey } | undefined {
+    const token = request.headers.get("authorization")?.match(/^Bearer\s+(\S+)\s*$/i)?.[1];
+    if (!token) return undefined;
+    for (const org of store.partnerOrgs.values()) {
+        for (const key of org.keys) {
+            if (key.secret !== token) continue;
+            if (key.status === "revoked") return undefined;
+            if (key.status === "retiring" && (key.retiresAt ?? 0) < Date.now()) return undefined;
+            key.lastUsedAt = Date.now();
+            return { org, key };
+        }
+    }
+    return undefined;
+}
+
+/** 60 req/min per key, sliding window (R17 notes). A rejected request is not
+   counted; the 429 carries Retry-After (seconds until the oldest hit expires). */
+export function partnerRateCheck(keyId: string): { ok: true } | { ok: false; retryAfter: number } {
+    const now = Date.now();
+    const hits = (store.partnerRate.get(keyId) ?? []).filter((t) => now - t < PARTNER_RATE_WINDOW_MS);
+    if (hits.length >= PARTNER_RATE_LIMIT) {
+        store.partnerRate.set(keyId, hits);
+        return { ok: false, retryAfter: Math.max(1, Math.ceil((hits[0] + PARTNER_RATE_WINDOW_MS - now) / 1000)) };
+    }
+    hits.push(now);
+    store.partnerRate.set(keyId, hits);
+    return { ok: true };
+}
+
+/** POST /v1/analyses. The mock engine completes synchronously (the real queue
+   is backend scope); the route still answers 202 {status:"queued"} per the
+   contract, and the job holds its final state for the poll.
+   Mock replay mapping: the sandbox key ALWAYS replays the canonical fixture
+   (same id, same payload — R17 notes); a live key replays the refused fixture
+   when the URL names the refused listing (Oikotie 21967001 / Rautatienkatu),
+   and the canonical analysis otherwise — the live engine is backend scope.
+   REFUSALS NEVER BILLED: the pool decrements only on done (nothing is charged
+   before a verdict exists, §6.3); sandbox replays never touch the pool. */
+export function createPartnerAnalysis(org: PartnerOrg, key: PartnerKey, input: { url: string; webhook?: string }): PartnerJob {
+    const sandbox = key.kind === "sandbox";
+    const refused = !sandbox && /21967001|rautatienkatu/i.test(input.url);
+    const job: PartnerJob = {
+        id: sandbox ? PARTNER_SANDBOX_JOB_ID : `an_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        orgId: org.id,
+        status: refused ? "refused" : "done",
+        url: input.url,
+        webhookOverride: input.webhook,
+        createdAt: Date.now(),
+        analysisSlug: refused ? refusedAnalysis.slug : canonicalAnalysis.slug,
+        billed: false,
+        sandbox,
+    };
+    if (!sandbox) {
+        if (job.status === "done") {
+            org.pool -= 1;
+            org.reportsThisMonth += 1;
+            job.billed = true;
+        } else {
+            // Refusal is a verdict, never an error — and never billed (§6.3/R17).
+            org.refusedThisMonth += 1;
+        }
+    }
+    store.partnerJobs.set(`${org.id}:${job.id}`, job);
+    return job;
+}
+
+export function getPartnerJob(orgId: string, id: string): PartnerJob | undefined {
+    return store.partnerJobs.get(`${orgId}:${id}`);
+}
+
+const PARTNER_PROVENANCE: Record<Provenance, PartnerProvenance> = {
+    OBSERVED: "observed",
+    MAPPED: "mapped",
+    MODELLED: "modelled",
+    ESTIMATED: "estimated",
+};
+
+/** GET /v1/analyses/:id → the full JSON (R17-2 shape). Every figure carries
+   its provenance (§6.1); every flag ships the Finnish sentence it was read
+   from. Partners receive the FULL analysis — the §6.4 seam is a retail
+   construct; the partner pays per report, so nothing here is redacted. */
+export function partnerAnalysisPayload(job: PartnerJob): PartnerAnalysisPayload | undefined {
+    const analysis = job.analysisSlug ? getBySlug(job.analysisSlug) : undefined;
+    if (!analysis?.listing) return undefined;
+    const { listing } = analysis;
+    const address = `${listing.addr}, ${listing.city}`;
+
+    if (job.status === "refused") {
+        const refusal = analysis.refusal;
+        if (!refusal) return undefined;
+        return {
+            id: job.id,
+            status: "refused",
+            number: analysis.number,
+            address,
+            refusal: {
+                summary: refusal.ogSub?.en ?? refusal.heading,
+                failingExtractions: refusal.read.filter((r) => r.basis === "LOW_CONFIDENCE").map((r) => r.text),
+                read: refusal.read.map((r) => ({
+                    text: r.text,
+                    provenance: r.basis === "LOW_CONFIDENCE" ? "low_confidence" : PARTNER_PROVENANCE[r.basis],
+                })),
+                next: refusal.unlock,
+            },
+            engine: ENGINE_VERSION,
+            readAt: analysis.readAt,
+            billed: false, // REFUSALS NEVER BILLED — stated in the payload itself.
+        };
+    }
+
+    const verdict = analysis.verdict;
+    if (!verdict) return undefined;
+    /* Fixture yields are engine-published percent numbers (8.6); the payload
+       carries decimal fractions (R17-2's 0.091) — rounded, never re-derived. */
+    const fraction = (percent: number) => Math.round(percent * 10) / 1000;
+    // "4–7 YEARS" → [4, 7] (the window's only two integers).
+    const wm = verdict.liability.window.match(/(\d+)\D+(\d+)/);
+    const dominant = [...verdict.liability.items].sort((a, b) => b.amount - a.amount)[0];
+    return {
+        id: job.id,
+        status: "done",
+        number: analysis.number,
+        address,
+        figures: {
+            grossYield: { value: fraction(verdict.grossYield.value), provenance: PARTNER_PROVENANCE[verdict.grossYield.basis] },
+            realYield: { value: fraction(verdict.realYield.value), provenance: PARTNER_PROVENANCE[verdict.realYield.basis] },
+            liability: {
+                total: verdict.liability.total,
+                windowYears: wm ? [Number(wm[1]), Number(wm[2])] : [0, 0],
+                // One provenance for the total (R17-2): the largest component's.
+                provenance: PARTNER_PROVENANCE[dominant.basis],
+                items: verdict.liability.items.map((item) => ({
+                    label: item.label,
+                    amount: item.amount,
+                    provenance: PARTNER_PROVENANCE[item.basis],
+                })),
+            },
+            debtFreePrice: { value: listing.debtFree, provenance: "observed" },
+            askPrice: { value: listing.askPrice, provenance: "observed" },
+            floorArea: { value: listing.m2, provenance: "observed" },
+        },
+        flags: (verdict.flags as FlagFull[]).map((flag) => ({
+            severity: flag.severity,
+            title: flag.title,
+            quote: {
+                // The Finnish source sentence, unwrapped from its ” ” quotes;
+                // quotes never translate away (§6.1). Source per R17-2's shape.
+                fi: flag.quotes[0]?.text.replace(/^[”"“]+|[”"“]+$/g, "") ?? "",
+                source: `oikotie:${listing.oikotieId}`,
+            },
+        })),
+        grades: { company: verdict.grades.company.grade, municipality: verdict.grades.municipality.grade },
+        engine: ENGINE_VERSION,
+        readAt: analysis.readAt,
+        billed: true, // a verdict was issued — the pool paid (carried in-band).
+    };
+}
+
+/** GET /v1/org — the Bearer key's org state (agreement, pool, tier). */
+export function partnerOrgPayload(org: PartnerOrg): PartnerOrgPayload {
+    return {
+        name: org.name,
+        agreementNo: org.agreementNo,
+        pool: org.pool,
+        tierPrice: org.tierPrice,
+        currency: "EUR",
+        reportsThisMonth: org.reportsThisMonth,
+        refusedThisMonth: org.refusedThisMonth,
+        autoInvoiceAt: org.autoInvoiceAt,
+        rateLimit: { requestsPerMinute: PARTNER_RATE_LIMIT },
+    };
+}
+
+/* ── Partner webhooks (R17) ────────────────────────────────────────────────────
+   On analysis.completed the backend POSTs the GET payload to the org's
+   webhook URL (or the per-request override), signed HMAC-SHA256 with the
+   signing secret, header PARTNER_WEBHOOK_SIGNATURE_HEADER = "sha256=<hex>",
+   5× exponential retries. The mock NEVER fires network calls — it only builds
+   the exact delivery the real dispatcher would send (documented scheme), so
+   integrators can verify their signature check against it. */
+
+export function signPartnerWebhook(body: string, secret: string): string {
+    return `sha256=${createHmac("sha256", secret).update(body, "utf8").digest("hex")}`;
+}
+
+/** The would-be delivery for a completed job (never dispatched from the mock). */
+export function partnerWebhookDelivery(job: PartnerJob, org: PartnerOrg) {
+    const url = job.webhookOverride ?? org.webhook.url;
+    const body = JSON.stringify(partnerAnalysisPayload(job));
+    return {
+        event: PARTNER_WEBHOOK_EVENT,
+        url,
+        header: PARTNER_WEBHOOK_SIGNATURE_HEADER,
+        signature: signPartnerWebhook(body, org.webhook.secret),
+        body,
+        retries: PARTNER_WEBHOOK_RETRIES,
+    };
+}
+
+/* ── Partner console (R17-1) ───────────────────────────────────────────────────
+   Mock access: the console is gated behind the account cookie (any signed-in
+   account sees the one seeded org) — partner agreement provisioning is sales
+   scope; the real backend maps accounts → orgs. Keys and the signing secret
+   are shown ONCE at creation/rotation, then masked prefix…suffix (R17 notes):
+   the serialized view data below never contains a secret. */
+
+export function getPartnerConsoleOrg(): PartnerOrg {
+    return store.partnerOrgs.get(MOCK_PARTNER_ORG_ID)!;
+}
+
+/** "2 min ago" / "yesterday" / a date — the console's Last-used column (EN;
+   the console follows the frames' language). */
+function relativeNote(ts: number): string {
+    const min = Math.floor((Date.now() - ts) / 60_000);
+    if (min < 1) return "just now";
+    if (min < 60) return `${min} min ago`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `${h} h ago`;
+    if (h < 48) return "yesterday";
+    return formatDate(new Date(ts).toISOString(), "en");
+}
+
+function partnerKeyRow(key: PartnerKey): PartnerKeyRow {
+    return {
+        id: key.id,
+        kind: key.kind,
+        // "rsm_live_7f4k…c2" — prefix+suffix only (R17-1 verbatim anatomy).
+        masked: `${key.secret.slice(0, 13)}…${key.secret.slice(-2)}`,
+        status: key.status,
+        createdDisplay: formatDate(new Date(key.createdAt).toISOString(), "en"),
+        lastUsedDisplay: key.lastUsedAt ? relativeNote(key.lastUsedAt) : "never",
+        retiresDisplay: key.status === "retiring" && key.retiresAt ? formatDate(new Date(key.retiresAt).toISOString(), "en") : undefined,
+    };
+}
+
+export function partnerConsoleData(org: PartnerOrg): PartnerConsoleData {
+    return {
+        name: org.name,
+        email: org.email,
+        agreementNo: org.agreementNo,
+        partnerSince: org.partnerSince,
+        reportsThisMonth: org.reportsThisMonth,
+        pool: org.pool,
+        tierPrice: org.tierPrice,
+        refusedThisMonth: org.refusedThisMonth,
+        autoInvoiceAt: org.autoInvoiceAt,
+        keys: org.keys.map(partnerKeyRow),
+        webhook: {
+            url: org.webhook.url,
+            delivering: org.webhook.delivering,
+            maskedSecret: `${org.webhook.secret.slice(0, 6)}…${org.webhook.secret.slice(-4)}`,
+        },
+    };
+}
+
+function newKeySecret(kind: PartnerKeyKind): string {
+    const rand = Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+    return `${kind === "live" ? "rsm_live_" : "rsm_test_"}${rand.slice(0, 18)}`;
+}
+
+/** Creates a key. The FULL secret is returned exactly once (the caller renders
+   the shown-once card); the store keeps it, every later read masks it. */
+export function createPartnerKey(orgId: string, kind: PartnerKeyKind): { row: PartnerKeyRow; secret: string } | undefined {
+    const org = store.partnerOrgs.get(orgId);
+    if (!org) return undefined;
+    const key: PartnerKey = {
+        id: `pk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        kind,
+        secret: newKeySecret(kind),
+        createdAt: Date.now(),
+        status: "active",
+    };
+    org.keys.push(key);
+    return { row: partnerKeyRow(key), secret: key.secret };
+}
+
+/** Rotate: the old key enters its 24 h overlap (retiring), the new one is
+   active immediately and shown once (R17 notes). */
+export function rotatePartnerKey(orgId: string, keyId: string): { row: PartnerKeyRow; secret: string; retiringRow: PartnerKeyRow } | undefined {
+    const org = store.partnerOrgs.get(orgId);
+    const old = org?.keys.find((k) => k.id === keyId && k.status !== "revoked");
+    if (!org || !old) return undefined;
+    old.status = "retiring";
+    old.retiresAt = Date.now() + PARTNER_KEY_ROTATE_OVERLAP_MS;
+    const created = createPartnerKey(orgId, old.kind)!;
+    return { ...created, retiringRow: partnerKeyRow(old) };
+}
+
+/** Revoke is immediate — no overlap (the key stops authenticating at once). */
+export function revokePartnerKey(orgId: string, keyId: string): PartnerKeyRow | undefined {
+    const org = store.partnerOrgs.get(orgId);
+    const key = org?.keys.find((k) => k.id === keyId);
+    if (!org || !key || key.status === "revoked") return undefined;
+    key.status = "revoked";
+    key.retiresAt = undefined;
+    return partnerKeyRow(key);
+}
+
+export function setPartnerWebhookUrl(orgId: string, url: string): PartnerConsoleData["webhook"] | undefined {
+    const org = store.partnerOrgs.get(orgId);
+    if (!org) return undefined;
+    try {
+        const parsed = new URL(url.trim());
+        if (parsed.protocol !== "https:") return undefined;
+    } catch {
+        return undefined;
+    }
+    org.webhook.url = url.trim();
+    org.webhook.delivering = true;
+    return partnerConsoleData(org).webhook;
+}
+
+/** Rotates the signing secret — the new one is shown once, then masked. */
+export function rotatePartnerWebhookSecret(orgId: string): { secret: string; maskedSecret: string } | undefined {
+    const org = store.partnerOrgs.get(orgId);
+    if (!org) return undefined;
+    org.webhook.secret = `whsec_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`;
+    return { secret: org.webhook.secret, maskedSecret: partnerConsoleData(org).webhook.maskedSecret };
 }
