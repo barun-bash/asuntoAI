@@ -273,6 +273,12 @@ export function markOnboardingSeen(accountId: string): void {
     if (account) account.onboardingSeen = true;
 }
 
+/** R1-14 — the UI language persists on the account (guests: asunto_lang cookie). */
+export function setAccountLang(accountId: string, lang: "fi" | "en"): void {
+    const account = getAccount(accountId);
+    if (account) account.lang = lang;
+}
+
 /** Balance = sum of ledger deltas (append-only; never negative by construction). */
 export function balanceOf(accountId: string): number {
     return (store.ledger.get(accountId) ?? []).reduce((sum, entry) => sum + entry.delta, 0);

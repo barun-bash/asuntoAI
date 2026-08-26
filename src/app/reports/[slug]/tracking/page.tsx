@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { TrackingView } from "@/components/account/tracking-view";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { PRIVATE_OG_IMAGE } from "@/lib/og";
 import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, getTrackingPayload, getTrackingSeededAt, isUnlocked } from "@/lib/store";
 import { LangProvider } from "@/providers/lang";
@@ -31,7 +31,7 @@ export default async function Page({
 }) {
     const { slug } = await params;
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const analysis = getBySlug(slug);
 
     const jar = await cookies();

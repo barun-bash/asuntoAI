@@ -7,6 +7,10 @@ export type Lang = "fi" | "en";
 
 export const DEFAULT_LANG: Lang = "fi";
 
+/** Persisted language choice (R1-14: "persists as ?lang= and in the account").
+   Server-readable so SSR renders the right locale on the next visit — no flash. */
+export const LANG_COOKIE = "asunto_lang";
+
 export function parseLang(value: string | string[] | undefined | null): Lang {
     return value === "en" ? "en" : DEFAULT_LANG;
 }

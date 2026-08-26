@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { AccountDataView } from "@/components/account/account-data-view";
 import { dict } from "@/i18n/dict";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { PRIVATE_OG_IMAGE } from "@/lib/og";
 import { ACCOUNT_COOKIE, balanceOf, deletionPreview, getAccount, listAccountReports } from "@/lib/store";
 import { LangProvider } from "@/providers/lang";
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
  */
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const jar = await cookies();
     const account = getAccount(jar.get(ACCOUNT_COOKIE)?.value);
     const t = dict[lang];

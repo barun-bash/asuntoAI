@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ACCOUNT_COOKIE_OPTS } from "@/lib/api";
+import { LANG_COOKIE } from "@/lib/i18n";
 import { ACCOUNT_COOKIE, consumeMagicLink } from "@/lib/store";
 
 /**
@@ -22,6 +23,10 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(new URL(target, url.origin), 303);
     if (account) {
         response.cookies.set(ACCOUNT_COOKIE, account.id, ACCOUNT_COOKIE_OPTS);
+        // R1-14: the account's persisted language becomes this browser's cookie.
+        if (account.lang) {
+            response.cookies.set(LANG_COOKIE, account.lang, { httpOnly: false, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 365 });
+        }
     }
     return response;
 }

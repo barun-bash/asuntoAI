@@ -308,6 +308,9 @@ export interface Account {
     /** R15-2/3: the 3 first-run onboarding tips fire once ever — set on skip OR
        finish (guests without an account use localStorage instead). */
     onboardingSeen?: boolean;
+    /** R1-14: the UI language choice persists "as ?lang= and in the account"
+       (guests: the asunto_lang cookie). */
+    lang?: "fi" | "en";
 }
 
 export type DeclineCode = "insufficient_funds" | "generic";

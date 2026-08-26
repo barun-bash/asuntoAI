@@ -4,7 +4,7 @@ import type { OfferCalculatorProps } from "@/components/report/offer-calculator"
 import { ReportView } from "@/components/report/report-view";
 import { NotFoundView, RefusalView } from "@/components/report/state-views";
 import { VerdictView } from "@/components/report/verdict-view";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { PRIVATE_OG_IMAGE, ogShareText } from "@/lib/og";
 import {
     ACCOUNT_COOKIE,
@@ -49,7 +49,7 @@ export default async function Page({
 }) {
     const { slug } = await params;
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const analysis = getBySlug(slug);
 
     const jar = await cookies();
@@ -179,7 +179,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     const { slug } = await params;
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const analysis = getBySlug(slug);
     if (!analysis?.listing) return { title: "Analysis" };
 

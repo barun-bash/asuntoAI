@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { BankSummaryPrint } from "@/components/print/bank-summary-print";
 import { PrintToolbar } from "@/components/print/print-toolbar";
 import { dict } from "@/i18n/dict";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { ACCOUNT_COOKIE, getAccount, getBySlug, isUnlocked, unlockAnalysis } from "@/lib/store";
 
 /**
@@ -23,7 +23,7 @@ export default async function Page({
 }) {
     const { slug } = await params;
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const analysis = getBySlug(slug);
 
     const jar = await cookies();

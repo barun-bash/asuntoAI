@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SignInView } from "@/components/account/signin-view";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { PRIVATE_OG_IMAGE } from "@/lib/og";
 import { LangProvider } from "@/providers/lang";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
     const sp = await searchParams;
     return (
-        <LangProvider initialLang={parseLang(sp.lang)}>
+        <LangProvider initialLang={await resolveLang(sp.lang)}>
             <SignInView linkError={sp.error === "link"} />
         </LangProvider>
     );

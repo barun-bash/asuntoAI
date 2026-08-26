@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dict } from "@/i18n/dict";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { SITE_ORIGIN, ogShareText } from "@/lib/og";
 import { getBySlug, isPublicReport } from "@/lib/store";
 
@@ -29,7 +29,7 @@ export default async function Page({
 }) {
     const { slug } = await params;
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const analysis = getBySlug(slug);
     if (!analysis) notFound();
 

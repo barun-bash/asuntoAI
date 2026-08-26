@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { UnlockView } from "@/components/report/unlock-view";
-import { parseLang } from "@/lib/i18n";
+import { resolveLang } from "@/lib/i18n-server";
 import { PRIVATE_OG_IMAGE } from "@/lib/og";
 import { ACCOUNT_COOKIE, balanceOf, getAccount, getBySlug, hasAnyUnlock, isUnlocked, packs, redactAnalysis, usedOf } from "@/lib/store";
 import { LangProvider } from "@/providers/lang";
@@ -14,7 +14,7 @@ import { LangProvider } from "@/providers/lang";
  */
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
     const sp = await searchParams;
-    const lang = parseLang(sp.lang);
+    const lang = await resolveLang(sp.lang);
     const reportSlug = typeof sp.report === "string" ? sp.report : undefined;
     const reasonCredits = sp.reason === "credits";
 
